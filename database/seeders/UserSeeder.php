@@ -43,13 +43,15 @@ class UserSeeder extends Seeder
         $password = Hash::make('kelompok7');
 
         foreach ($members as $member) {
-            User::create([
-                'name' => $member['name'],
-                'email' => $member['email'],
-                'email_verified_at' => now(),
-                'password' => $password,
-                'remember_token' => \Illuminate\Support\Str::random(10),
-            ]);
+            User::updateOrCreate(
+                ['email' => $member['email']],
+                [
+                    'name' => $member['name'],
+                    'email_verified_at' => now(),
+                    'password' => $password,
+                    'remember_token' => \Illuminate\Support\Str::random(10),
+                ]
+            );
         }
     }
 }

@@ -31,18 +31,18 @@
                         <span>Dashboard</span>
                     </a>
 
-                    <a href="#" class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors">
+                    <a href="{{ route('accounts.index') }}" class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('accounts.*') ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100' }}">
                         <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM9 12a6 6 0 11-12 0 6 6 0 0112 0z"></path>
+                            <path d="M4 4a2 2 0 00-2 2v2a1 1 0 001 1h14a1 1 0 001-1V6a2 2 0 00-2-2H4zm0 6a2 2 0 00-2 2v2a2 2 0 002 2h12a2 2 0 002-2v-2a2 2 0 00-2-2H4z"></path>
                         </svg>
-                        <span>Users</span>
+                        <span>Akun</span>
                     </a>
 
-                    <a href="#" class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors">
+                    <a href="{{ route('categories.index') }}" class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('categories.*') ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100' }}">
                         <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"></path>
+                            <path d="M11 3a1 1 0 011 1v2h2a1 1 0 011 1v2h2a1 1 0 011 1v2a1 1 0 01-1 1h-2v2a1 1 0 01-1 1h-2v2a1 1 0 01-1 1H9a1 1 0 01-1-1v-2H6a1 1 0 01-1-1V11H3a1 1 0 01-1-1V8a1 1 0 011-1h2V5a1 1 0 011-1h2V3h2z"></path>
                         </svg>
-                        <span>Categories</span>
+                        <span>Kategori</span>
                     </a>
 
                     <a href="#" class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors">
