@@ -35,14 +35,7 @@
                         <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M4 4a2 2 0 00-2 2v2a1 1 0 001 1h14a1 1 0 001-1V6a2 2 0 00-2-2H4zm0 6a2 2 0 00-2 2v2a2 2 0 002 2h12a2 2 0 002-2v-2a2 2 0 00-2-2H4z"></path>
                         </svg>
-                        <span>Akun</span>
-                    </a>
-
-                    <a href="{{ route('categories.index') }}" class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('categories.*') ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100' }}">
-                        <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M11 3a1 1 0 011 1v2h2a1 1 0 011 1v2h2a1 1 0 011 1v2a1 1 0 01-1 1h-2v2a1 1 0 01-1 1h-2v2a1 1 0 01-1 1H9a1 1 0 01-1-1v-2H6a1 1 0 01-1-1V11H3a1 1 0 01-1-1V8a1 1 0 011-1h2V5a1 1 0 011-1h2V3h2z"></path>
-                        </svg>
-                        <span>Kategori</span>
+                        <span>Accounts</span>
                     </a>
 
                     <a href="#" class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors">
@@ -77,6 +70,68 @@
                             @endisset
                         </div>
                         <div class="flex items-center space-x-4">
+                            @if(isset($accounts) && $accounts->isNotEmpty())
+                                @php
+                                    $totalBalance = $accounts->sum('balance');
+                                    $balanceLabel = $selectedAccount ? number_format($selectedAccount->balance, 0, ',', '.') : number_format($totalBalance, 0, ',', '.');
+                                @endphp
+                                <div class="relative group">
+                                    <button type="button" class="inline-flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-100 transition">
+                                        <span class="inline-flex h-2.5 w-2.5 rounded-full bg-green-500"></span>
+                                        <div class="flex-1 text-left">
+                                            <div class="flex items-center gap-3">
+                                                <span>{{ $selectedAccount ? $selectedAccount->name : 'Semua Akun' }}</span>
+                                                <span class="rounded-full bg-white px-2 py-1 text-xs font-medium text-slate-500 shadow-sm">
+                                                    {{ $selectedAccount ? ucfirst($selectedAccount->type) : $accounts->count().' akun' }}
+                                                </span>
+                                            </div>
+                                            <p class="text-xs text-slate-500 mt-1">Saldo: Rp {{ $balanceLabel }}</p>
+                                        </div>
+                                        <svg class="h-4 w-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </button>
+
+                                    <div class="absolute right-0 z-20 mt-3 w-72 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl opacity-0 invisible transition-all duration-200 group-hover:opacity-100 group-hover:visible">
+                                        <div class="border-b border-slate-200 px-4 py-4 bg-slate-50">
+                                            <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Pilih akun</p>
+                                            <p class="mt-2 text-sm font-semibold text-slate-900">Switch wallet</p>
+                                        </div>
+                                        <div class="divide-y divide-slate-200">
+                                            <a href="{{ route('accounts.create') }}" class="flex items-center justify-between gap-3 px-4 py-4 hover:bg-slate-50 transition">
+                                                <div>
+                                                    <p class="text-sm font-semibold text-slate-900">Tambah Akun</p>
+                                                    <p class="text-xs text-slate-500">Buat akun baru</p>
+                                                </div>
+                                                <svg class="h-5 w-5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                                                </svg>
+                                            </a>
+                                            <a href="{{ route('accounts.index') }}" class="flex items-center justify-between gap-3 px-4 py-4 hover:bg-slate-50 transition">
+                                                <div>
+                                                    <p class="text-sm font-semibold text-slate-900">Semua Akun</p>
+                                                    <p class="text-xs text-slate-500">Lihat semua dompet</p>
+                                                </div>
+                                                @if(is_null($selectedAccount))
+                                                    <span class="rounded-full bg-blue-600 px-3 py-1 text-xs font-semibold text-white">Selected</span>
+                                                @endif
+                                            </a>
+                                            @foreach($accounts as $account)
+                                                <a href="{{ route('accounts.show', $account) }}" class="flex items-center justify-between gap-3 px-4 py-4 hover:bg-slate-50 transition">
+                                                    <div>
+                                                        <p class="text-sm font-semibold text-slate-900">{{ $account->name }}</p>
+                                                        <p class="text-xs text-slate-500">{{ ucfirst($account->type) }}</p>
+                                                    </div>
+                                                    @if(optional($selectedAccount)->id === $account->id)
+                                                        <span class="rounded-full bg-blue-600 px-3 py-1 text-xs font-semibold text-white">Selected</span>
+                                                    @endif
+                                                </a>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+
                             <div class="text-sm text-gray-600">
                                 Welcome, <span class="font-semibold">{{ Auth::user()->name }}</span>
                             </div>

@@ -36,6 +36,15 @@ class AccountController extends Controller
         return redirect()->route('accounts.index')->with('success', 'Akun berhasil ditambahkan.');
     }
 
+    public function show(Account $account)
+    {
+        $this->authorizeOwner($account);
+
+        session(['selected_account_id' => $account->id]);
+
+        return view('accounts.show', compact('account'));
+    }
+
     public function edit(Account $account)
     {
         $this->authorizeOwner($account);
