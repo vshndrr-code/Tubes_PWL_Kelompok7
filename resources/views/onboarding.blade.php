@@ -213,12 +213,17 @@
                         <p class="text-sm text-gray-500 mt-1" x-text="'Currency: ' + selectedCurrency"></p>
                     </div>
 
-                    <a 
-                        href="/dashboard"
-                        class="inline-block w-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-3 rounded-full transition duration-200"
-                    >
-                        Continue to Dashboard
-                    </a>
+                    <form method="POST" action="{{ route('onboarding.complete') }}">
+                        @csrf
+                        <input type="hidden" name="currency" :value="selectedCurrency">
+                        <input type="hidden" name="initial_balance" :value="initialBalance || 0">
+                        <button
+                            type="submit"
+                            class="inline-block w-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-3 rounded-full transition duration-200"
+                        >
+                            Continue to Dashboard
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

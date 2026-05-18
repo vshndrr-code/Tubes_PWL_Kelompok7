@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -16,6 +17,10 @@ Route::get('/dashboard', function () {
 Route::get('/onboarding', function () {
     return view('onboarding');
 })->middleware(['auth', 'verified'])->name('onboarding');
+
+Route::post('/onboarding/complete', [OnboardingController::class, 'complete'])
+    ->middleware(['auth', 'verified'])
+    ->name('onboarding.complete');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

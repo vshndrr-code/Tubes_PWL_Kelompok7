@@ -5,6 +5,10 @@
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">Dompet Saya</h2>
                 <p class="text-sm text-gray-500">Kelola akun Anda secara pribadi dan lihat saldo setiap dompet di sini.</p>
             </div>
+            <a href="{{ route('accounts.create') }}" class="inline-flex items-center gap-2 rounded-2xl bg-emerald-500 hover:bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                Tambah Akun
+            </a>
         </div>
     </x-slot>
 
@@ -17,13 +21,17 @@
             @endif
 
             @if($accounts->isEmpty())
-                <div class="rounded-3xl border border-dashed border-gray-300 bg-white p-12 text-center shadow-sm">
+            <div class="rounded-3xl border border-dashed border-gray-300 bg-white p-12 text-center shadow-sm">
                     <div class="mx-auto h-24 w-24 rounded-full bg-gray-100 flex items-center justify-center mb-4">
                         <svg class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 10.5V19a2 2 0 002 2h14a2 2 0 002-2v-8.5M5 10.5L12 4l7 6.5M5 10.5h14" />
                         </svg>
                     </div>
-                    <p class="text-gray-500 mb-4">Belum ada akun. Tambahkan akun untuk mulai mengelola saldo.</p>
+                    <p class="text-gray-500 mb-6">Belum ada akun. Tambahkan akun untuk mulai mengelola saldo.</p>
+                    <a href="{{ route('accounts.create') }}" class="inline-flex items-center gap-2 rounded-2xl bg-emerald-500 hover:bg-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-colors">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        Tambah Akun Pertamamu
+                    </a>
                 </div>
             @else
                 <div class="space-y-6">

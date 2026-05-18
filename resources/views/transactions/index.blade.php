@@ -9,10 +9,8 @@
                 <h1 class="text-4xl font-bold text-gray-800">Transaksi</h1>
                 <p class="text-gray-500 mt-1">Kelola semua transaksi keuangan Anda</p>
             </div>
-            <a href="{{ route('transactions.create') }}" class="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl hover:shadow-lg transition-all duration-200 font-semibold flex items-center gap-2">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
+            <a href="{{ route('transactions.create') }}" class="inline-flex items-center gap-2 rounded-2xl bg-emerald-500 hover:bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                 Tambah Transaksi
             </a>
         </div>
@@ -159,7 +157,8 @@
                 </div>
                 <h3 class="text-xl font-semibold text-gray-800 mb-2">Belum ada transaksi</h3>
                 <p class="text-gray-500 mb-6">Mulai catat transaksi keuangan Anda sekarang</p>
-                <a href="{{ route('transactions.create') }}" class="inline-block px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl hover:shadow-lg transition-all duration-200 font-semibold">
+                <a href="{{ route('transactions.create') }}" class="inline-flex items-center gap-2 rounded-2xl bg-emerald-500 hover:bg-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-colors">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                     Tambah Transaksi Pertama
                 </a>
             </div>
