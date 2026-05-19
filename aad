@@ -1,0 +1,186 @@
+[33mcommit 528f2e943ea232c08d64f3ab6449d2e1485c2e01[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mdevelop[m[33m, [m[1;31morigin/develop[m[33m, [m[1;32mfitur-user-auth[m[33m)[m
+Merge: f001843 4aa831e
+Author: Mauritzz. <vshndrr@gmail.com>
+Date:   Sat May 16 18:50:49 2026 +0700
+
+    Merge pull request #2 from vshndrr-code/fitur-accounts-categories
+    
+    merge fitur akun dan kategori dari azriyad
+
+[33mcommit 4aa831e704e3b63c3f4c0fcefbd1c6b13be06f8e[m
+Author: azriyadrlubis <azriyadrlubis@gmail.com>
+Date:   Fri May 15 17:24:16 2026 +0700
+
+    nambahin navbar keren banget njir
+
+ app/Http/Controllers/AccountController.php |   9 [32m+[m
+ app/Providers/AppServiceProvider.php       |  27 [32m++[m[31m-[m
+ resources/css/app.css                      |   2 [32m+[m[31m-[m
+ resources/views/accounts/index.blade.php   | 296 [32m++++++++++[m[31m-------------------[m
+ resources/views/accounts/show.blade.php    |  79 [32m++++++++[m
+ resources/views/dashboard.blade.php        |  39 [32m+++[m[31m-[m
+ resources/views/layouts/app.blade.php      |  71 [32m++++++[m[31m-[m
+ routes/web.php                             |   4 [32m+[m[31m-[m
+ 8 files changed, 318 insertions(+), 209 deletions(-)
+
+[33mcommit 44babad4ba13fbbef1c81326a28feac264277297[m
+Author: azriyadrlubis <azriyadrlubis@gmail.com>
+Date:   Fri May 15 16:39:16 2026 +0700
+
+    menambahkan layout account dan category
+
+ app/Http/Controllers/AccountController.php         |  78 [32m+++++++[m
+ app/Http/Controllers/CategoryController.php        |  80 [32m+++++++[m
+ app/Models/Account.php                             |  22 [32m++[m
+ app/Models/Category.php                            |  11 [32m+[m[31m-[m
+ .../2026_05_15_000003_create_accounts_table.php    |  25 [32m+++[m
+ .../2026_05_15_000004_create_categories_table.php  |  26 [32m+++[m
+ database/seeders/AccountSeeder.php                 |  64 [32m++++++[m
+ database/seeders/CategorySeeder.php                |  76 [32m+++++++[m
+ database/seeders/DatabaseSeeder.php                |   2 [32m+[m
+ database/seeders/UserSeeder.php                    |  16 [32m+[m[31m-[m
+ package-lock.json                                  |   2 [32m+[m[31m-[m
+ resources/views/accounts/create.blade.php          |  60 [32m++++++[m
+ resources/views/accounts/edit.blade.php            |  61 [32m++++++[m
+ resources/views/accounts/index.blade.php           | 239 [32m+++++++++++++++++++++[m
+ resources/views/categories/create.blade.php        |  68 [32m++++++[m
+ resources/views/categories/edit.blade.php          |  69 [32m++++++[m
+ resources/views/categories/index.blade.php         | 140 [32m++++++++++++[m
+ resources/views/layouts/app.blade.php              |  12 [32m+[m[31m-[m
+ routes/web.php                                     |   5 [32m+[m
+ 19 files changed, 1041 insertions(+), 15 deletions(-)
+
+[33mcommit f00184341ab58308bbd901b3829b6bb7f4c2305c[m
+Author: vshndrr-code <vshndrr@gmail.com>
+Date:   Fri May 15 11:46:05 2026 +0700
+
+    Selesai setup Breeze, tabel user, dan seeder user
+
+ .../Auth/AuthenticatedSessionController.php        |   47 [32m+[m
+ .../Auth/ConfirmablePasswordController.php         |   40 [32m+[m
+ .../EmailVerificationNotificationController.php    |   24 [32m+[m
+ .../Auth/EmailVerificationPromptController.php     |   21 [32m+[m
+ .../Controllers/Auth/NewPasswordController.php     |   63 [32m+[m
+ app/Http/Controllers/Auth/PasswordController.php   |   29 [32m+[m
+ .../Auth/PasswordResetLinkController.php           |   45 [32m+[m
+ .../Controllers/Auth/RegisteredUserController.php  |   51 [32m+[m
+ .../Controllers/Auth/VerifyEmailController.php     |   27 [32m+[m
+ app/Http/Controllers/ProfileController.php         |   60 [32m+[m
+ app/Http/Requests/Auth/LoginRequest.php            |   86 [32m+[m
+ app/Http/Requests/ProfileUpdateRequest.php         |   31 [32m+[m
+ app/Models/Category.php                            |   10 [32m+[m
+ app/View/Components/AppLayout.php                  |   17 [32m+[m
+ app/View/Components/GuestLayout.php                |   17 [32m+[m
+ composer.json                                      |    1 [32m+[m
+ composer.lock                                      |   63 [32m+[m[31m-[m
+ database/seeders/DatabaseSeeder.php                |    7 [32m+[m[31m-[m
+ database/seeders/UserSeeder.php                    |   55 [32m+[m
+ package-lock.json                                  | 2986 [32m++++++++++++++++++++[m
+ package.json                                       |    9 [32m+[m[31m-[m
+ postcss.config.js                                  |    6 [32m+[m
+ resources/css/app.css                              |   14 [32m+[m[31m-[m
+ resources/js/app.js                                |    8 [32m+[m[31m-[m
+ resources/js/bootstrap.js                          |    5 [32m+[m
+ resources/views/auth/confirm-password.blade.php    |   27 [32m+[m
+ resources/views/auth/forgot-password.blade.php     |   25 [32m+[m
+ resources/views/auth/login.blade.php               |   47 [32m+[m
+ resources/views/auth/register.blade.php            |   52 [32m+[m
+ resources/views/auth/reset-password.blade.php      |   39 [32m+[m
+ resources/views/auth/verify-email.blade.php        |   31 [32m+[m
+ .../views/components/application-logo.blade.php    |    3 [32m+[m
+ .../views/components/auth-session-status.blade.php |    7 [32m+[m
+ resources/views/components/danger-button.blade.php |    3 [32m+[m
+ resources/views/components/dropdown-link.blade.php |    1 [32m+[m
+ resources/views/components/dropdown.blade.php      |   35 [32m+[m
+ resources/views/components/input-error.blade.php   |    9 [32m+[m
+ resources/views/components/input-label.blade.php   |    5 [32m+[m
+ resources/views/components/modal.blade.php         |   78 [32m+[m
+ resources/views/components/nav-link.blade.php      |   11 [32m+[m
+ .../views/components/primary-button.blade.php      |    3 [32m+[m
+ .../views/components/responsive-nav-link.blade.php |   11 [32m+[m
+ .../views/components/secondary-button.blade.php    |    3 [32m+[m
+ resources/views/components/text-input.blade.php    |    3 [32m+[m
+ resources/views/dashboard.blade.php                |   17 [32m+[m
+ resources/views/layouts/app.blade.php              |   97 [32m+[m
+ resources/views/layouts/guest.blade.php            |   30 [32m+[m
+ resources/views/layouts/navigation.blade.php       |  100 [32m+[m
+ resources/views/profile/edit.blade.php             |   29 [32m+[m
+ .../profile/partials/delete-user-form.blade.php    |   55 [32m+[m
+ .../partials/update-password-form.blade.php        |   48 [32m+[m
+ .../update-profile-information-form.blade.php      |   64 [32m+[m
+ routes/auth.php                                    |   59 [32m+[m
+ routes/web.php                                     |   13 [32m+[m
+ tailwind.config.js                                 |   21 [32m+[m
+ tests/Feature/Auth/AuthenticationTest.php          |   54 [32m+[m
+ tests/Feature/Auth/EmailVerificationTest.php       |   58 [32m+[m
+ tests/Feature/Auth/PasswordConfirmationTest.php    |   44 [32m+[m
+ tests/Feature/Auth/PasswordResetTest.php           |   73 [32m+[m
+ tests/Feature/Auth/PasswordUpdateTest.php          |   51 [32m+[m
+ tests/Feature/Auth/RegistrationTest.php            |   31 [32m+[m
+ tests/Feature/ProfileTest.php                      |   99 [32m+[m
+ vite.config.js                                     |   13 [31m-[m
+ 63 files changed, 5039 insertions(+), 32 deletions(-)
+
+[33mcommit bd0f07c89132e673fc016ae2ef66493689cbf306[m[33m ([m[1;31morigin/main[m[33m, [m[1;32mmain[m[33m)[m
+Author: vshndrr-code <vshndrr@gmail.com>
+Date:   Wed May 13 16:53:47 2026 +0700
+
+    moma
+
+ .editorconfig                                      |   18 [32m+[m
+ .env.example                                       |   65 [32m+[m
+ .gitattributes                                     |   11 [32m+[m
+ .gitignore                                         |   27 [32m+[m
+ .npmrc                                             |    2 [32m+[m
+ README.md                                          |   58 [32m+[m
+ app/Http/Controllers/Controller.php                |    8 [32m+[m
+ app/Models/User.php                                |   32 [32m+[m
+ app/Providers/AppServiceProvider.php               |   24 [32m+[m
+ artisan                                            |   18 [32m+[m
+ bootstrap/app.php                                  |   18 [32m+[m
+ bootstrap/cache/.gitignore                         |    2 [32m+[m
+ bootstrap/providers.php                            |    7 [32m+[m
+ composer.json                                      |   86 [32m+[m
+ composer.lock                                      | 8261 [32m++++++++++++++++++++[m
+ config/app.php                                     |  126 [32m+[m
+ config/auth.php                                    |  117 [32m+[m
+ config/cache.php                                   |  130 [32m+[m
+ config/database.php                                |  184 [32m+[m
+ config/filesystems.php                             |   80 [32m+[m
+ config/logging.php                                 |  132 [32m+[m
+ config/mail.php                                    |  118 [32m+[m
+ config/queue.php                                   |  129 [32m+[m
+ config/services.php                                |   38 [32m+[m
+ config/session.php                                 |  233 [32m+[m
+ database/.gitignore                                |    1 [32m+[m
+ database/factories/UserFactory.php                 |   45 [32m+[m
+ .../0001_01_01_000000_create_users_table.php       |   49 [32m+[m
+ .../0001_01_01_000001_create_cache_table.php       |   35 [32m+[m
+ .../0001_01_01_000002_create_jobs_table.php        |   57 [32m+[m
+ database/seeders/DatabaseSeeder.php                |   25 [32m+[m
+ package.json                                       |   16 [32m+[m
+ phpunit.xml                                        |   36 [32m+[m
+ public/.htaccess                                   |   25 [32m+[m
+ public/favicon.ico                                 |    0
+ public/index.php                                   |   20 [32m+[m
+ public/robots.txt                                  |    2 [32m+[m
+ resources/css/app.css                              |   11 [32m+[m
+ resources/js/app.js                                |    1 [32m+[m
+ resources/views/welcome.blade.php                  |  223 [32m+[m
+ routes/console.php                                 |    8 [32m+[m
+ routes/web.php                                     |    7 [32m+[m
+ storage/app/.gitignore                             |    4 [32m+[m
+ storage/app/private/.gitignore                     |    2 [32m+[m
+ storage/app/public/.gitignore                      |    2 [32m+[m
+ storage/framework/.gitignore                       |    9 [32m+[m
+ storage/framework/cache/.gitignore                 |    3 [32m+[m
+ storage/framework/cache/data/.gitignore            |    2 [32m+[m
+ storage/framework/sessions/.gitignore              |    2 [32m+[m
+ storage/framework/testing/.gitignore               |    2 [32m+[m
+ storage/framework/views/.gitignore                 |    2 [32m+[m
+ storage/logs/.gitignore                            |    2 [32m+[m
+ tests/Feature/ExampleTest.php                      |   19 [32m+[m
+ tests/TestCase.php                                 |   10 [32m+[m
+ tests/Unit/ExampleTest.php                         |   16 [32m+[m
+ vite.config.js                                     |   24 [32m+[m
+ 56 files changed, 10584 insertions(+)

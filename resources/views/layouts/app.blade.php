@@ -38,7 +38,7 @@
                         <span>Accounts</span>
                     </a>
 
-                    <a href="#" class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors">
+                    <a href="{{ route('transactions.index') }}" class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('transactions.*') ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100' }}">
                         <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z"></path>
                         </svg>
@@ -46,16 +46,24 @@
                     </a>
                 </nav>
 
-                <div class="absolute bottom-0 w-64 border-t px-4 py-4">
+                <div class="absolute bottom-0 w-64 border-t px-4 py-4 space-y-2 bg-white">
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit" class="w-full flex items-center px-4 py-2 rounded-lg text-red-700 hover:bg-red-50 transition-colors">
+                        <button type="submit" class="w-full flex items-center px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors">
                             <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 001 1h12a1 1 0 001-1V4a1 1 0 00-1-1H3zm11 4.414l-4.707 4.707a1 1 0 01-1.414-1.414L12.586 7H6a1 1 0 000 2h6.586l-4.707 4.707a1 1 0 001.414 1.414L14.414 9.414a1 1 0 000-1.414z" clip-rule="evenodd"></path>
                             </svg>
                             <span>Logout</span>
                         </button>
                     </form>
+                    <div x-data>
+                        <button x-on:click.prevent="$dispatch('open-modal', 'global-confirm-user-deletion')" class="w-full flex items-center px-4 py-2 rounded-lg text-red-600 hover:bg-red-50 transition-colors font-medium">
+                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                            <span>Delete Account</span>
+                        </button>
+                    </div>
                 </div>
             </aside>
 
@@ -143,10 +151,54 @@
                 </nav>
 
                 <!-- Page Content -->
-                <main class="flex-1 overflow-auto p-6">
-                    {{ $slot }}
+                <main class="flex-1 overflow-auto">
+                    @hasSection('content')
+                        @yield('content')
+                    @else
+                        {{ $slot }}
+                    @endif
                 </main>
             </div>
         </div>
+        </div>
+
+        <x-modal name="global-confirm-user-deletion" :show="$errors->userDeletion->isNotEmpty()" focusable>
+            <form method="post" action="{{ route('profile.destroy') }}" class="p-6">
+                @csrf
+                @method('delete')
+
+                <h2 class="text-lg font-medium text-gray-900">
+                    {{ __('Are you sure you want to delete your account?') }}
+                </h2>
+
+                <p class="mt-1 text-sm text-gray-600">
+                    {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.') }}
+                </p>
+
+                <div class="mt-6">
+                    <x-input-label for="global_password" value="{{ __('Password') }}" class="sr-only" />
+
+                    <x-text-input
+                        id="global_password"
+                        name="password"
+                        type="password"
+                        class="mt-1 block w-3/4"
+                        placeholder="{{ __('Password') }}"
+                    />
+
+                    <x-input-error :messages="$errors->userDeletion->get('password')" class="mt-2" />
+                </div>
+
+                <div class="mt-6 flex justify-end">
+                    <x-secondary-button x-on:click="$dispatch('close')">
+                        {{ __('Cancel') }}
+                    </x-secondary-button>
+
+                    <x-danger-button class="ms-3">
+                        {{ __('Delete Account') }}
+                    </x-danger-button>
+                </div>
+            </form>
+        </x-modal>
     </body>
 </html>
