@@ -3,12 +3,24 @@
 namespace App\Providers;
 
 use App\Models\Account;
+use App\Models\Transaction;
+use App\Models\Category;
+use App\Policies\AccountPolicy;
+use App\Policies\TransactionPolicy;
+use App\Policies\CategoryPolicy;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
+    protected $policies = [
+        Account::class => AccountPolicy::class,
+        Transaction::class => TransactionPolicy::class,
+        Category::class => CategoryPolicy::class,
+    ];
+
     /**
      * Register any application services.
      */
@@ -22,6 +34,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->registerPolicies();
+
         View::composer('layouts.app', function ($view) {
             if (Auth::check()) {
                 $accounts = Account::where('user_id', Auth::id())
@@ -45,5 +59,12 @@ class AppServiceProvider extends ServiceProvider
                 ]);
             }
         });
+    }
+
+    protected function registerPolicies(): void
+    {
+        foreach ($this->policies as $model => $policy) {
+            Gate::policy($model, $policy);
+        }
     }
 }

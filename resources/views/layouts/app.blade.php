@@ -38,7 +38,7 @@
                         <span>Accounts</span>
                     </a>
 
-                    <a href="#" class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors">
+                    <a href="{{ route('transactions.index') }}" class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('transactions.*') ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100' }}">
                         <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z"></path>
                         </svg>
@@ -143,8 +143,12 @@
                 </nav>
 
                 <!-- Page Content -->
-                <main class="flex-1 overflow-auto p-6">
-                    {{ $slot }}
+                <main class="flex-1 overflow-auto">
+                    @hasSection('content')
+                        @yield('content')
+                    @else
+                        {{ $slot }}
+                    @endif
                 </main>
             </div>
         </div>
