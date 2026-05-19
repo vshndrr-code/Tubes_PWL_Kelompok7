@@ -193,11 +193,14 @@
                             $style = $typeStyles[$account->type] ?? $typeStyles['other'];
                         @endphp
 
-                        <article class="relative overflow-hidden rounded-[30px] border border-white/70 bg-white/90 p-4 shadow-xl shadow-slate-900/5 ring-1 ring-slate-200/70 sm:p-5">
+                        <article class="group relative overflow-hidden rounded-[30px] border border-white/70 bg-white/90 p-4 shadow-xl shadow-slate-900/5 ring-1 ring-slate-200/70 transition-all duration-200 hover:border-slate-300 hover:bg-white hover:shadow-2xl hover:shadow-slate-900/10 sm:p-5">
+    <a href="{{ route('accounts.show', $account) }}"
+        class="absolute inset-0 z-0 rounded-[30px]"
+        aria-label="Lihat detail akun {{ $account->name }}"></a>
                             <div class="absolute inset-y-0 left-0 w-1.5 bg-gradient-to-b {{ $style['line'] }}"></div>
                             <div class="absolute -right-12 -top-12 h-32 w-32 rounded-full bg-gradient-to-br {{ $style['line'] }} opacity-10"></div>
 
-                            <div class="relative flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                            <div class="pointer-events-none relative z-10 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                                 <div class="flex min-w-0 flex-1 items-start gap-4 md:items-center">
                                     <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl {{ $style['icon'] }} ring-8 ring-slate-50">
                                         {!! $typeIcon !!}
@@ -232,7 +235,7 @@
                                         </p>
                                     </div>
 
-                                    <div class="mt-0 flex shrink-0 justify-end gap-2 md:mt-3">
+                                    <div class="pointer-events-auto mt-0 flex shrink-0 justify-end gap-2 md:mt-3">
                                         <a href="{{ route('accounts.edit', $account) }}"
                                             class="inline-flex h-10 items-center justify-center gap-2 rounded-full bg-white px-3 text-sm font-bold text-amber-600 shadow-sm ring-1 ring-slate-200 transition hover:bg-amber-50">
                                             <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
