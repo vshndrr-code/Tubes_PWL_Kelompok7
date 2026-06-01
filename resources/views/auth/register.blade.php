@@ -12,8 +12,19 @@
         <div class="w-full max-w-md">
             <!-- Logo & Header -->
             <div class="text-center mb-8 flex flex-col items-center">
-                <div class="w-16 h-16 bg-white rounded-3xl flex items-center justify-center shadow-sm border border-gray-100 mb-6">
-                    <span class="text-emerald-500 font-black text-3xl">M</span>
+                <div class="mb-6 flex flex-col items-center">
+                    <!-- Logo Icon -->
+                    <div class="flex items-center justify-center mb-3">
+                        <svg class="w-24 h-20" viewBox="0 0 320 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Arrow up-right (teal) -->
+                            <path d="M 80 120 L 140 80 L 160 40 L 180 60 L 150 100 L 200 100 L 200 130 L 140 130 L 170 160 L 150 180 Z" fill="#1ABC9C" />
+                            <!-- Wallet/Shield (dark blue) -->
+                            <rect x="80" y="140" width="70" height="60" rx="12" fill="#001E3C" />
+                            <circle cx="115" cy="175" r="6" fill="#1ABC9C" opacity="0.6" />
+                        </svg>
+                    </div>
+                    <h1 class="text-3xl font-bold text-gray-900">MOMA</h1>
+                    <p class="text-xs text-emerald-600 font-semibold tracking-wide">FINANCIAL TRACKER</p>
                 </div>
                 <h2 class="text-3xl font-bold text-gray-900 mb-2">Create an Account</h2>
                 <p class="text-gray-500">Set up your MOMA profile</p>
