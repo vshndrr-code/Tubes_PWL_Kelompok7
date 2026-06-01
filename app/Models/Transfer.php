@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Tabungan extends Model
+class Transfer extends Model
 {
     //
 }
