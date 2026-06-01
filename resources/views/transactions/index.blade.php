@@ -4,15 +4,21 @@
 <div class="bg-gradient-to-br from-blue-50 to-indigo-50 min-h-screen">
     <div class="max-w-6xl mx-auto px-4 py-8">
         <!-- Header -->
-        <div class="flex justify-between items-center mb-8">
-            <div>
-                <h1 class="text-4xl font-bold text-gray-800">Transaksi</h1>
-                <p class="text-gray-500 mt-1">Kelola semua transaksi keuangan Anda</p>
-            </div>
-            <a href="{{ route('transactions.create') }}" class="inline-flex items-center gap-2 rounded-2xl bg-emerald-500 hover:bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors">
-                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                Tambah Transaksi
-            </a>
+<div class="flex flex-col gap-4 md:flex-row md:justify-between md:items-center mb-8">
+                <div>
+                    <h1 class="text-4xl font-bold text-gray-800">Transaksi</h1>
+                    <p class="text-gray-500 mt-1">Kelola semua transaksi keuangan Anda</p>
+                </div>
+                <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+                    <a href="{{ route('budgets.index') }}" class="inline-flex items-center gap-2 rounded-2xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M6 12h12M9 17h6"/></svg>
+                        Budget
+                    </a>
+                    <a href="{{ route('transactions.create') }}" class="inline-flex items-center gap-2 rounded-2xl bg-emerald-500 hover:bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        Tambah Transaksi
+                    </a>
+                </div>
         </div>
 
         @if(session('success'))

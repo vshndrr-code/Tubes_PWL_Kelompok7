@@ -15,6 +15,15 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('monitoring.budgets')" :active="request()->routeIs('monitoring.budgets')">
+                        {{ __('Budgets') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('monitoring.savings-goals')" :active="request()->routeIs('monitoring.savings-goals')">
+                        {{ __('Goals') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('monitoring.notifications')" :active="request()->routeIs('monitoring.notifications')">
+                        {{ __('Notifications') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -76,6 +85,15 @@
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('monitoring.budgets')" :active="request()->routeIs('monitoring.budgets')">
+                {{ __('Budgets') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('monitoring.savings-goals')" :active="request()->routeIs('monitoring.savings-goals')">
+                {{ __('Goals') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('monitoring.notifications')" :active="request()->routeIs('monitoring.notifications')">
+                {{ __('Notifications') }}
             </x-responsive-nav-link>
         </div>
 

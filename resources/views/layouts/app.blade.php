@@ -57,6 +57,27 @@
                         </svg>
                         <span>Transactions</span>
                     </a>
+
+                    <a href="{{ route('budgets.index') }}" class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('budgets.*') ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100' }}">
+                        <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M5 4a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V6a2 2 0 00-2-2H5zm0 2h10v2H5V6zm0 4h6v2H5v-2z"></path>
+                        </svg>
+                        <span>Budgets</span>
+                    </a>
+
+                    <a href="{{ route('monitoring.notifications') }}" class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('monitoring.notifications') ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100' }}">
+                        <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 2a6 6 0 00-6 6v5H3a1 1 0 000 2h14a1 1 0 000-2h-1V8a6 6 0 00-6-6zM7 8a3 3 0 116 0v5H7V8z" />
+                        </svg>
+                        <span>Notifications</span>
+                    </a>
+
+                    <a href="{{ route('savings-goals.index') }}" class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('savings-goals.*') ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100' }}">
+                        <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M5 3a1 1 0 00-1 1v10a1 1 0 001 1h10a1 1 0 001-1V4a1 1 0 00-1-1H5zm1 2h8v2H6V5zm0 4h8v4H6V9z"></path>
+                        </svg>
+                        <span>Saving Goals</span>
+                    </a>
                 </nav>
 
                 <div class="absolute bottom-0 w-64 border-t px-4 py-4 space-y-2 bg-white">
