@@ -29,7 +29,9 @@ class TransactionController extends Controller
             ->with(['account', 'category'])
             ->get();
 
-        return view('transactions.index', compact('transactions', 'recurringTransactions'));
+        $accountBalance = Account::where('user_id', auth()->id())->sum('balance');
+
+        return view('transactions.index', compact('transactions', 'recurringTransactions', 'accountBalance'));
     }
 
     public function create()
