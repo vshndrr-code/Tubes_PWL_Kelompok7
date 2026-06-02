@@ -96,8 +96,9 @@
                     </div>
                     <div class="space-y-3">
                         @foreach($recurringTransactions as $recurring)
-                            <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-                                <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                            <div class="relative rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                                <div class="absolute inset-y-0 left-0 w-1 rounded-l-lg bg-gradient-to-b from-amber-500 to-orange-400"></div>
+                                <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between pl-4">
                                     <div class="flex items-center gap-4 flex-1">
                                         <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-50 text-orange-700">
                                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -155,9 +156,10 @@
 
             <!-- Transactions List -->
             <div class="space-y-3">
-                @foreach($transactions as $transaction)
-                    <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-slate-300 hover:shadow-md">
-                        <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                    @foreach($transactions as $transaction)
+                    <div class="relative rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-slate-300 hover:shadow-md">
+                        <div class="absolute inset-y-0 left-0 w-1 rounded-l-lg {{ $transaction->type === 'income' ? 'bg-gradient-to-b from-emerald-500 to-teal-400' : 'bg-gradient-to-b from-rose-500 to-red-400' }}"></div>
+                        <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between pl-4">
                             <div class="flex items-center gap-4 flex-1">
                                 <div class="flex h-12 w-12 items-center justify-center rounded-2xl {{ $transaction->type === 'income' ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700' }}">
                                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
