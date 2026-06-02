@@ -4,6 +4,9 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\BudgetingController;
+use App\Http\Controllers\SavingsGoalsController;
+use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -44,6 +47,10 @@ Route::middleware('auth')->group(function () {
     Route::patch('/accounts/{account}/pin', [AccountController::class, 'togglePin'])->name('accounts.pin');
     Route::patch('/accounts/{account}/archive', [AccountController::class, 'archive'])->name('accounts.archive');
     Route::patch('/accounts/{account}/restore', [AccountController::class, 'restore'])->name('accounts.restore');
+
+    Route::resource('budgetings', BudgetingController::class);
+    Route::resource('savings-goals', SavingsGoalsController::class);
+    Route::resource('notifications', NotificationController::class);
 });
 
 require __DIR__ . '/auth.php';
