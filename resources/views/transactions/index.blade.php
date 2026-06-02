@@ -30,7 +30,7 @@
                 @php
                     $totalIncome = $transactions->where('type', 'income')->sum('amount');
                     $totalExpense = $transactions->where('type', 'expense')->sum('amount');
-                    $balance = $totalIncome - $totalExpense;
+                    $totalBalance = \App\Models\Account::where('user_id', auth()->id())->sum('balance');
                 @endphp
                 
                 <div class="bg-white rounded-2xl p-6 shadow-md border-l-4 border-green-500">
@@ -61,14 +61,14 @@
                     </div>
                 </div>
 
-                <div class="bg-white rounded-2xl p-6 shadow-md border-l-4 {{ $balance >= 0 ? 'border-blue-500' : 'border-orange-500' }}">
+                <div class="bg-white rounded-2xl p-6 shadow-md border-l-4 {{ $totalBalance >= 0 ? 'border-blue-500' : 'border-orange-500' }}">
                     <div class="flex justify-between items-start">
                         <div>
                             <p class="text-gray-500 text-sm font-medium">Saldo</p>
-                            <p class="text-2xl font-bold {{ $balance >= 0 ? 'text-blue-600' : 'text-orange-600' }} mt-2">Rp{{ number_format($balance, 0, ',', '.') }}</p>
+                            <p class="text-2xl font-bold {{ $totalBalance >= 0 ? 'text-blue-600' : 'text-orange-600' }} mt-2">Rp{{ number_format($totalBalance, 0, ',', '.') }}</p>
                         </div>
-                        <div class="{{ $balance >= 0 ? 'bg-blue-100' : 'bg-orange-100' }} p-3 rounded-lg">
-                            <svg class="w-6 h-6 {{ $balance >= 0 ? 'text-blue-600' : 'text-orange-600' }}" fill="currentColor" viewBox="0 0 20 20">
+                        <div class="{{ $totalBalance >= 0 ? 'bg-blue-100' : 'bg-orange-100' }} p-3 rounded-lg">
+                            <svg class="w-6 h-6 {{ $totalBalance >= 0 ? 'text-blue-600' : 'text-orange-600' }}" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                             </svg>
                         </div>

@@ -8,6 +8,7 @@ use App\Models\Transaction;
 use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Requests\UpdateTransactionRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TransactionController extends Controller
 {
@@ -42,11 +43,24 @@ class TransactionController extends Controller
         $validated = $request->validated();
         $validated['user_id'] = auth()->id();
 
-        $transaction = Transaction::create($validated);
+        $transaction = DB::transaction(function () use ($validated, $request) {
+            $transaction = Transaction::create($validated);
 
-        if ($request->has('tags') && is_array($request->tags)) {
-            $transaction->tags()->sync($request->tags);
-        }
+            // Update saldo akun sesuai tipe transaksi
+            $account = Account::findOrFail($validated['account_id']);
+            if ($validated['type'] === 'income') {
+                $account->balance += $validated['amount'];
+            } else {
+                $account->balance -= $validated['amount'];
+            }
+            $account->save();
+
+            if ($request->has('tags') && is_array($request->tags)) {
+                $transaction->tags()->sync($request->tags);
+            }
+
+            return $transaction;
+        });
 
         return redirect()->route('transactions.index')
             ->with('success', 'Transaksi berhasil ditambahkan.');
@@ -83,11 +97,32 @@ class TransactionController extends Controller
 
         $validated = $request->validated();
 
-        $transaction->update($validated);
+        DB::transaction(function () use ($validated, $request, $transaction) {
+            // 1. Reverse efek transaksi lama pada akun lama
+            $oldAccount = Account::findOrFail($transaction->account_id);
+            if ($transaction->type === 'income') {
+                $oldAccount->balance -= $transaction->amount;
+            } else {
+                $oldAccount->balance += $transaction->amount;
+            }
+            $oldAccount->save();
 
-        if ($request->has('tags') && is_array($request->tags)) {
-            $transaction->tags()->sync($request->tags);
-        }
+            // 2. Update data transaksi
+            $transaction->update($validated);
+
+            // 3. Apply efek transaksi baru pada akun baru (bisa akun yang sama atau berbeda)
+            $newAccount = Account::findOrFail($validated['account_id']);
+            if ($validated['type'] === 'income') {
+                $newAccount->balance += $validated['amount'];
+            } else {
+                $newAccount->balance -= $validated['amount'];
+            }
+            $newAccount->save();
+
+            if ($request->has('tags') && is_array($request->tags)) {
+                $transaction->tags()->sync($request->tags);
+            }
+        });
 
         return redirect()->route('transactions.show', $transaction)
             ->with('success', 'Transaksi berhasil diperbarui.');
@@ -97,7 +132,18 @@ class TransactionController extends Controller
     {
         $this->authorize('delete', $transaction);
 
-        $transaction->delete();
+        DB::transaction(function () use ($transaction) {
+            // Reverse efek transaksi pada saldo akun
+            $account = Account::findOrFail($transaction->account_id);
+            if ($transaction->type === 'income') {
+                $account->balance -= $transaction->amount;
+            } else {
+                $account->balance += $transaction->amount;
+            }
+            $account->save();
+
+            $transaction->delete();
+        });
 
         return redirect()->route('transactions.index')
             ->with('success', 'Transaksi berhasil dihapus.');
