@@ -48,32 +48,14 @@
 <x-app-layout>
     <x-slot name="header">
         <div>
-        <div class="min-h-screen bg-[#f6f7f9] py-6 text-slate-900 sm:py-10">
-            <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-                <div class="mb-7 flex flex-col gap-4 border-b border-slate-200 pb-6 sm:flex-row sm:items-end sm:justify-between">
-                    <div>
-                        <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">Setup Dompet</p>
-                        <h1 class="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">Tambah Akun</h1>
-                        <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
-                            Tambahkan rekening, cash, kartu, atau e-wallet agar saldo lebih mudah dipantau.
-                        </p>
-                    </div>
+            <h2 class="text-xl font-semibold text-slate-950">Tambah Akun</h2>
+            <p class="mt-1 text-sm text-slate-500">Tambahkan rekening, cash, kartu, atau e-wallet agar saldo lebih mudah dipantau.</p>
+        </div>
+    </x-slot>
 
-                    <div class="py-8">
-                        <div class="mx-auto max-w-2xl sm:px-6 lg:px-8">
-                            <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-                                <div class="border-b border-gray-200 px-6 py-5">
-                                    <h3 class="text-lg font-semibold text-gray-900">Tambah Akun Baru</h3>
-                                    <p class="text-sm text-gray-500 mt-1">Buat akun baru untuk dompet atau rekening Anda.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <h3 class="text-lg font-semibold text-gray-900">Tambah Akun Baru</h3>
-                    <p class="text-sm text-gray-500 mt-1">Buat akun baru untuk dompet atau rekening Anda.</p>
->>>>>>> efc529de42cab2cae554cfbdb76cf5d3dbea835b
-                </div>
-
+    <div class="min-h-screen bg-[#f6f7f9] py-5 text-slate-900 sm:py-8">
+        <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+            <div class="mb-6 flex items-center">
                 <a href="{{ route('accounts.index') }}"
                     class="ui-button inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm hover:border-slate-300 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:ring-offset-2 focus:ring-offset-[#f6f7f9]">
                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -239,41 +221,6 @@
                         <p class="font-semibold text-slate-800">Tips kecil</p>
                         <p class="mt-2">Gunakan nama yang gampang dikenali, misalnya "Bank Mandiri Payroll" atau "Cash Harian".</p>
                         <p class="mt-2">Tipe akun yang tepat akan membuat ringkasan saldo dan filter transaksi lebih rapi.</p>
-
-                    <div class="grid gap-5 md:grid-cols-2">
-                        <div class="md:col-span-2">
-                            <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Nama Akun</label>
-                            <input id="name" name="name" value="{{ old('name') }}" required class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100" placeholder="Bank BCA, Cash, DANA" />
-                            @error('name')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
-                        </div>
-
-                        <div>
-                            <label for="type" class="block text-sm font-medium text-gray-700 mb-2">Tipe Akun</label>
-                            <select id="type" name="type" required class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm text-gray-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 appearance-none bg-white cursor-pointer">
-                                <option value="">Pilih tipe akun</option>
-                                <option value="cash" {{ old('type') == 'cash' ? 'selected' : '' }}>💵 Cash</option>
-                                <option value="bank" {{ old('type') == 'bank' ? 'selected' : '' }}>🏦 Bank</option>
-                                <option value="credit" {{ old('type') == 'credit' ? 'selected' : '' }}>💳 Kartu Kredit</option>
-                                <option value="other" {{ old('type') == 'other' ? 'selected' : '' }}>📱 E-wallet</option>
-                            </select>
-                            @error('type')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
-                        </div>
-
-                        <div>
-                            <label for="balance" class="block text-sm font-medium text-gray-700 mb-2">Saldo Awal (Rp)</label>
-                            <input id="balance" name="balance" type="number" step="0.01" min="0" value="{{ old('balance', '0.00') }}" required class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100" placeholder="1000000" />
-                            @error('balance')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
-                        </div>
-                    </div>
-
-                    <div class="flex flex-col gap-3 sm:flex-row sm:justify-end pt-5 border-t border-gray-200">
-                        <a href="{{ route('accounts.index') }}" class="inline-flex justify-center rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50">Batal</a>
-                        <button type="submit" class="inline-flex justify-center rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700">
-                            <svg class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                            </svg>
-                            Simpan Akun
-                        </button>
                     </div>
                 </aside>
             </div>
