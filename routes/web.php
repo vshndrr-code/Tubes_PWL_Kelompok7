@@ -28,6 +28,12 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::resource('accounts', AccountController::class);
+    Route::get('transactions/recurring', [TransactionController::class, 'createRecurring'])->name('transactions.createRecurring');
+    Route::post('transactions/recurring', [TransactionController::class, 'storeRecurring'])->name('transactions.storeRecurring');
+    Route::get('transactions/recurring/{recurringTransaction}', [TransactionController::class, 'showRecurring'])->name('transactions.showRecurring');
+    Route::get('transactions/recurring/{recurringTransaction}/edit', [TransactionController::class, 'editRecurring'])->name('transactions.editRecurring');
+    Route::put('transactions/recurring/{recurringTransaction}', [TransactionController::class, 'updateRecurring'])->name('transactions.updateRecurring');
+    Route::delete('transactions/recurring/{recurringTransaction}', [TransactionController::class, 'destroyRecurring'])->name('transactions.destroyRecurring');
     Route::resource('transactions', TransactionController::class);
     
     Route::get('accounts/{account}/transactions', [TransactionController::class, 'getByAccount'])->name('transactions.byAccount');

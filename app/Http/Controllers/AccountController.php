@@ -13,7 +13,8 @@ class AccountController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('accounts.index', compact('accounts'));
+        return view('accounts.index', compact('accounts'))
+            ->with('selectedAccount', null);
     }
 
     public function create()
@@ -42,14 +43,16 @@ class AccountController extends Controller
 
         session(['selected_account_id' => $account->id]);
 
-        return view('accounts.show', compact('account'));
+        return view('accounts.show', compact('account'))
+            ->with('selectedAccount', $account);
     }
 
     public function edit(Account $account)
     {
         $this->authorizeOwner($account);
 
-        return view('accounts.edit', compact('account'));
+        return view('accounts.edit', compact('account'))
+            ->with('selectedAccount', $account);
     }
 
     public function update(Request $request, Account $account)

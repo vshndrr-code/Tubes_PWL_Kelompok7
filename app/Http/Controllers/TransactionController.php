@@ -4,21 +4,32 @@ namespace App\Http\Controllers;
 
 use App\Models\Account;
 use App\Models\Category;
+use App\Models\RecurringTransaction;
 use App\Models\Transaction;
+use App\Http\Requests\StoreRecurringTransactionRequest;
 use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Requests\UpdateTransactionRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TransactionController extends Controller
 {
     public function index()
     {
+        // Process due recurring transactions
+        $this->processDueRecurringTransactions();
+
         $transactions = Transaction::where('user_id', auth()->id())
             ->with(['account', 'category', 'tags'])
             ->orderBy('transaction_date', 'desc')
             ->paginate(15);
 
-        return view('transactions.index', compact('transactions'));
+        $recurringTransactions = RecurringTransaction::where('user_id', auth()->id())
+            ->where('active', true)
+            ->with(['account', 'category'])
+            ->get();
+
+        return view('transactions.index', compact('transactions', 'recurringTransactions'));
     }
 
     public function create()
@@ -27,8 +38,12 @@ class TransactionController extends Controller
             ->orderBy('name')
             ->get();
 
-        $categories = Category::where('user_id', auth()->id())
-            ->orWhereNull('user_id')
+        $categories = Category::where(function($query) {
+            $query->where('user_id', auth()->id())
+                  ->orWhereNull('user_id');
+            })
+            ->distinct('name')
+            ->orderByRaw("(name = 'Lain-lain') ASC")
             ->orderBy('name')
             ->get();
 
@@ -37,16 +52,144 @@ class TransactionController extends Controller
         return view('transactions.create', compact('accounts', 'categories', 'tags'));
     }
 
+    public function createRecurring()
+    {
+        return view('transactions.create-recurring');
+    }
+
+    public function storeRecurring(StoreRecurringTransactionRequest $request)
+    {
+        $account = Account::where('user_id', auth()->id())->orderBy('name')->first();
+
+        if (! $account) {
+            return redirect()->route('transactions.index')
+                ->with('error', 'Tambahkan akun terlebih dahulu sebelum membuat recurring transaction.');
+        }
+
+        $category = Category::where(function($query) {
+            $query->where('user_id', auth()->id())
+                  ->orWhereNull('user_id');
+            })
+            ->distinct('name')
+            ->orderByRaw("(name = 'Lain-lain') ASC")
+            ->orderBy('name')
+            ->first();
+
+        $validated = $request->validated();
+        $startDate = \Carbon\Carbon::parse($validated['start_date'])->startOfDay();
+
+        DB::transaction(function () use ($validated, $account, $category, $startDate, &$recurringTransaction) {
+            $recurringTransaction = RecurringTransaction::create([
+                'user_id' => auth()->id(),
+                'account_id' => $account->id,
+                'category_id' => $category ? $category->id : null,
+                'type' => 'expense',
+                'title' => $validated['title'],
+                'description' => $validated['description'] ?? null,
+                'amount' => $validated['amount'],
+                'frequency' => $validated['recurring_frequency'],
+                'interval' => 1,
+                'start_date' => $startDate,
+                'end_date' => null,
+                'next_occurrence_date' => $startDate,
+                'active' => true,
+            ]);
+        });
+
+        return redirect()->route('transactions.index')
+            ->with('success', 'Recurring transaction berhasil dibuat. Saldo akan otomatis berkurang mulai tanggal ' . $startDate->format('d M Y') . '.');
+    }
+
+    public function showRecurring(RecurringTransaction $recurringTransaction)
+    {
+        if ($recurringTransaction->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        return view('transactions.show-recurring', compact('recurringTransaction'));
+    }
+
+    public function editRecurring(RecurringTransaction $recurringTransaction)
+    {
+        if ($recurringTransaction->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        return view('transactions.edit-recurring', compact('recurringTransaction'));
+    }
+
+    public function updateRecurring(StoreRecurringTransactionRequest $request, RecurringTransaction $recurringTransaction)
+    {
+        if ($recurringTransaction->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $validated = $request->validated();
+        $startDate = \Carbon\Carbon::parse($validated['start_date'])->startOfDay();
+
+        $recurringTransaction->update([
+            'title' => $validated['title'],
+            'description' => $validated['description'] ?? null,
+            'amount' => $validated['amount'],
+            'frequency' => $validated['recurring_frequency'],
+            'start_date' => $startDate,
+        ]);
+
+        return redirect()->route('transactions.index')
+            ->with('success', 'Recurring transaction berhasil diperbarui.');
+    }
+
+    public function destroyRecurring(RecurringTransaction $recurringTransaction)
+    {
+        if ($recurringTransaction->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $title = $recurringTransaction->title;
+        $recurringTransaction->delete();
+
+        return redirect()->route('transactions.index')
+            ->with('success', 'Recurring transaction "' . $title . '" berhasil dihapus.');
+    }
+
+    private function createRecurringTransactionOccurrence(RecurringTransaction $recurringTransaction): void
+    {
+        $transaction = Transaction::create([
+            'user_id' => $recurringTransaction->user_id,
+            'account_id' => $recurringTransaction->account_id,
+            'category_id' => $recurringTransaction->category_id,
+            'type' => $recurringTransaction->type,
+            'title' => $recurringTransaction->title,
+            'description' => $recurringTransaction->description,
+            'amount' => $recurringTransaction->amount,
+            'transaction_date' => $recurringTransaction->next_occurrence_date,
+        ]);
+
+        if ($recurringTransaction->tags->isNotEmpty()) {
+            $transaction->tags()->sync($recurringTransaction->tags->pluck('id')->toArray());
+        }
+
+        $account = $transaction->account;
+        if ($transaction->type === 'income') {
+            $account->increment('balance', $transaction->amount);
+        } else {
+            $account->decrement('balance', $transaction->amount);
+        }
+    }
+
     public function store(StoreTransactionRequest $request)
     {
         $validated = $request->validated();
         $validated['user_id'] = auth()->id();
 
-        $transaction = Transaction::create($validated);
+        DB::transaction(function () use ($validated, $request, &$transaction) {
+            $transaction = Transaction::create($validated);
+            $this->applyTransactionBalance($transaction);
 
-        if ($request->has('tags') && is_array($request->tags)) {
-            $transaction->tags()->sync($request->tags);
-        }
+            if ($request->has('tags') && is_array($request->tags)) {
+                $transaction->tags()->sync($request->tags);
+            }
+        });
 
         return redirect()->route('transactions.index')
             ->with('success', 'Transaksi berhasil ditambahkan.');
@@ -67,8 +210,12 @@ class TransactionController extends Controller
             ->orderBy('name')
             ->get();
 
-        $categories = Category::where('user_id', auth()->id())
-            ->orWhereNull('user_id')
+        $categories = Category::where(function($query) {
+            $query->where('user_id', auth()->id())
+                  ->orWhereNull('user_id');
+            })
+            ->distinct('name')
+            ->orderByRaw("(name = 'Lain-lain') ASC")
             ->orderBy('name')
             ->get();
 
@@ -83,11 +230,16 @@ class TransactionController extends Controller
 
         $validated = $request->validated();
 
-        $transaction->update($validated);
+        DB::transaction(function () use ($validated, $request, $transaction) {
+            $this->reverseTransactionBalance($transaction);
 
-        if ($request->has('tags') && is_array($request->tags)) {
-            $transaction->tags()->sync($request->tags);
-        }
+            $transaction->update($validated);
+            $this->applyTransactionBalance($transaction);
+
+            if ($request->has('tags') && is_array($request->tags)) {
+                $transaction->tags()->sync($request->tags);
+            }
+        });
 
         return redirect()->route('transactions.show', $transaction)
             ->with('success', 'Transaksi berhasil diperbarui.');
@@ -97,10 +249,35 @@ class TransactionController extends Controller
     {
         $this->authorize('delete', $transaction);
 
-        $transaction->delete();
+        DB::transaction(function () use ($transaction) {
+            $this->reverseTransactionBalance($transaction);
+            $transaction->delete();
+        });
 
         return redirect()->route('transactions.index')
             ->with('success', 'Transaksi berhasil dihapus.');
+    }
+
+    private function applyTransactionBalance(Transaction $transaction): void
+    {
+        $account = $transaction->account;
+
+        if ($transaction->type === 'income') {
+            $account->increment('balance', $transaction->amount);
+        } else {
+            $account->decrement('balance', $transaction->amount);
+        }
+    }
+
+    private function reverseTransactionBalance(Transaction $transaction): void
+    {
+        $account = $transaction->account;
+
+        if ($transaction->type === 'income') {
+            $account->decrement('balance', $transaction->amount);
+        } else {
+            $account->increment('balance', $transaction->amount);
+        }
     }
 
     public function getByAccount(Account $account)
@@ -126,5 +303,23 @@ class TransactionController extends Controller
             ->get();
 
         return response()->json($transactions);
+    }
+
+    private function processDueRecurringTransactions(): void
+    {
+        $recurringTransactions = RecurringTransaction::with('tags')
+            ->where('user_id', auth()->id())
+            ->where('active', true)
+            ->whereDate('next_occurrence_date', '<=', now()->startOfDay())
+            ->get();
+
+        foreach ($recurringTransactions as $recurringTransaction) {
+            while ($recurringTransaction->isDue()) {
+                DB::transaction(function () use ($recurringTransaction) {
+                    $this->createRecurringTransactionOccurrence($recurringTransaction);
+                    $recurringTransaction->scheduleNextOccurrence();
+                });
+            }
+        }
     }
 }

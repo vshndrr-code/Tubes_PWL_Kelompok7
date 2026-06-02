@@ -37,6 +37,7 @@
                 </div>
             </div>
 
+
             <div class="rounded-3xl border border-dashed border-slate-200 bg-slate-50 p-10 text-center shadow-sm">
                 <div class="text-5xl leading-none text-slate-500">^ ^</div>
                 <p class="mt-4 text-sm font-medium text-slate-600">No transactions</p>
