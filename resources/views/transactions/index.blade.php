@@ -36,7 +36,7 @@
                 @php
                     $totalIncome = $transactions->where('type', 'income')->sum('amount');
                     $totalExpense = $transactions->where('type', 'expense')->sum('amount');
-                    $balance = $totalIncome - $totalExpense;
+                    $balance = $accountBalance;
                 @endphp
                 
                 <div class="bg-white rounded-2xl p-6 shadow-md border-l-4 border-green-500">

@@ -18,9 +18,10 @@ class Account extends Model
         'balance',
     ];
 
-    protected $casts = [
-        'balance' => 'decimal:2',
-    ];
+protected $casts = [
+    'is_pinned' => 'boolean',
+    'archived_at' => 'datetime',
+];
 
     public function user(): BelongsTo
     {
@@ -31,4 +32,5 @@ class Account extends Model
     {
         return $this->hasMany(Transaction::class);
     }
+
 }

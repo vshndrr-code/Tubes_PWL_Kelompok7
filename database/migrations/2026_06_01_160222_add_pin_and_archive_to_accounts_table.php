@@ -1,0 +1,26 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+public function up(): void
+{
+    Schema::table('accounts', function (Blueprint $table) {
+        $table->boolean('is_pinned')->default(false)->after('type');
+        $table->timestamp('archived_at')->nullable()->after('is_pinned');
+    });
+}
+
+public function down(): void
+{
+    Schema::table('accounts', function (Blueprint $table) {
+        $table->dropColumn(['is_pinned', 'archived_at']);
+    });
+}
+};
