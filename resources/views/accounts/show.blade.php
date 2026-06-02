@@ -9,7 +9,7 @@
                 <a href="{{ route('accounts.edit', $account) }}" class="inline-flex items-center gap-2 rounded-2xl border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">
                     Edit Akun
                 </a>
-                <a href="{{ route('accounts.index') }}" class="inline-flex items-center gap-2 rounded-2xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/10 transition hover:bg-blue-700">
+                <a href="{{ route('accounts.index') }}" class="inline-flex items-center gap-2 rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/10 transition hover:bg-emerald-700">
                     Semua Akun
                 </a>
             </div>
@@ -47,7 +47,7 @@
                             <p class="text-xs uppercase tracking-[0.24em] text-slate-500">Ringkasan</p>
                             <h3 class="mt-2 text-xl font-semibold text-slate-900">Transaksi terbaru</h3>
                         </div>
-                        <a href="#" class="text-sm font-semibold text-blue-600 hover:text-blue-700">Lihat semua</a>
+                        <a href="#" class="text-sm font-semibold text-emerald-600 hover:text-emerald-700">Lihat semua</a>
                     </div>
 
                     <div class="mt-8 rounded-3xl border border-dashed border-slate-200 bg-slate-50 p-10 text-center text-slate-500">
@@ -63,7 +63,7 @@
                         <p class="text-xs uppercase tracking-[0.24em] text-slate-500">Aksi cepat</p>
                         <h3 class="mt-2 text-xl font-semibold text-slate-900">Tambah transaksi atau pindah akun</h3>
                     </div>
-                    <a href="{{ route('accounts.create') }}" class="inline-flex items-center gap-2 rounded-2xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-700">Tambah Akun</a>
+                    <a href="{{ route('accounts.create') }}" class="inline-flex items-center gap-2 rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700">Tambah Akun</a>
                 </div>
                 <div class="mt-6 grid gap-4 sm:grid-cols-2">
                     <div class="rounded-3xl bg-slate-50 p-5 text-center">

@@ -57,6 +57,7 @@
                         </svg>
                         <span>Transactions</span>
                     </a>
+
                 </nav>
 
                 <div class="absolute bottom-0 w-64 border-t px-4 py-4 space-y-2 bg-white">

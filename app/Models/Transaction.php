@@ -27,6 +27,56 @@ class Transaction extends Model
         'transaction_date' => 'date',
     ];
 
+    protected static function booted()
+    {
+        static::created(function ($transaction) {
+            $account = $transaction->account;
+            if ($account) {
+                if ($transaction->type === 'income') {
+                    $account->increment('balance', $transaction->amount);
+                } else {
+                    $account->decrement('balance', $transaction->amount);
+                }
+            }
+        });
+
+        static::updating(function ($transaction) {
+            // Reverse original transaction values
+            $original = $transaction->getOriginal();
+            $oldAccount = Account::find($original['account_id']);
+            if ($oldAccount) {
+                if ($original['type'] === 'income') {
+                    $oldAccount->decrement('balance', $original['amount']);
+                } else {
+                    $oldAccount->increment('balance', $original['amount']);
+                }
+            }
+        });
+
+        static::updated(function ($transaction) {
+            // Apply new transaction values
+            $account = $transaction->account;
+            if ($account) {
+                if ($transaction->type === 'income') {
+                    $account->increment('balance', $transaction->amount);
+                } else {
+                    $account->decrement('balance', $transaction->amount);
+                }
+            }
+        });
+
+        static::deleted(function ($transaction) {
+            $account = $transaction->account;
+            if ($account) {
+                if ($transaction->type === 'income') {
+                    $account->decrement('balance', $transaction->amount);
+                } else {
+                    $account->increment('balance', $transaction->amount);
+                }
+            }
+        });
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
