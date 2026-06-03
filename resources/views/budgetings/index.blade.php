@@ -113,8 +113,13 @@
                     <td class="p-4">
                         {{ $budget->year }}
                     </td>
-                    <td class="p-4 text-center">
+                    <td class="p-4 text-center space-x-2">
                         <a href="{{ route('budgetings.edit',$budget->id) }}" class="text-blue-500">Edit</a>
+                        <form action="{{ route('budgetings.destroy', $budget->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Yakin ingin menghapus budget ini?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="text-red-500 hover:text-red-700">Delete</button>
+                        </form>
                     </td>
                 </tr>
                 @empty
