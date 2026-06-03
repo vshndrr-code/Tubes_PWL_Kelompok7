@@ -1,47 +1,299 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
+@extends('layouts.app')
 
-    <div class="py-8">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="overflow-hidden rounded-3xl border border-yellow-200 bg-yellow-100 shadow-sm">
-                <div class="px-6 py-6 sm:flex sm:items-center sm:justify-between gap-6">
-                    <div>
-                        <p class="text-sm font-semibold uppercase tracking-[0.24em] text-yellow-900">Upgrade once, use lifetime</p>
-                        <h2 class="mt-3 text-2xl font-semibold text-slate-900">Unlock premium features for smarter money tracking</h2>
-                        <p class="mt-4 max-w-2xl text-sm leading-6 text-yellow-900/90">
-                            Upgrading to PREMIUM helps you eliminate any barriers and difficulties in managing your cash flow, monthly budget, or future goals. Just one payment and it's yours.
-                        </p>
-                    </div>
-                    <a href="#" class="inline-flex items-center justify-center rounded-3xl bg-yellow-200 px-6 py-4 text-sm font-semibold text-yellow-950 transition hover:bg-yellow-300">
-                        Go PREMIUM
+@push('head')
+<style>
+    @keyframes soft-enter {
+        from {
+            opacity: 0;
+            transform: translateY(8px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .ui-reveal {
+            animation: soft-enter .42s ease-out both;
+        }
+
+        .ui-card,
+        .ui-button {
+            transition:
+                transform .18s ease,
+                box-shadow .18s ease,
+                border-color .18s ease,
+                background-color .18s ease,
+                color .18s ease;
+        }
+
+        .ui-card:hover,
+        .ui-button:hover {
+            transform: translateY(-2px);
+        }
+    }
+</style>
+@endpush
+
+@section('content')
+    <div class="min-h-screen bg-[#f6f7f9] text-slate-900">
+        <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-10 lg:px-8">
+            @php
+                $accountItems =
+                    isset($accounts) && $accounts instanceof \Illuminate\Pagination\AbstractPaginator
+                        ? $accounts->getCollection()
+                        : collect($accounts ?? []);
+
+                $transactionItems =
+                    isset($transactions) && $transactions instanceof \Illuminate\Pagination\AbstractPaginator
+                        ? $transactions->getCollection()
+                        : collect($transactions ?? []);
+
+                $recentItems = collect($recentTransactions ?? $transactionItems)->take(6);
+                $budgetItems = collect($budgetings ?? $budgets ?? []);
+
+                $totalBalance = $totalBalance ?? $accountBalance ?? $accountItems->sum('balance');
+                $monthlyIncome = $monthlyIncome ?? $currentMonthIncome ?? $transactionItems->where('type', 'income')->sum('amount');
+                $monthlyExpense = $monthlyExpense ?? $currentMonthExpense ?? $transactionItems->where('type', 'expense')->sum('amount');
+                $netCashflow = $monthlyIncome - $monthlyExpense;
+                $accountCount = $accountCount ?? $accountItems->count();
+                $transactionCount = $transactionCount ?? $transactionItems->count();
+                $budgetLimit = $budgetLimit ?? $totalBudget ?? $budgetItems->sum('limit_amount');
+                $budgetProgress = $budgetLimit > 0 ? min(($monthlyExpense / $budgetLimit) * 100, 100) : 0;
+                $latestTransaction = $recentItems->first();
+
+                $transactionsIndexUrl = \Illuminate\Support\Facades\Route::has('transactions.index') ? route('transactions.index') : '#';
+                $transactionsCreateUrl = \Illuminate\Support\Facades\Route::has('transactions.create') ? route('transactions.create') : '#';
+                $accountsIndexUrl = \Illuminate\Support\Facades\Route::has('accounts.index') ? route('accounts.index') : '#';
+                $accountsCreateUrl = \Illuminate\Support\Facades\Route::has('accounts.create') ? route('accounts.create') : '#';
+                $budgetUrl = \Illuminate\Support\Facades\Route::has('budgetings.index') ? route('budgetings.index') : '#';
+            @endphp
+
+            <div class="mb-7 flex flex-col gap-4 border-b border-slate-200 pb-6 lg:flex-row lg:items-end lg:justify-between">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">Dashboard Keuangan</p>
+                    <h1 class="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">Ringkasan Hari Ini</h1>
+                    <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
+                        Pantau saldo, arus kas bulanan, budget, dan aktivitas terbaru dalam satu tampilan.
+                    </p>
+                </div>
+
+                <div class="flex w-full flex-col gap-2 sm:flex-row lg:w-auto">
+                    <a href="{{ $transactionsIndexUrl }}"
+                        class="ui-button inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm hover:border-slate-300 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:ring-offset-2 focus:ring-offset-[#f6f7f9]">
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 6h16" />
+                            <path d="M4 12h10" />
+                            <path d="M4 18h7" />
+                        </svg>
+                        Riwayat
+                    </a>
+
+                    <a href="{{ $transactionsCreateUrl }}"
+                        class="ui-button inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 text-sm font-semibold text-white shadow-sm shadow-emerald-700/15 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-[#f6f7f9]">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 4v16m8-8H4" />
+                        </svg>
+                        Tambah Transaksi
                     </a>
                 </div>
             </div>
 
-            <div class="grid gap-6 xl:grid-cols-3">
-                <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                    <p class="text-xs uppercase tracking-[0.24em] text-slate-500">Last Month</p>
-                    <p class="mt-4 text-3xl font-semibold text-slate-900">Rp 0</p>
-                </div>
-                <div class="rounded-3xl border border-blue-100 bg-white p-6 shadow-sm ring-1 ring-blue-100">
-                    <p class="text-xs uppercase tracking-[0.24em] text-blue-500">This Month</p>
-                    <p class="mt-4 text-3xl font-semibold text-slate-900">Rp 0</p>
-                </div>
-                <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                    <p class="text-xs uppercase tracking-[0.24em] text-slate-500">Future</p>
-                    <p class="mt-4 text-3xl font-semibold text-slate-900">Rp 0</p>
+            <div class="mb-5 grid gap-4 lg:grid-cols-[1.45fr_0.55fr]">
+                <section class="ui-reveal overflow-hidden rounded-lg bg-slate-950 p-6 text-white shadow-lg shadow-slate-900/10">
+                    <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+                        <div>
+                            <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Total Saldo</p>
+                            <p class="mt-3 text-3xl font-bold tracking-tight sm:text-5xl">
+                                {{ $totalBalance < 0 ? '-Rp' : 'Rp' }}{{ number_format(abs($totalBalance), 0, ',', '.') }}
+                            </p>
+                        </div>
+
+                        <div class="rounded-lg border border-white/10 bg-white/[0.06] px-4 py-3">
+                            <p class="text-xs text-slate-400">Update terakhir</p>
+                            <p class="mt-1 text-sm font-semibold text-white">
+                                {{ optional(optional($latestTransaction)->transaction_date)->format('d M Y') ?? now()->format('d M Y') }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mt-7 grid gap-3 sm:grid-cols-3">
+                        <div class="rounded-lg border border-white/10 bg-white/[0.06] p-4">
+                            <p class="text-xs text-slate-400">Pemasukan bulan ini</p>
+                            <p class="mt-2 text-lg font-bold text-emerald-300">
+                                Rp{{ number_format($monthlyIncome, 0, ',', '.') }}
+                            </p>
+                        </div>
+
+                        <div class="rounded-lg border border-white/10 bg-white/[0.06] p-4">
+                            <p class="text-xs text-slate-400">Pengeluaran bulan ini</p>
+                            <p class="mt-2 text-lg font-bold text-rose-300">
+                                Rp{{ number_format($monthlyExpense, 0, ',', '.') }}
+                            </p>
+                        </div>
+
+                        <div class="rounded-lg border border-white/10 bg-white/[0.06] p-4">
+                            <p class="text-xs text-slate-400">Net cashflow</p>
+                            <p class="mt-2 text-lg font-bold {{ $netCashflow < 0 ? 'text-rose-300' : 'text-emerald-300' }}">
+                                {{ $netCashflow < 0 ? '-Rp' : 'Rp' }}{{ number_format(abs($netCashflow), 0, ',', '.') }}
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+                    <div class="ui-card rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+                        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Akun</p>
+                        <p class="mt-3 text-3xl font-bold text-slate-950">{{ $accountCount }}</p>
+                        <p class="mt-1 text-sm text-slate-500">Dompet dan rekening aktif.</p>
+                    </div>
+
+                    <div class="ui-card rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+                        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Transaksi</p>
+                        <p class="mt-3 text-3xl font-bold text-slate-950">{{ $transactionCount }}</p>
+                        <p class="mt-1 text-sm text-slate-500">Aktivitas yang tercatat.</p>
+                    </div>
                 </div>
             </div>
 
+            <div class="mb-5 grid gap-4 md:grid-cols-3">
+                <div class="ui-card rounded-lg border border-emerald-100 bg-emerald-50 p-5 shadow-sm">
+                    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">Pemasukan</p>
+                    <p class="mt-3 text-2xl font-bold text-emerald-800">Rp{{ number_format($monthlyIncome, 0, ',', '.') }}</p>
+                </div>
 
-            <div class="rounded-3xl border border-dashed border-slate-200 bg-slate-50 p-10 text-center shadow-sm">
-                <div class="text-5xl leading-none text-slate-500">^ ^</div>
-                <p class="mt-4 text-sm font-medium text-slate-600">No transactions</p>
+                <div class="ui-card rounded-lg border border-rose-100 bg-rose-50 p-5 shadow-sm">
+                    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-rose-700">Pengeluaran</p>
+                    <p class="mt-3 text-2xl font-bold text-rose-800">Rp{{ number_format($monthlyExpense, 0, ',', '.') }}</p>
+                </div>
+
+                <div class="ui-card rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+                    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Budget Terpakai</p>
+                    <div class="mt-4 flex items-center justify-between gap-4 text-sm">
+                        <span class="font-medium text-slate-500">Rp{{ number_format($monthlyExpense, 0, ',', '.') }}</span>
+                        <span class="font-semibold text-slate-700">{{ number_format($budgetProgress, 0) }}%</span>
+                    </div>
+                    <div class="mt-3 h-2.5 overflow-hidden rounded-full bg-slate-100">
+                        <div class="h-full rounded-full {{ $budgetProgress >= 100 ? 'bg-rose-500' : ($budgetProgress >= 80 ? 'bg-amber-500' : 'bg-emerald-500') }}"
+                            style="width: {{ $budgetProgress }}%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid gap-5 lg:grid-cols-[minmax(0,1fr)_360px]">
+                <section class="rounded-lg border border-slate-200 bg-white shadow-sm">
+                    <div class="flex flex-col gap-3 border-b border-slate-200 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+                        <div>
+                            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Aktivitas Terbaru</p>
+                            <h2 class="mt-1 text-lg font-semibold text-slate-950">Transaksi terakhir</h2>
+                        </div>
+
+                        <a href="{{ $transactionsIndexUrl }}" class="text-sm font-semibold text-sky-700 hover:text-sky-800">
+                            Lihat semua
+                        </a>
+                    </div>
+
+                    @if ($recentItems->isEmpty())
+                        <div class="p-10 text-center">
+                            <div class="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-lg bg-slate-100 text-slate-400">
+                                <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                                        d="M4 6h16M4 12h10M4 18h7" />
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-semibold text-slate-950">Belum ada transaksi</h3>
+                            <p class="mt-2 text-sm text-slate-500">Mulai catat transaksi pertama untuk melihat aktivitas di dashboard.</p>
+                            <a href="{{ $transactionsCreateUrl }}"
+                                class="ui-button mt-6 inline-flex h-11 items-center justify-center rounded-lg bg-emerald-600 px-5 text-sm font-semibold text-white shadow-sm shadow-emerald-700/15 hover:bg-emerald-700">
+                                Tambah Transaksi
+                            </a>
+                        </div>
+                    @else
+                        <div class="divide-y divide-slate-100">
+                            @foreach ($recentItems as $transaction)
+                                @php
+                                    $isIncome = $transaction->type === 'income';
+                                @endphp
+
+                                <div class="flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+                                    <div class="flex min-w-0 items-center gap-3">
+                                        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ring-1 {{ $isIncome ? 'bg-emerald-50 text-emerald-700 ring-emerald-100' : 'bg-rose-50 text-rose-700 ring-rose-100' }}">
+                                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                                @if ($isIncome)
+                                                    <path d="M12 19V5" />
+                                                    <path d="m5 12 7-7 7 7" />
+                                                @else
+                                                    <path d="M12 5v14" />
+                                                    <path d="m19 12-7 7-7-7" />
+                                                @endif
+                                            </svg>
+                                        </div>
+
+                                        <div class="min-w-0">
+                                            <p class="truncate font-semibold text-slate-950">{{ $transaction->title }}</p>
+                                            <p class="mt-1 text-xs text-slate-500">
+                                                {{ optional($transaction->account)->name ?? '-' }} /
+                                                {{ optional($transaction->transaction_date)->format('d M Y') ?? '-' }}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <p class="whitespace-nowrap text-sm font-bold {{ $isIncome ? 'text-emerald-700' : 'text-rose-700' }}">
+                                        {{ $isIncome ? '+Rp' : '-Rp' }}{{ number_format($transaction->amount, 0, ',', '.') }}
+                                    </p>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+                </section>
+
+                <aside class="space-y-5">
+                    <section class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Aksi Cepat</p>
+                        <div class="mt-4 grid gap-2">
+                            <a href="{{ $transactionsCreateUrl }}"
+                                class="ui-button inline-flex h-11 items-center justify-center rounded-lg bg-emerald-600 px-4 text-sm font-semibold text-white shadow-sm shadow-emerald-700/15 hover:bg-emerald-700">
+                                Tambah Transaksi
+                            </a>
+                            <a href="{{ $accountsIndexUrl }}"
+                                class="ui-button inline-flex h-11 items-center justify-center rounded-lg border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm hover:border-slate-300 hover:bg-slate-50">
+                                Kelola Akun
+                            </a>
+                            <a href="{{ $budgetUrl }}"
+                                class="ui-button inline-flex h-11 items-center justify-center rounded-lg border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm hover:border-slate-300 hover:bg-slate-50">
+                                Kelola Budget
+                            </a>
+                        </div>
+                    </section>
+
+                    <section class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Akun Teratas</p>
+                        <div class="mt-4 space-y-3">
+                            @forelse ($accountItems->sortByDesc('balance')->take(3) as $account)
+                                <div class="flex items-center justify-between gap-3">
+                                    <div class="min-w-0">
+                                        <p class="truncate text-sm font-semibold text-slate-950">{{ $account->name }}</p>
+                                        <p class="mt-1 text-xs text-slate-500">{{ ucfirst($account->type ?? '-') }}</p>
+                                    </div>
+                                    <p class="whitespace-nowrap text-sm font-bold {{ $account->balance < 0 ? 'text-rose-700' : 'text-slate-950' }}">
+                                        {{ $account->balance < 0 ? '-Rp' : 'Rp' }}{{ number_format(abs($account->balance), 0, ',', '.') }}
+                                    </p>
+                                </div>
+                            @empty
+                                <p class="text-sm text-slate-500">Belum ada akun.</p>
+                                <a href="{{ $accountsCreateUrl }}" class="mt-3 inline-flex text-sm font-semibold text-sky-700 hover:text-sky-800">
+                                    Tambah akun
+                                </a>
+                            @endforelse
+                        </div>
+                    </section>
+                </aside>
             </div>
         </div>
     </div>
-</x-app-layout>
+@endsection

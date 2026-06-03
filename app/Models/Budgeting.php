@@ -29,4 +29,13 @@ class Budgeting extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
+         public function getSpentAmountAttribute()
+    {
+        return \App\Models\Transaction::where('user_id', $this->user_id)
+            ->where('category_id', $this->category_id)
+            ->whereMonth('transaction_date', $this->month) // Diubah ke 'transaction_date'
+            ->whereYear('transaction_date', $this->year)   // Diubah ke 'transaction_date'
+            ->sum('amount');
+    }
 }

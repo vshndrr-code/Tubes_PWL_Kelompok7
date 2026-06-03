@@ -5,27 +5,30 @@ namespace App\Http\Controllers;
 use App\Models\Budgeting;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth; // 👈 Impor Auth Facade di sini
 
 class BudgetingController extends Controller
 {
     public function index()
     {
-        $budgetings = Budgeting::where('user_id', auth()->id())
+        $budgetings = Budgeting::where('user_id', Auth::id()) // 👈 Menggunakan Auth::id()
             ->with('category')
             ->paginate(15);
+            
         $categories = Category::where(function($query) {
-                $query->where('user_id', auth()->id())
+                $query->where('user_id', Auth::id()) // 👈 Menggunakan Auth::id()
                       ->orWhereNull('user_id');
             })
             ->orderBy('name')
             ->get();
+            
         return view('budgetings.index', compact('budgetings', 'categories'));
     }
 
     public function create()
     {
         $categories = Category::where(function($query) {
-                $query->where('user_id', auth()->id())
+                $query->where('user_id', Auth::id()) // 👈 Menggunakan Auth::id()
                       ->orWhereNull('user_id');
             })
             ->orderBy('name')
@@ -49,7 +52,7 @@ class BudgetingController extends Controller
             'year.required' => 'Masukkan tahun.',
         ]);
 
-        Budgeting::create(array_merge($validated, ['user_id' => auth()->id()]));
+        Budgeting::create(array_merge($validated, ['user_id' => Auth::id()])); // 👈 Menggunakan Auth::id()
         return redirect()
             ->route('budgetings.index')
             ->with('success', 'Budget berhasil ditambahkan.');
@@ -64,7 +67,7 @@ class BudgetingController extends Controller
     public function edit(Budgeting $budgeting)
     {
         $this->authorize('update', $budgeting);
-        $categories = Category::where('user_id', auth()->id())
+        $categories = Category::where('user_id', Auth::id()) // 👈 Menggunakan Auth::id()
             ->orderBy('name')
             ->get();
         return view('budgetings.edit', compact('budgeting', 'categories'));
