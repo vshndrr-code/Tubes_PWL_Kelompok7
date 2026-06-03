@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\User;
 use App\Models\Category;
 
-class Budget extends Model
+class Budgeting extends Model
 {
     use HasFactory;
 

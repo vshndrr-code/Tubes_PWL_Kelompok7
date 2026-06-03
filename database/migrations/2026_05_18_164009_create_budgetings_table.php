@@ -20,6 +20,7 @@ return new class extends Migration
             $table->smallInteger('year');
             $table->timestamps();
         });
+        
     }
 
     /**

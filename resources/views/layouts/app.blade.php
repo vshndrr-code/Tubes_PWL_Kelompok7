@@ -55,6 +55,14 @@
                     </svg>
                     <span>Transactions</span>
                 </a>
+
+                <a href="{{ route('budgetings.index') }}"
+                    class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('budgetings.*') ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100' }}">
+                    <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M3 3h14v2H3V3zm0 5h10v2H3V8zm0 5h6v2H3v-2z" />
+                    </svg>
+                    <span>Budgetings</span>
+                </a>
             </nav>
 
             <div class="absolute bottom-0 w-64 border-t px-4 py-4 space-y-2 bg-white">
