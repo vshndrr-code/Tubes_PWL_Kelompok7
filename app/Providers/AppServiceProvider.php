@@ -43,14 +43,19 @@ class AppServiceProvider extends ServiceProvider
                     ->get();
 
                 $selectedAccount = null;
-                $selectedAccountId = session('selected_account_id');
 
-                if (! request()->routeIs('accounts.index')) {
-                    if ($selectedAccountId) {
-                        $selectedAccount = $accounts->firstWhere('id', $selectedAccountId);
+                if (request()->routeIs(['accounts.show', 'accounts.edit'])) {
+                    $routeAccount = request()->route('account');
+                    if ($routeAccount instanceof Account) {
+                        $selectedAccount = $routeAccount;
+                    } elseif ($routeAccount) {
+                        $selectedAccount = $accounts->firstWhere('id', $routeAccount);
                     }
-
-                    $selectedAccount = $selectedAccount ?? $accounts->first();
+                } elseif (request()->routeIs('accounts.index')) {
+                    $selectedAccount = null;
+                } else {
+                    // Default to pinned account if exists, otherwise show all accounts (null)
+                    $selectedAccount = $accounts->firstWhere('is_pinned', true);
                 }
 
                 $view->with([
