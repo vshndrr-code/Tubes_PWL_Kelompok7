@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Budget;
+use App\Models\Budgeting;
 use App\Models\Category;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -40,7 +40,7 @@ class BudgetSeeder extends Seeder
                     continue;
                 }
 
-                Budget::updateOrCreate(
+                Budgeting::updateOrCreate(
                     [
                         'user_id' => $user->id,
                         'category_id' => $category->id,

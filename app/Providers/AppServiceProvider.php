@@ -5,9 +5,11 @@ namespace App\Providers;
 use App\Models\Account;
 use App\Models\Transaction;
 use App\Models\Category;
+use App\Models\Budgeting;
 use App\Policies\AccountPolicy;
 use App\Policies\TransactionPolicy;
 use App\Policies\CategoryPolicy;
+use App\Policies\BudgetingPolicy;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\View;
@@ -19,6 +21,7 @@ class AppServiceProvider extends ServiceProvider
         Account::class => AccountPolicy::class,
         Transaction::class => TransactionPolicy::class,
         Category::class => CategoryPolicy::class,
+        Budgeting::class => BudgetingPolicy::class,
     ];
 
     /**

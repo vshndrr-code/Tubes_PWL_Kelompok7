@@ -1,158 +1,222 @@
 @extends('layouts.app')
 
+@push('head')
+<style>
+    @keyframes soft-enter {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .ui-reveal { animation: soft-enter .42s ease-out both; }
+        .ui-card,
+        .ui-button {
+            transition:
+                transform .18s ease,
+                box-shadow .18s ease,
+                border-color .18s ease,
+                background-color .18s ease,
+                color .18s ease;
+        }
+        .ui-card:hover,
+        .ui-button:hover { transform: translateY(-2px); }
+    }
+</style>
+@endpush
+
 @section('content')
-<div class="bg-white min-h-screen">
-    <div class="max-w-2xl mx-auto px-4 py-8">
-        <!-- Header -->
-        <div class="mb-8">
-            <h1 class="text-3xl font-bold text-gray-900">Edit Transaksi</h1>
-            <p class="text-gray-500 mt-1">Ubah detail transaksi keuangan Anda</p>
-        </div>
+    <div class="min-h-screen bg-[#f6f7f9] text-slate-900">
+        <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-10 lg:px-8">
+            @php
+                $isIncome = $transaction->type === 'income';
+            @endphp
 
-        <!-- Form Card -->
-        <form action="{{ route('transactions.update', $transaction) }}" method="POST" class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 sm:p-8">
-            @csrf
-            @method('PUT')
-
-            <!-- Wallet/Account -->
-            <div class="mb-6">
-                <label for="account_id" class="block text-sm font-semibold text-gray-700 mb-2">
-                    Akun/Dompet
-                </label>
-                <select name="account_id" id="account_id" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition @error('account_id') border-red-500 @enderror" required>
-                    <option value="">Pilih Akun</option>
-                    @foreach($accounts as $account)
-                        <option value="{{ $account->id }}" @selected($transaction->account_id == $account->id)>
-                            {{ $account->name }}
-                        </option>
-                    @endforeach
-                </select>
-                @error('account_id')
-                    <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>
-                @enderror
-            </div>
-
-            <!-- Category Selector -->
-            <div class="mb-6">
-                <label class="block text-sm font-semibold text-gray-700 mb-2">
-                    Kategori
-                </label>
-                <x-category-selector :categories="$categories" :selected-category-id="old('category_id', $transaction->category_id)" />
-                @error('category_id')
-                    <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>
-                @enderror
-            </div>
-
-            <!-- Hidden Type Field (auto-filled from category) -->
-            <input type="hidden" name="type" id="type" value="{{ old('type', $transaction->category->type) }}">
-
-            <!-- Title -->
-            <div class="mb-6">
-                <label for="title" class="block text-sm font-semibold text-gray-700 mb-2">
-                    Judul Transaksi
-                </label>
-                <input type="text" name="title" id="title" value="{{ old('title', $transaction->title) }}" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition @error('title') border-red-500 @enderror" required placeholder="Masukkan judul transaksi">
-                @error('title')
-                    <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>
-                @enderror
-            </div>
-
-            <!-- Amount and Date Row -->
-            <div class="grid grid-cols-2 gap-4 mb-6">
+            <div class="mb-7 flex flex-col gap-4 border-b border-slate-200 pb-6 lg:flex-row lg:items-end lg:justify-between">
                 <div>
-                    <label for="amount" class="block text-sm font-semibold text-gray-700 mb-2">
-                        Jumlah (Rp)
-                    </label>
-                    <input type="text" name="amount" id="amount" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition @error('amount') border-red-500 @enderror" required inputmode="numeric" value="{{ old('amount') ?? $transaction->amount }}" pattern="[0-9]*">
-                    @error('amount')
-                        <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>
-                    @enderror
+                    <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">Edit Aktivitas</p>
+                    <h1 class="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">Edit Transaksi</h1>
+                    <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
+                        Perbarui detail transaksi tanpa mengubah pola pencatatan yang sudah ada.
+                    </p>
                 </div>
 
-                <div>
-                    <label for="transaction_date" class="block text-sm font-semibold text-gray-700 mb-2">
-                        Tanggal
-                    </label>
-                    <input type="date" name="transaction_date" id="transaction_date" value="{{ old('transaction_date', $transaction->transaction_date->format('Y-m-d')) }}" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition @error('transaction_date') border-red-500 @enderror" required>
-                    @error('transaction_date')
-                        <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>
-                    @enderror
-                </div>
-            </div>
-
-            <!-- Note/Description -->
-            <div class="mb-6">
-                <label for="description" class="block text-sm font-semibold text-gray-700 mb-2">
-                    Catatan (Opsional)
-                </label>
-                <textarea name="description" id="description" rows="3" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition @error('description') border-red-500 @enderror" placeholder="Tambahkan catatan atau detail transaksi">{{ old('description', $transaction->description) }}</textarea>
-                @error('description')
-                    <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>
-                @enderror
-            </div>
-
-            <!-- Tags -->
-            @if($tags->count() > 0)
-                <div class="mb-8">
-                    <label class="block text-sm font-semibold text-gray-700 mb-3">
-                        Tag (Opsional)
-                    </label>
-                    <div class="flex flex-wrap gap-2">
-                        @foreach($tags as $tag)
-                            <label class="flex items-center cursor-pointer">
-                                <input type="checkbox" name="tags[]" value="{{ $tag->id }}" 
-                                    class="w-4 h-4 rounded border-gray-300 text-blue-600" 
-                                    @checked($transaction->tags->contains($tag->id))
-                                >
-                                <span class="ml-2 text-sm text-gray-700">{{ $tag->name }}</span>
-                            </label>
-                        @endforeach
-                    </div>
-                    @error('tags')
-                        <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>
-                    @enderror
-                </div>
-            @endif
-
-            <!-- Buttons -->
-            <div class="flex gap-3 border-t border-gray-200 pt-6">
-                <a href="{{ route('transactions.show', $transaction) }}" class="flex-1 px-4 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-medium text-center">
-                    Batal
+                <a href="{{ route('transactions.show', $transaction) }}"
+                    class="ui-button inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm hover:border-slate-300 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:ring-offset-2 focus:ring-offset-[#f6f7f9]">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 12H5" />
+                        <path d="m12 19-7-7 7-7" />
+                    </svg>
+                    Kembali
                 </a>
-                <button type="submit" class="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium">
-                    Perbarui Transaksi
-                </button>
             </div>
-        </form>
+
+            <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+                <form id="transaction-form" action="{{ route('transactions.update', $transaction) }}" method="POST"
+                    class="ui-reveal rounded-lg border border-slate-200 bg-white shadow-sm">
+                    @csrf
+                    @method('PUT')
+
+                    <div class="border-b border-slate-200 px-5 py-4 sm:px-6">
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Form Transaksi</p>
+                        <h2 class="mt-1 text-lg font-semibold text-slate-950">Perubahan transaksi</h2>
+                    </div>
+
+                    <div class="space-y-6 p-5 sm:p-6">
+                        <div class="grid gap-5 md:grid-cols-2">
+                            <div>
+                                <label for="account_id" class="text-sm font-semibold text-slate-700">Akun/Dompet</label>
+                                <select name="account_id" id="account_id"
+                                    class="mt-2 h-11 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm text-slate-700 shadow-sm outline-none transition focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-100 @error('account_id') border-red-400 ring-red-100 @enderror"
+                                    required>
+                                    <option value="">Pilih Akun</option>
+                                    @foreach ($accounts as $account)
+                                        <option value="{{ $account->id }}" @selected(old('account_id', $transaction->account_id) == $account->id)>
+                                            {{ $account->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('account_id')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="transaction_date" class="text-sm font-semibold text-slate-700">Tanggal</label>
+                                <input type="date" name="transaction_date" id="transaction_date"
+                                    value="{{ old('transaction_date', $transaction->transaction_date->format('Y-m-d')) }}"
+                                    class="mt-2 h-11 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm text-slate-700 shadow-sm outline-none transition focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-100 @error('transaction_date') border-red-400 ring-red-100 @enderror"
+                                    required>
+                                @error('transaction_date')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="text-sm font-semibold text-slate-700">Kategori</label>
+                            <div class="mt-2 rounded-lg border border-slate-200 bg-slate-50 p-3">
+                                <x-category-selector :categories="$categories" :selected-category-id="old('category_id', $transaction->category_id)" />
+                            </div>
+                            @error('category_id')
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <input type="hidden" name="type" id="type" value="{{ old('type', optional($transaction->category)->type ?? $transaction->type) }}">
+
+                        <div>
+                            <label for="title" class="text-sm font-semibold text-slate-700">Judul Transaksi</label>
+                            <input type="text" name="title" id="title" value="{{ old('title', $transaction->title) }}"
+                                class="mt-2 h-11 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm text-slate-700 shadow-sm outline-none transition focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-100 @error('title') border-red-400 ring-red-100 @enderror"
+                                required placeholder="Masukkan judul transaksi">
+                            @error('title')
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="amount" class="text-sm font-semibold text-slate-700">Jumlah</label>
+                            <div class="mt-2 flex h-11 overflow-hidden rounded-lg border border-slate-200 bg-slate-50 shadow-sm transition focus-within:border-slate-400 focus-within:bg-white focus-within:ring-2 focus-within:ring-slate-100 @error('amount') border-red-400 ring-red-100 @enderror">
+                                <span class="flex items-center border-r border-slate-200 px-3 text-sm font-semibold text-slate-500">Rp</span>
+                                <input type="text" name="amount" id="amount" value="{{ old('amount') ?? $transaction->amount }}"
+                                    class="h-full w-full border-0 bg-transparent px-3 text-sm text-slate-700 outline-none focus:ring-0"
+                                    required inputmode="numeric" pattern="[0-9]*">
+                            </div>
+                            @error('amount')
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="description" class="text-sm font-semibold text-slate-700">Catatan</label>
+                            <textarea name="description" id="description" rows="4"
+                                class="mt-2 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-3 text-sm text-slate-700 shadow-sm outline-none transition focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-100 @error('description') border-red-400 ring-red-100 @enderror"
+                                placeholder="Tambahkan catatan atau detail transaksi">{{ old('description', $transaction->description) }}</textarea>
+                            @error('description')
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        @if ($tags->count() > 0)
+                            <div>
+                                <label class="text-sm font-semibold text-slate-700">Tag</label>
+                                <div class="mt-3 flex flex-wrap gap-2">
+                                    @foreach ($tags as $tag)
+                                        <label class="inline-flex cursor-pointer items-center rounded-md bg-slate-50 px-3 py-2 text-sm font-medium text-slate-700 ring-1 ring-slate-200 hover:bg-white">
+                                            <input type="checkbox" name="tags[]" value="{{ $tag->id }}"
+                                                class="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+                                                @checked($transaction->tags->contains($tag->id))>
+                                            <span class="ml-2">{{ $tag->name }}</span>
+                                        </label>
+                                    @endforeach
+                                </div>
+                                @error('tags')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        @endif
+                    </div>
+
+                    <div class="flex flex-col gap-3 border-t border-slate-200 px-5 py-4 sm:flex-row sm:justify-end sm:px-6">
+                        <a href="{{ route('transactions.show', $transaction) }}"
+                            class="ui-button inline-flex h-11 items-center justify-center rounded-lg border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-700 shadow-sm hover:border-slate-300 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-300">
+                            Batal
+                        </a>
+                        <button type="submit"
+                            class="ui-button inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-slate-950 px-5 text-sm font-semibold text-white shadow-sm shadow-slate-900/10 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-400">
+                            Perbarui Transaksi
+                        </button>
+                    </div>
+                </form>
+
+                <aside class="space-y-5">
+                    <section class="ui-card overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+                        <div class="bg-slate-950 p-5 text-white">
+                            <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Transaksi Saat Ini</p>
+                            <h3 class="mt-2 text-xl font-semibold">{{ $transaction->title }}</h3>
+                            <p class="mt-3 text-3xl font-bold {{ $isIncome ? 'text-emerald-300' : 'text-rose-300' }}">
+                                {{ $isIncome ? '+Rp' : '-Rp' }}{{ number_format($transaction->amount, 0, ',', '.') }}
+                            </p>
+                        </div>
+                        <div class="space-y-3 p-5">
+                            <div class="rounded-lg bg-slate-50 p-4 ring-1 ring-slate-200">
+                                <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">Akun</p>
+                                <p class="mt-2 text-sm font-semibold text-slate-950">{{ optional($transaction->account)->name ?? '-' }}</p>
+                            </div>
+                            <div class="rounded-lg bg-slate-50 p-4 ring-1 ring-slate-200">
+                                <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">Kategori</p>
+                                <p class="mt-2 text-sm font-semibold text-slate-950">{{ optional($transaction->category)->name ?? '-' }}</p>
+                            </div>
+                        </div>
+                    </section>
+                </aside>
+            </div>
+        </div>
     </div>
-</div>
 @endsection
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const categories = @json($categories);
     const typeInput = document.getElementById('type');
-    // Select the transaction form specifically (in main area, not sidebar)
-    const form = document.querySelector('main form') || document.querySelector('form[action*="transactions.update"]');
-    
-    if (!form) {
-        console.error('Transaction form not found');
+    const form = document.getElementById('transaction-form');
+
+    if (!form || !typeInput) {
         return;
     }
-    
-    // Update type field before form submission
-    form.addEventListener('submit', function(e) {
-        // Find all category_id inputs and get the one with a value
+
+    form.addEventListener('submit', function() {
         const categoryInputs = form.querySelectorAll('input[name="category_id"]');
         let categoryIdValue = null;
-        
+
         for (let input of categoryInputs) {
             if (input.value) {
                 categoryIdValue = input.value;
                 break;
             }
         }
-        
+
         if (categoryIdValue) {
             const selectedCategory = categories.find(c => c.id == parseInt(categoryIdValue));
             if (selectedCategory) {

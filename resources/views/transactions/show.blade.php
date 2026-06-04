@@ -1,128 +1,162 @@
 @extends('layouts.app')
 
+@push('head')
+<style>
+    @keyframes soft-enter {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .ui-reveal { animation: soft-enter .42s ease-out both; }
+        .ui-card,
+        .ui-button {
+            transition:
+                transform .18s ease,
+                box-shadow .18s ease,
+                border-color .18s ease,
+                background-color .18s ease,
+                color .18s ease;
+        }
+        .ui-card:hover,
+        .ui-button:hover { transform: translateY(-2px); }
+    }
+</style>
+@endpush
+
 @section('content')
-<div class="bg-gradient-to-br from-blue-50 to-indigo-50 min-h-screen py-8">
-    <div class="max-w-2xl mx-auto px-4">
-        <!-- Header -->
-        <div class="flex justify-between items-start mb-8">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-800">Detail Transaksi</h1>
-                <p class="text-gray-500 mt-1">Informasi lengkap transaksi Anda</p>
-            </div>
-            <div class="flex gap-2">
-                <a href="{{ route('transactions.edit', $transaction) }}" class="p-3 bg-blue-500 text-white rounded-xl hover:shadow-lg transition-all duration-200" title="Edit">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                </a>
-                <form action="{{ route('transactions.destroy', $transaction) }}" method="POST" class="inline" onsubmit="return confirm('Yakin ingin menghapus transaksi ini?')">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="p-3 bg-red-500 text-white rounded-xl hover:shadow-lg transition-all duration-200" title="Hapus">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                    </button>
-                </form>
-            </div>
-        </div>
+    <div class="min-h-screen bg-[#f6f7f9] text-slate-900">
+        <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-10 lg:px-8">
+            @php
+                $isIncome = $transaction->type === 'income';
+                $typeLabel = $isIncome ? 'Pemasukan' : 'Pengeluaran';
+                $typeSoft = $isIncome ? 'bg-emerald-50 text-emerald-700 ring-emerald-100' : 'bg-rose-50 text-rose-700 ring-rose-100';
+                $amountColor = $isIncome ? 'text-emerald-300' : 'text-rose-300';
+            @endphp
 
-        <!-- Main Card -->
-        <div class="bg-white rounded-2xl shadow-lg p-8">
-            <!-- Transaction Type Badge -->
-            <div class="mb-6">
-                <span class="inline-block px-4 py-2 rounded-full text-white font-semibold {{ $transaction->type === 'income' ? 'bg-green-500' : 'bg-red-500' }}">
-                    {{ $transaction->type === 'income' ? '📥 Pemasukan' : '📤 Pengeluaran' }}
-                </span>
-            </div>
-
-            <!-- Title & Amount -->
-            <div class="mb-8 pb-6 border-b-2 border-gray-100">
-                <h2 class="text-3xl font-bold text-gray-800 mb-2">{{ $transaction->title }}</h2>
-                <p class="text-5xl font-bold {{ $transaction->type === 'income' ? 'text-green-600' : 'text-red-600' }}">
-                    {{ $transaction->type === 'income' ? '+' : '-' }}Rp{{ number_format($transaction->amount, 0, ',', '.') }}
-                </p>
-            </div>
-
-            <!-- Details Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <!-- Account -->
-                <div class="bg-blue-50 rounded-xl p-4">
-                    <p class="text-sm text-blue-600 font-semibold uppercase tracking-wide">Akun</p>
-                    <p class="text-lg font-bold text-gray-800 mt-2">{{ $transaction->account->name }}</p>
-                    <p class="text-sm text-gray-600 mt-1">{{ ucfirst($transaction->account->type) }}</p>
+            <div class="mb-7 flex flex-col gap-4 border-b border-slate-200 pb-6 lg:flex-row lg:items-end lg:justify-between">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">Detail Transaksi</p>
+                    <h1 class="mt-2 break-words text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">{{ $transaction->title }}</h1>
+                    <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Informasi lengkap transaksi dan catatan pencatatan.</p>
                 </div>
 
-                <!-- Category -->
-                <div class="bg-purple-50 rounded-xl p-4">
-                    <p class="text-sm text-purple-600 font-semibold uppercase tracking-wide">Kategori</p>
-                    <p class="text-lg font-bold text-gray-800 mt-2">{{ $transaction->category->name }}</p>
-                    <p class="text-sm text-gray-600 mt-1">{{ ucfirst($transaction->category->type) }}</p>
-                </div>
-
-                <!-- Date -->
-                <div class="bg-orange-50 rounded-xl p-4">
-                    <p class="text-sm text-orange-600 font-semibold uppercase tracking-wide">Tanggal</p>
-                    <p class="text-lg font-bold text-gray-800 mt-2">{{ $transaction->transaction_date->format('d/m/Y') }}</p>
-                    <p class="text-sm text-gray-600 mt-1">{{ $transaction->transaction_date->format('l') }}</p>
-                </div>
-
-                <!-- Status -->
-                <div class="bg-indigo-50 rounded-xl p-4">
-                    <p class="text-sm text-indigo-600 font-semibold uppercase tracking-wide">Status</p>
-                    <p class="text-lg font-bold text-gray-800 mt-2">Selesai</p>
-                    <p class="text-sm text-gray-600 mt-1">✓ Tercatat</p>
+                <div class="flex flex-col gap-2 sm:flex-row">
+                    <a href="{{ route('transactions.index') }}"
+                        class="ui-button inline-flex h-11 items-center justify-center rounded-lg border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm hover:border-slate-300 hover:bg-slate-50">
+                        Kembali
+                    </a>
+                    <a href="{{ route('transactions.edit', $transaction) }}"
+                        class="ui-button inline-flex h-11 items-center justify-center rounded-lg bg-slate-950 px-4 text-sm font-semibold text-white shadow-sm shadow-slate-900/10 hover:bg-slate-800">
+                        Edit
+                    </a>
                 </div>
             </div>
 
-            <!-- Description -->
-            @if($transaction->description)
-                <div class="mb-8">
-                    <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-2">Catatan</p>
-                    <div class="bg-gray-50 rounded-xl p-4 text-gray-700">
-                        {{ $transaction->description }}
-                    </div>
-                </div>
-            @endif
+            <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+                <main class="space-y-5">
+                    <section class="ui-reveal overflow-hidden rounded-lg bg-slate-950 p-6 text-white shadow-lg shadow-slate-900/10">
+                        <div class="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+                            <div>
+                                <span class="inline-flex rounded-md px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] ring-1 {{ $typeSoft }}">
+                                    {{ $typeLabel }}
+                                </span>
+                                <p class="mt-4 text-4xl font-bold tracking-tight {{ $amountColor }} sm:text-5xl">
+                                    {{ $isIncome ? '+Rp' : '-Rp' }}{{ number_format($transaction->amount, 0, ',', '.') }}
+                                </p>
+                            </div>
 
-            <!-- Tags -->
-            @if($transaction->tags->count() > 0)
-                <div class="mb-8">
-                    <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-3">Tag</p>
-                    <div class="flex flex-wrap gap-2">
-                        @foreach($transaction->tags as $tag)
-                            <span class="text-sm font-semibold text-white px-3 py-1 rounded-full" style="background-color: {{ $tag->color ?? '#6B7280' }}">
-                                {{ $tag->name }}
-                            </span>
-                        @endforeach
-                    </div>
-                </div>
-            @endif
+                            <div class="rounded-lg border border-white/10 bg-white/[0.06] px-4 py-3">
+                                <p class="text-xs text-slate-400">Tanggal</p>
+                                <p class="mt-1 text-sm font-semibold text-white">{{ $transaction->transaction_date->format('d M Y') }}</p>
+                            </div>
+                        </div>
+                    </section>
 
-            <!-- Timestamps -->
-            <div class="border-t-2 border-gray-100 pt-6">
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Dibuat</p>
-                        <p class="text-sm text-gray-800 mt-1">{{ $transaction->created_at->format('d/m/Y H:i') }}</p>
-                    </div>
-                    <div>
-                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Terakhir Diubah</p>
-                        <p class="text-sm text-gray-800 mt-1">{{ $transaction->updated_at->format('d/m/Y H:i') }}</p>
-                    </div>
-                </div>
+                    <section class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Informasi Transaksi</p>
+                        <div class="mt-5 grid gap-4 sm:grid-cols-2">
+                            <div class="rounded-lg bg-slate-50 p-4 ring-1 ring-slate-200">
+                                <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">Akun</p>
+                                <p class="mt-2 text-lg font-semibold text-slate-950">{{ optional($transaction->account)->name ?? '-' }}</p>
+                                <p class="mt-1 text-sm text-slate-500">{{ ucfirst(optional($transaction->account)->type ?? '-') }}</p>
+                            </div>
+
+                            <div class="rounded-lg bg-slate-50 p-4 ring-1 ring-slate-200">
+                                <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">Kategori</p>
+                                <p class="mt-2 text-lg font-semibold text-slate-950">{{ optional($transaction->category)->name ?? '-' }}</p>
+                                <p class="mt-1 text-sm text-slate-500">{{ ucfirst(optional($transaction->category)->type ?? '-') }}</p>
+                            </div>
+
+                            <div class="rounded-lg bg-slate-50 p-4 ring-1 ring-slate-200">
+                                <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">Hari</p>
+                                <p class="mt-2 text-lg font-semibold text-slate-950">{{ $transaction->transaction_date->format('l') }}</p>
+                            </div>
+
+                            <div class="rounded-lg bg-slate-50 p-4 ring-1 ring-slate-200">
+                                <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">Status</p>
+                                <p class="mt-2 text-lg font-semibold text-slate-950">Tercatat</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    @if ($transaction->description)
+                        <section class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+                            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Catatan</p>
+                            <p class="mt-3 text-sm leading-6 text-slate-700">{{ $transaction->description }}</p>
+                        </section>
+                    @endif
+
+                    @if ($transaction->tags->count() > 0)
+                        <section class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+                            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Tag</p>
+                            <div class="mt-3 flex flex-wrap gap-2">
+                                @foreach ($transaction->tags as $tag)
+                                    <span class="rounded-md px-2.5 py-1 text-xs font-semibold text-white"
+                                        style="background-color: {{ $tag->color ?? '#6B7280' }}">
+                                        {{ $tag->name }}
+                                    </span>
+                                @endforeach
+                            </div>
+                        </section>
+                    @endif
+                </main>
+
+                <aside class="space-y-5">
+                    <section class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Aksi</p>
+                        <div class="mt-4 space-y-2">
+                            <a href="{{ route('transactions.edit', $transaction) }}"
+                                class="ui-button inline-flex h-11 w-full items-center justify-center rounded-lg bg-slate-950 px-4 text-sm font-semibold text-white shadow-sm shadow-slate-900/10 hover:bg-slate-800">
+                                Edit Transaksi
+                            </a>
+                            <form action="{{ route('transactions.destroy', $transaction) }}" method="POST"
+                                onsubmit="return confirm('Yakin ingin menghapus transaksi ini?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit"
+                                    class="ui-button inline-flex h-11 w-full items-center justify-center rounded-lg bg-white px-4 text-sm font-semibold text-red-600 shadow-sm ring-1 ring-red-100 hover:bg-red-50">
+                                    Hapus
+                                </button>
+                            </form>
+                        </div>
+                    </section>
+
+                    <section class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Audit</p>
+                        <div class="mt-4 space-y-3 text-sm">
+                            <div>
+                                <p class="font-semibold text-slate-500">Dibuat</p>
+                                <p class="mt-1 text-slate-950">{{ $transaction->created_at->format('d M Y H:i') }}</p>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-slate-500">Terakhir diubah</p>
+                                <p class="mt-1 text-slate-950">{{ $transaction->updated_at->format('d M Y H:i') }}</p>
+                            </div>
+                        </div>
+                    </section>
+                </aside>
             </div>
-        </div>
-
-        <!-- Back Button -->
-        <div class="mt-6">
-            <a href="{{ route('transactions.index') }}" class="inline-flex items-center gap-2 px-6 py-3 bg-gray-200 text-gray-800 rounded-xl hover:bg-gray-300 transition-colors font-semibold">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                </svg>
-                Kembali ke Daftar
-            </a>
         </div>
     </div>
-</div>
 @endsection

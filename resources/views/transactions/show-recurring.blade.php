@@ -1,121 +1,145 @@
 @extends('layouts.app')
 
+@push('head')
+<style>
+    @keyframes soft-enter {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .ui-reveal { animation: soft-enter .42s ease-out both; }
+        .ui-card,
+        .ui-button {
+            transition:
+                transform .18s ease,
+                box-shadow .18s ease,
+                border-color .18s ease,
+                background-color .18s ease,
+                color .18s ease;
+        }
+        .ui-card:hover,
+        .ui-button:hover { transform: translateY(-2px); }
+    }
+</style>
+@endpush
+
 @section('content')
-<div class="bg-white min-h-screen">
-    <div class="max-w-2xl mx-auto px-4 py-8">
-        <!-- Header -->
-        <div class="mb-8 flex items-center justify-between">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-900">{{ $recurringTransaction->title }}</h1>
-                <p class="text-gray-500 mt-1">Detail Recurring Transaction</p>
-            </div>
-            <a href="{{ route('transactions.index') }}" class="text-gray-600 hover:text-gray-900">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                </svg>
-            </a>
-        </div>
+    <div class="min-h-screen bg-[#f6f7f9] text-slate-900">
+        <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-10 lg:px-8">
+            @php
+                $frequencyLabels = [
+                    'daily' => 'Harian',
+                    'weekly' => 'Mingguan',
+                    'monthly' => 'Bulanan',
+                    'yearly' => 'Tahunan',
+                ];
+            @endphp
 
-        <!-- Details Card -->
-        <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 sm:p-8 space-y-6">
-            <!-- Judul -->
-            <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">Judul Transaksi</label>
-                <p class="text-lg font-medium text-gray-900">{{ $recurringTransaction->title }}</p>
-            </div>
-
-            <!-- Amount -->
-            <div class="grid grid-cols-2 gap-4">
+            <div class="mb-7 flex flex-col gap-4 border-b border-slate-200 pb-6 lg:flex-row lg:items-end lg:justify-between">
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Nominal</label>
-                    <p class="text-2xl font-bold text-red-600">Rp{{ number_format($recurringTransaction->amount, 0, ',', '.') }}</p>
+                    <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">Detail Jadwal</p>
+                    <h1 class="mt-2 break-words text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">{{ $recurringTransaction->title }}</h1>
+                    <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Detail recurring transaction dan jadwal eksekusi berikutnya.</p>
                 </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Per Periode</label>
-                    <p class="text-lg font-medium text-gray-900">
-                        @switch($recurringTransaction->frequency)
-                            @case('daily')
-                                Harian
-                            @break
-                            @case('weekly')
-                                Mingguan
-                            @break
-                            @case('monthly')
-                                Bulanan
-                            @break
-                            @case('yearly')
-                                Tahunan
-                            @endswitch
-                    </p>
+
+                <div class="flex flex-col gap-2 sm:flex-row">
+                    <a href="{{ route('transactions.index') }}"
+                        class="ui-button inline-flex h-11 items-center justify-center rounded-lg border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm hover:border-slate-300 hover:bg-slate-50">
+                        Kembali
+                    </a>
+                    <a href="{{ route('transactions.editRecurring', $recurringTransaction) }}"
+                        class="ui-button inline-flex h-11 items-center justify-center rounded-lg bg-slate-950 px-4 text-sm font-semibold text-white shadow-sm shadow-slate-900/10 hover:bg-slate-800">
+                        Edit
+                    </a>
                 </div>
             </div>
 
-            <!-- Dates -->
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Mulai Tanggal</label>
-                    <p class="text-lg font-medium text-gray-900">{{ $recurringTransaction->start_date->format('d M Y') }}</p>
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Pembaruan Terakhir</label>
-                    <p class="text-lg font-medium text-gray-900">{{ $recurringTransaction->updated_at->format('d M Y H:i') }}</p>
-                </div>
-            </div>
+            <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+                <main class="space-y-5">
+                    <section class="ui-reveal overflow-hidden rounded-lg bg-slate-950 p-6 text-white shadow-lg shadow-slate-900/10">
+                        <div class="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+                            <div>
+                                <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Nominal Per Periode</p>
+                                <p class="mt-3 text-4xl font-bold tracking-tight text-rose-300 sm:text-5xl">
+                                    -Rp{{ number_format($recurringTransaction->amount, 0, ',', '.') }}
+                                </p>
+                            </div>
 
-            <!-- Account & Category -->
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Akun</label>
-                    <p class="text-lg font-medium text-gray-900">{{ $recurringTransaction->account->name }}</p>
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Kategori</label>
-                    <p class="text-lg font-medium text-gray-900">{{ $recurringTransaction->category->name ?? 'Tidak ada' }}</p>
-                </div>
-            </div>
+                            <span class="inline-flex w-fit rounded-md px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] ring-1 {{ $recurringTransaction->active ? 'bg-emerald-50 text-emerald-700 ring-emerald-100' : 'bg-rose-50 text-rose-700 ring-rose-100' }}">
+                                {{ $recurringTransaction->active ? 'Aktif' : 'Tidak Aktif' }}
+                            </span>
+                        </div>
+                    </section>
 
-            <!-- Status -->
-            <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">Status</label>
-                <div class="inline-block px-4 py-2 rounded-full {{ $recurringTransaction->active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                    {{ $recurringTransaction->active ? 'Aktif' : 'Tidak Aktif' }}
-                </div>
-            </div>
+                    <section class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Informasi Jadwal</p>
+                        <div class="mt-5 grid gap-4 sm:grid-cols-2">
+                            <div class="rounded-lg bg-slate-50 p-4 ring-1 ring-slate-200">
+                                <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">Frekuensi</p>
+                                <p class="mt-2 text-lg font-semibold text-slate-950">{{ $frequencyLabels[$recurringTransaction->frequency] ?? ucfirst($recurringTransaction->frequency) }}</p>
+                            </div>
+                            <div class="rounded-lg bg-slate-50 p-4 ring-1 ring-slate-200">
+                                <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">Mulai Tanggal</p>
+                                <p class="mt-2 text-lg font-semibold text-slate-950">{{ $recurringTransaction->start_date->format('d M Y') }}</p>
+                            </div>
+                            <div class="rounded-lg bg-slate-50 p-4 ring-1 ring-slate-200">
+                                <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">Akun</p>
+                                <p class="mt-2 text-lg font-semibold text-slate-950">{{ optional($recurringTransaction->account)->name ?? '-' }}</p>
+                            </div>
+                            <div class="rounded-lg bg-slate-50 p-4 ring-1 ring-slate-200">
+                                <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">Kategori</p>
+                                <p class="mt-2 text-lg font-semibold text-slate-950">{{ optional($recurringTransaction->category)->name ?? 'Tidak ada' }}</p>
+                            </div>
+                        </div>
+                    </section>
 
-            <!-- Catatan -->
-            @if($recurringTransaction->description)
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Catatan</label>
-                    <p class="text-gray-900">{{ $recurringTransaction->description }}</p>
-                </div>
-            @endif
+                    @if ($recurringTransaction->next_occurrence_date && $recurringTransaction->active)
+                        <section class="rounded-lg border border-emerald-200 bg-emerald-50 p-5 shadow-sm">
+                            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">Jadwal Berikutnya</p>
+                            <p class="mt-2 text-xl font-bold text-emerald-900">{{ $recurringTransaction->next_occurrence_date->format('d M Y') }}</p>
+                        </section>
+                    @endif
 
-            <!-- Next Occurrence -->
-            @if($recurringTransaction->next_occurrence_date && $recurringTransaction->active)
-                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <p class="text-sm text-blue-800">
-                        <strong>Pengurangan berikutnya:</strong> {{ $recurringTransaction->next_occurrence_date->format('d M Y') }}
-                    </p>
-                </div>
-            @endif
+                    @if ($recurringTransaction->description)
+                        <section class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+                            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Catatan</p>
+                            <p class="mt-3 text-sm leading-6 text-slate-700">{{ $recurringTransaction->description }}</p>
+                        </section>
+                    @endif
+                </main>
 
-            <!-- Action Buttons -->
-            <div class="flex gap-3 border-t border-gray-200 pt-6">
-                <a href="{{ route('transactions.index') }}" class="flex-1 px-4 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-medium text-center">
-                    Kembali
-                </a>
-                <a href="{{ route('transactions.editRecurring', $recurringTransaction) }}" class="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium text-center">
-                    Edit
-                </a>
-                <form action="{{ route('transactions.destroyRecurring', $recurringTransaction) }}" method="POST" class="flex-1">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="w-full px-4 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium" onclick="return confirm('Hapus recurring transaction ini?')">
-                        Hapus
-                    </button>
-                </form>
+                <aside class="space-y-5">
+                    <section class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Aksi</p>
+                        <div class="mt-4 space-y-2">
+                            <a href="{{ route('transactions.editRecurring', $recurringTransaction) }}"
+                                class="ui-button inline-flex h-11 w-full items-center justify-center rounded-lg bg-slate-950 px-4 text-sm font-semibold text-white shadow-sm shadow-slate-900/10 hover:bg-slate-800">
+                                Edit Jadwal
+                            </a>
+                            <form action="{{ route('transactions.destroyRecurring', $recurringTransaction) }}" method="POST"
+                                onsubmit="return confirm('Hapus recurring transaction ini?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit"
+                                    class="ui-button inline-flex h-11 w-full items-center justify-center rounded-lg bg-white px-4 text-sm font-semibold text-red-600 shadow-sm ring-1 ring-red-100 hover:bg-red-50">
+                                    Hapus
+                                </button>
+                            </form>
+                        </div>
+                    </section>
+
+                    <section class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Audit</p>
+                        <div class="mt-4 space-y-3 text-sm">
+                            <div>
+                                <p class="font-semibold text-slate-500">Pembaruan terakhir</p>
+                                <p class="mt-1 text-slate-950">{{ $recurringTransaction->updated_at->format('d M Y H:i') }}</p>
+                            </div>
+                        </div>
+                    </section>
+                </aside>
             </div>
         </div>
     </div>
-</div>
 @endsection
