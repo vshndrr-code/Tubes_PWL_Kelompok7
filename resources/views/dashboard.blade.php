@@ -80,27 +80,6 @@
                     </p>
                 </div>
 
-                <div class="flex w-full flex-col gap-2 sm:flex-row lg:w-auto">
-                    <a href="{{ $transactionsIndexUrl }}"
-                        class="ui-button inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm hover:border-slate-300 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:ring-offset-2 focus:ring-offset-[#f6f7f9]">
-                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M4 6h16" />
-                            <path d="M4 12h10" />
-                            <path d="M4 18h7" />
-                        </svg>
-                        Riwayat
-                    </a>
-
-                    <a href="{{ $transactionsCreateUrl }}"
-                        class="ui-button inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 text-sm font-semibold text-white shadow-sm shadow-emerald-700/15 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-[#f6f7f9]">
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 4v16m8-8H4" />
-                        </svg>
-                        Tambah Transaksi
-                    </a>
-                </div>
             </div>
 
             <div class="mb-5 grid gap-4 lg:grid-cols-[1.45fr_0.55fr]">
@@ -256,9 +235,9 @@
                     <section class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
                         <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Aksi Cepat</p>
                         <div class="mt-4 grid gap-2">
-                            <a href="{{ $transactionsCreateUrl }}"
-                                class="ui-button inline-flex h-11 items-center justify-center rounded-lg bg-emerald-600 px-4 text-sm font-semibold text-white shadow-sm shadow-emerald-700/15 hover:bg-emerald-700">
-                                Tambah Transaksi
+                            <a href="{{ $transactionsIndexUrl }}"
+                                class="ui-button inline-flex h-11 items-center justify-center rounded-lg border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm hover:border-slate-300 hover:bg-slate-50">
+                                Kelola Transaksi
                             </a>
                             <a href="{{ $accountsIndexUrl }}"
                                 class="ui-button inline-flex h-11 items-center justify-center rounded-lg border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm hover:border-slate-300 hover:bg-slate-50">
