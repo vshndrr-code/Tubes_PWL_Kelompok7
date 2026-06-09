@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\User;
+use App\Models\Account;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,10 +14,12 @@ class SavingsGoals extends Model
 
     protected $fillable = [
         'user_id',
+        'account_id',
         'name',
         'target_amount',
         'current_amount',
         'deadline',
+        'status',
     ];
 
     protected $casts = [
@@ -26,5 +29,10 @@ class SavingsGoals extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function account(): BelongsTo
+    {
+        return $this->belongsTo(Account::class);
     }
 }

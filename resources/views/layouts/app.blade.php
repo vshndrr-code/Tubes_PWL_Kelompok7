@@ -63,6 +63,14 @@
                     </svg>
                     <span>Budgetings</span>
                 </a>
+
+                <a href="{{ route('savings-goals.index') }}"
+                    class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('savings-goals.*') ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100' }}">
+                    <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 14a6 6 0 110-12 6 6 0 010 12zm1-9H9v4h2V7z" />
+                    </svg>
+                    <span>Savings Goals</span>
+                </a>
             </nav>
 
             <div class="absolute bottom-0 w-64 border-t px-4 py-4 space-y-2 bg-white">
@@ -236,6 +244,9 @@
             </div>
         </form>
     </x-modal>
+
+    <!-- Profile Edit Modal -->
+    <x-profile-edit-modal :user="Auth::user()" />
 </body>
 
 </html>
