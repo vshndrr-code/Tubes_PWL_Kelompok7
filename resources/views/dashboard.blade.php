@@ -55,8 +55,8 @@
                 $budgetItems = collect($budgetings ?? $budgets ?? []);
 
                 $totalBalance = $totalBalance ?? $accountBalance ?? $accountItems->sum('balance');
-                $monthlyIncome = $monthlyIncome ?? $currentMonthIncome ?? $transactionItems->where('type', 'income')->sum('amount');
-                $monthlyExpense = $monthlyExpense ?? $currentMonthExpense ?? $transactionItems->where('type', 'expense')->sum('amount');
+                $monthlyIncome = $monthlyIncome ?? $currentMonthIncome ?? $transactionItems->where('type', 'income')->filter(fn($t) => $t->transaction_date && $t->transaction_date->isCurrentMonth())->sum('amount');
+                $monthlyExpense = $monthlyExpense ?? $currentMonthExpense ?? $transactionItems->where('type', 'expense')->filter(fn($t) => $t->transaction_date && $t->transaction_date->isCurrentMonth())->sum('amount');
                 $netCashflow = $monthlyIncome - $monthlyExpense;
                 $accountCount = $accountCount ?? $accountItems->count();
                 $transactionCount = $transactionCount ?? $transactionItems->count();
@@ -83,7 +83,7 @@
             </div>
 
             <div class="mb-5 grid gap-4 lg:grid-cols-[1.45fr_0.55fr]">
-                <section class="ui-reveal overflow-hidden rounded-lg bg-slate-950 p-6 text-white shadow-lg shadow-slate-900/10">
+                <a href="{{ route('accounts.index') }}" class="ui-reveal block overflow-hidden rounded-lg bg-slate-950 p-6 text-white shadow-lg shadow-slate-900/10 hover:bg-slate-900 transition duration-150">
                     <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
                         <div>
                             <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Total Saldo</p>
@@ -122,33 +122,33 @@
                             </p>
                         </div>
                     </div>
-                </section>
+                </a>
 
                 <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
-                    <div class="ui-card rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+                    <a href="{{ route('accounts.index') }}" class="ui-card block rounded-lg border border-slate-200 bg-white p-5 shadow-sm hover:border-slate-300 hover:shadow-md transition">
                         <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Akun</p>
                         <p class="mt-3 text-3xl font-bold text-slate-950">{{ $accountCount }}</p>
                         <p class="mt-1 text-sm text-slate-500">Dompet dan rekening aktif.</p>
-                    </div>
+                    </a>
 
-                    <div class="ui-card rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+                    <a href="{{ route('transactions.index') }}" class="ui-card block rounded-lg border border-slate-200 bg-white p-5 shadow-sm hover:border-slate-300 hover:shadow-md transition">
                         <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Transaksi</p>
                         <p class="mt-3 text-3xl font-bold text-slate-950">{{ $transactionCount }}</p>
                         <p class="mt-1 text-sm text-slate-500">Aktivitas yang tercatat.</p>
-                    </div>
+                    </a>
                 </div>
             </div>
 
             <div class="mb-5 grid gap-4 md:grid-cols-3">
-                <div class="ui-card rounded-lg border border-emerald-100 bg-emerald-50 p-5 shadow-sm">
+                <a href="{{ route('transactions.index') }}" class="ui-card block rounded-lg border border-emerald-100 bg-emerald-50 p-5 shadow-sm hover:bg-emerald-100/50 transition">
                     <p class="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">Pemasukan</p>
                     <p class="mt-3 text-2xl font-bold text-emerald-800">Rp{{ number_format($monthlyIncome, 0, ',', '.') }}</p>
-                </div>
+                </a>
 
-                <div class="ui-card rounded-lg border border-rose-100 bg-rose-50 p-5 shadow-sm">
+                <a href="{{ route('transactions.index') }}" class="ui-card block rounded-lg border border-rose-100 bg-rose-50 p-5 shadow-sm hover:bg-rose-100/50 transition">
                     <p class="text-xs font-semibold uppercase tracking-[0.18em] text-rose-700">Pengeluaran</p>
                     <p class="mt-3 text-2xl font-bold text-rose-800">Rp{{ number_format($monthlyExpense, 0, ',', '.') }}</p>
-                </div>
+                </a>
 
                 <div class="ui-card rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
                     <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Budget Terpakai</p>

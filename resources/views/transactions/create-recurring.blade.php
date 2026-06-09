@@ -138,6 +138,23 @@
                                 @enderror
                             </div>
 
+                            <div class="md:col-span-2">
+                                <label for="account_id" class="text-sm font-semibold text-slate-700">Akun/Dompet</label>
+                                <select name="account_id" id="account_id"
+                                    class="mt-2 h-11 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm text-slate-700 shadow-sm outline-none transition focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-100 @error('account_id') border-red-400 ring-red-100 @enderror"
+                                    required>
+                                    <option value="">Pilih Akun</option>
+                                    @foreach ($accounts as $account)
+                                        <option value="{{ $account->id }}" @selected(old('account_id') == $account->id)>
+                                            {{ $account->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('account_id')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
                             <div>
                                 <label for="amount" class="text-sm font-semibold text-slate-700">Nominal</label>
                                 <div class="mt-2 flex h-11 overflow-hidden rounded-lg border border-slate-200 bg-slate-50 shadow-sm transition focus-within:border-slate-400 focus-within:bg-white focus-within:ring-2 focus-within:ring-slate-100 @error('amount') border-red-400 ring-red-100 @enderror">

@@ -65,17 +65,19 @@ class TransactionController extends Controller
 
     public function createRecurring()
     {
-        return view('transactions.create-recurring');
+        $userId = auth()->user()->id;
+
+        $accounts = Account::where('user_id', $userId)
+            ->orderBy('name')
+            ->get();
+
+        return view('transactions.create-recurring', compact('accounts'));
     }
 
     public function storeRecurring(StoreRecurringTransactionRequest $request)
     {
-        $account = Account::where('user_id', auth()->id())->orderBy('name')->first();
-
-        if (! $account) {
-            return redirect()->route('transactions.index')
-                ->with('error', 'Tambahkan akun terlebih dahulu sebelum membuat recurring transaction.');
-        }
+        $validated = $request->validated();
+        $startDate = \Carbon\Carbon::parse($validated['start_date'])->startOfDay();
 
         $category = Category::where(function($query) {
             $query->where('user_id', auth()->id())
@@ -86,13 +88,10 @@ class TransactionController extends Controller
             ->orderBy('name')
             ->first();
 
-        $validated = $request->validated();
-        $startDate = \Carbon\Carbon::parse($validated['start_date'])->startOfDay();
-
-        DB::transaction(function () use ($validated, $account, $category, $startDate, &$recurringTransaction) {
+        DB::transaction(function () use ($validated, $category, $startDate, &$recurringTransaction) {
             $recurringTransaction = RecurringTransaction::create([
                 'user_id' => auth()->id(),
-                'account_id' => $account->id,
+                'account_id' => $validated['account_id'],
                 'category_id' => $category ? $category->id : null,
                 'type' => 'expense',
                 'title' => $validated['title'],
@@ -126,7 +125,13 @@ class TransactionController extends Controller
             abort(403);
         }
 
-        return view('transactions.edit-recurring', compact('recurringTransaction'));
+        $userId = auth()->user()->id;
+
+        $accounts = Account::where('user_id', $userId)
+            ->orderBy('name')
+            ->get();
+
+        return view('transactions.edit-recurring', compact('recurringTransaction', 'accounts'));
     }
 
     public function updateRecurring(StoreRecurringTransactionRequest $request, RecurringTransaction $recurringTransaction)
@@ -139,6 +144,7 @@ class TransactionController extends Controller
         $startDate = \Carbon\Carbon::parse($validated['start_date'])->startOfDay();
 
         $recurringTransaction->update([
+            'account_id' => $validated['account_id'],
             'title' => $validated['title'],
             'description' => $validated['description'] ?? null,
             'amount' => $validated['amount'],

@@ -98,6 +98,23 @@
                             @enderror
                         </div>
 
+                        <div>
+                            <label for="account_id" class="text-sm font-semibold text-slate-700">Akun/Dompet</label>
+                            <select name="account_id" id="account_id"
+                                class="mt-2 h-11 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm text-slate-700 shadow-sm outline-none transition focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-100 @error('account_id') border-red-400 ring-red-100 @enderror"
+                                required>
+                                <option value="">Pilih Akun</option>
+                                @foreach ($accounts as $account)
+                                    <option value="{{ $account->id }}" @selected(old('account_id', $recurringTransaction->account_id) == $account->id)>
+                                        {{ $account->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('account_id')
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
                         <div class="grid gap-5 md:grid-cols-2">
                             <div>
                                 <label for="amount" class="text-sm font-semibold text-slate-700">Nominal</label>

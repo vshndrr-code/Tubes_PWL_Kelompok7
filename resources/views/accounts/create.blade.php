@@ -39,9 +39,15 @@
     }
 
 .account-type-radio:checked ~ .account-type-card .selected-dot {
-        background-color: rgb(16 185 129);
+        background-color: white;
         opacity: 1;
         transform: scale(1);
+    }
+
+    .account-type-radio:checked ~ .account-type-card .selected-ring {
+        background-color: rgb(16 185 129);
+        --tw-ring-color: rgb(16 185 129);
+        box-shadow: 0 0 0 1px rgb(16 185 129);
     }
 
     .account-type-radio:focus-visible + .account-type-card {
@@ -152,7 +158,7 @@
                                                     </div>
                                                 </div>
 
-                                                <span class="mt-1 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-white ring-1 ring-slate-300 transition">
+                                                <span class="selected-ring mt-1 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-white ring-1 ring-slate-300 transition">
                                                     <span class="selected-dot h-1.5 w-1.5 scale-50 rounded-full opacity-0 transition {{ $type['dot'] }}"></span>
                                                 </span>
                                             </div>

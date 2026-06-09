@@ -14,6 +14,7 @@ class StoreRecurringTransactionRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'account_id' => 'required|exists:accounts,id,user_id,' . auth()->id(),
             'title' => 'required|string|max:150',
             'amount' => 'required|numeric|min:0.01',
             'recurring_frequency' => 'required|in:daily,weekly,monthly,yearly',
@@ -25,6 +26,8 @@ class StoreRecurringTransactionRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'account_id.required' => 'Akun harus dipilih.',
+            'account_id.exists' => 'Akun yang dipilih tidak valid.',
             'amount.required' => 'Jumlah yang harus dibayar harus diisi.',
             'amount.numeric' => 'Jumlah harus berupa angka.',
             'amount.min' => 'Jumlah harus lebih dari 0.',

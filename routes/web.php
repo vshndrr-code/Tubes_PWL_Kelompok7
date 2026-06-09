@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\OnboardingController;
@@ -39,7 +39,7 @@ Route::get('/dashboard', function () {
     
     return view('dashboard', [
         'accountItems' => $accountItems,
-        'transactionItems' => $transactionItems,
+        'transactions' => $transactionItems,
         'budgetings' => $budgetings,
         'recentTransactions' => $recentTransactions,
         'accounts' => $accounts,
