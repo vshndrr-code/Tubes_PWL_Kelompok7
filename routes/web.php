@@ -7,15 +7,46 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\BudgetingController;
 use App\Http\Controllers\SavingsGoalsController;
 use App\Http\Controllers\NotificationController;
+use App\Models\Account;
+use App\Models\Transaction;
+use App\Models\Budgeting;
 use Illuminate\Support\Facades\Route;
-
-Route::get('/', function () {
-    return view('welcome');
-});
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    $user = Auth::user();
+    
+    // Get user's accounts
+    $accountItems = Account::where('user_id', $user->id)->get();
+    
+    // Get user's transactions
+    $transactionItems = Transaction::where('user_id', $user->id)
+        ->orderBy('transaction_date', 'desc')
+        ->get();
+    
+    // Get user's budgets
+    $budgetings = Budgeting::where('user_id', $user->id)->get();
+    
+    // Get recent transactions
+    $recentTransactions = Transaction::where('user_id', $user->id)
+        ->orderBy('transaction_date', 'desc')
+        ->limit(6)
+        ->get();
+    
+    // Get accounts data
+    $accounts = Account::where('user_id', $user->id)->get();
+    $selectedAccount = null; // or get from request if needed
+    
+    return view('dashboard', [
+        'accountItems' => $accountItems,
+        'transactionItems' => $transactionItems,
+        'budgetings' => $budgetings,
+        'recentTransactions' => $recentTransactions,
+        'accounts' => $accounts,
+        'selectedAccount' => $selectedAccount,
+    ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
+
 
 Route::get('/onboarding', function () {
     return view('onboarding');

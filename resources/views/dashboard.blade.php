@@ -80,27 +80,6 @@
                     </p>
                 </div>
 
-                <div class="flex w-full flex-col gap-2 sm:flex-row lg:w-auto">
-                    <a href="{{ $transactionsIndexUrl }}"
-                        class="ui-button inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm hover:border-slate-300 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:ring-offset-2 focus:ring-offset-[#f6f7f9]">
-                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M4 6h16" />
-                            <path d="M4 12h10" />
-                            <path d="M4 18h7" />
-                        </svg>
-                        Riwayat
-                    </a>
-
-                    <a href="{{ $transactionsCreateUrl }}"
-                        class="ui-button inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 text-sm font-semibold text-white shadow-sm shadow-emerald-700/15 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-[#f6f7f9]">
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 4v16m8-8H4" />
-                        </svg>
-                        Tambah Transaksi
-                    </a>
-                </div>
             </div>
 
             <div class="mb-5 grid gap-4 lg:grid-cols-[1.45fr_0.55fr]">
@@ -184,115 +163,227 @@
                 </div>
             </div>
 
-            <div class="grid gap-5 lg:grid-cols-[minmax(0,1fr)_360px]">
-                <section class="rounded-lg border border-slate-200 bg-white shadow-sm">
-                    <div class="flex flex-col gap-3 border-b border-slate-200 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
-                        <div>
-                            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Aktivitas Terbaru</p>
-                            <h2 class="mt-1 text-lg font-semibold text-slate-950">Transaksi terakhir</h2>
-                        </div>
+                <div class="grid gap-5 lg:grid-cols-[1.7fr_0.7fr]">
 
-                        <a href="{{ $transactionsIndexUrl }}" class="text-sm font-semibold text-sky-700 hover:text-sky-800">
-                            Lihat semua
-                        </a>
-                    </div>
+    {{-- Aktivitas Terbaru --}}
+    <section class="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
 
-                    @if ($recentItems->isEmpty())
-                        <div class="p-10 text-center">
-                            <div class="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-lg bg-slate-100 text-slate-400">
-                                <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
-                                        d="M4 6h16M4 12h10M4 18h7" />
+        <div
+            class="flex flex-col gap-3 border-b border-slate-200 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                    Aktivitas Terbaru
+                </p>
+                <h2 class="mt-1 text-lg font-semibold text-slate-950">
+                    Transaksi terakhir
+                </h2>
+            </div>
+        </div>
+
+        @if ($recentItems->isEmpty())
+            <div class="p-10 text-center">
+                <div
+                    class="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-xl bg-slate-100 text-slate-400">
+                    <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                            d="M4 6h16M4 12h10M4 18h7" />
+                    </svg>
+                </div>
+
+                <h3 class="text-lg font-semibold text-slate-950">
+                    Belum ada transaksi
+                </h3>
+
+                <p class="mt-2 text-sm text-slate-500">
+                    Mulai catat transaksi pertama untuk melihat aktivitas di dashboard.
+                </p>
+
+                <a href="{{ $transactionsCreateUrl }}"
+                    class="mt-6 inline-flex h-11 items-center justify-center rounded-lg bg-emerald-600 px-5 text-sm font-semibold text-white hover:bg-emerald-700">
+                    Tambah Transaksi
+                </a>
+            </div>
+        @else
+            <div class="divide-y divide-slate-100">
+
+                @foreach ($recentItems as $transaction)
+                    @php
+                        $isIncome = $transaction->type === 'income';
+                    @endphp
+
+                    <div
+                        class="flex flex-col gap-3 px-5 py-4 transition hover:bg-slate-50 sm:flex-row sm:items-center sm:justify-between">
+
+                        <div class="flex items-center gap-3">
+
+                            <div
+                                class="flex h-10 w-10 items-center justify-center rounded-xl
+                            {{ $isIncome
+                                ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100'
+                                : 'bg-rose-50 text-rose-700 ring-1 ring-rose-100' }}">
+
+                                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="1.8">
+
+                                    @if ($isIncome)
+                                        <path d="M12 19V5" />
+                                        <path d="m5 12 7-7 7 7" />
+                                    @else
+                                        <path d="M12 5v14" />
+                                        <path d="m19 12-7 7-7-7" />
+                                    @endif
+
                                 </svg>
                             </div>
-                            <h3 class="text-lg font-semibold text-slate-950">Belum ada transaksi</h3>
-                            <p class="mt-2 text-sm text-slate-500">Mulai catat transaksi pertama untuk melihat aktivitas di dashboard.</p>
-                            <a href="{{ $transactionsCreateUrl }}"
-                                class="ui-button mt-6 inline-flex h-11 items-center justify-center rounded-lg bg-emerald-600 px-5 text-sm font-semibold text-white shadow-sm shadow-emerald-700/15 hover:bg-emerald-700">
-                                Tambah Transaksi
-                            </a>
+
+                            <div>
+                                <p class="font-semibold text-slate-950">
+                                    {{ $transaction->title }}
+                                </p>
+
+                                <p class="text-xs text-slate-500">
+                                    {{ optional($transaction->account)->name ?? '-' }}
+                                    •
+                                    {{ optional($transaction->transaction_date)->format('d M Y') ?? '-' }}
+                                </p>
+                            </div>
                         </div>
-                    @else
-                        <div class="divide-y divide-slate-100">
-                            @foreach ($recentItems as $transaction)
-                                @php
-                                    $isIncome = $transaction->type === 'income';
-                                @endphp
 
-                                <div class="flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
-                                    <div class="flex min-w-0 items-center gap-3">
-                                        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ring-1 {{ $isIncome ? 'bg-emerald-50 text-emerald-700 ring-emerald-100' : 'bg-rose-50 text-rose-700 ring-rose-100' }}">
-                                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                                @if ($isIncome)
-                                                    <path d="M12 19V5" />
-                                                    <path d="m5 12 7-7 7 7" />
-                                                @else
-                                                    <path d="M12 5v14" />
-                                                    <path d="m19 12-7 7-7-7" />
-                                                @endif
-                                            </svg>
-                                        </div>
+                        <p
+                            class="font-bold {{ $isIncome ? 'text-emerald-700' : 'text-rose-700' }}">
+                            {{ $isIncome ? '+Rp' : '-Rp' }}{{ number_format($transaction->amount, 0, ',', '.') }}
+                        </p>
+                    </div>
+                @endforeach
 
-                                        <div class="min-w-0">
-                                            <p class="truncate font-semibold text-slate-950">{{ $transaction->title }}</p>
-                                            <p class="mt-1 text-xs text-slate-500">
-                                                {{ optional($transaction->account)->name ?? '-' }} /
-                                                {{ optional($transaction->transaction_date)->format('d M Y') ?? '-' }}
-                                            </p>
-                                        </div>
-                                    </div>
+            </div>
+        @endif
 
-                                    <p class="whitespace-nowrap text-sm font-bold {{ $isIncome ? 'text-emerald-700' : 'text-rose-700' }}">
-                                        {{ $isIncome ? '+Rp' : '-Rp' }}{{ number_format($transaction->amount, 0, ',', '.') }}
-                                    </p>
-                                </div>
-                            @endforeach
+    </section>
+
+    {{-- Sidebar --}}
+    <aside class="space-y-5">
+
+        {{-- Aksi Cepat --}}
+        <section
+            class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+
+            <div class="border-b border-slate-100 px-5 py-4">
+                <p
+                    class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                    Aksi Cepat
+                </p>
+            </div>
+
+            <div class="p-4 space-y-3">
+
+                <a href="{{ $transactionsIndexUrl }}"
+                    class="group flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 p-4 transition hover:border-sky-200 hover:bg-sky-50">
+
+                    <div>
+                        <p class="text-sm font-semibold text-slate-900">
+                            Kelola Transaksi
+                        </p>
+                        <p class="text-xs text-slate-500">
+                            Lihat dan tambah transaksi
+                        </p>
+                    </div>
+
+                    <svg class="h-5 w-5 text-slate-400 transition group-hover:translate-x-1"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+
+                <a href="{{ $accountsIndexUrl }}"
+                    class="group flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 p-4 transition hover:border-sky-200 hover:bg-sky-50">
+
+                    <div>
+                        <p class="text-sm font-semibold text-slate-900">
+                            Kelola Akun
+                        </p>
+                        <p class="text-xs text-slate-500">
+                            Dompet dan rekening
+                        </p>
+                    </div>
+
+                    <svg class="h-5 w-5 text-slate-400 transition group-hover:translate-x-1"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+
+                <a href="{{ $budgetUrl }}"
+                    class="group flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 p-4 transition hover:border-sky-200 hover:bg-sky-50">
+
+                    <div>
+                        <p class="text-sm font-semibold text-slate-900">
+                            Kelola Budget
+                        </p>
+                        <p class="text-xs text-slate-500">
+                            Pantau batas pengeluaran
+                        </p>
+                    </div>
+
+                    <svg class="h-5 w-5 text-slate-400 transition group-hover:translate-x-1"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+
+            </div>
+
+        </section>
+
+        {{-- Akun Teratas --}}
+        <section class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                Akun Teratas
+            </p>
+
+            <div class="mt-4 space-y-3">
+
+                @forelse ($accountItems->sortByDesc('balance')->take(3) as $account)
+
+                    <div
+                        class="flex items-center justify-between rounded-lg bg-slate-50 p-3">
+
+                        <div>
+                            <p class="font-semibold text-slate-950">
+                                {{ $account->name }}
+                            </p>
+
+                            <p class="text-xs text-slate-500">
+                                {{ ucfirst($account->type ?? '-') }}
+                            </p>
                         </div>
-                    @endif
-                </section>
 
-                <aside class="space-y-5">
-                    <section class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Aksi Cepat</p>
-                        <div class="mt-4 grid gap-2">
-                            <a href="{{ $transactionsCreateUrl }}"
-                                class="ui-button inline-flex h-11 items-center justify-center rounded-lg bg-emerald-600 px-4 text-sm font-semibold text-white shadow-sm shadow-emerald-700/15 hover:bg-emerald-700">
-                                Tambah Transaksi
-                            </a>
-                            <a href="{{ $accountsIndexUrl }}"
-                                class="ui-button inline-flex h-11 items-center justify-center rounded-lg border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm hover:border-slate-300 hover:bg-slate-50">
-                                Kelola Akun
-                            </a>
-                            <a href="{{ $budgetUrl }}"
-                                class="ui-button inline-flex h-11 items-center justify-center rounded-lg border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm hover:border-slate-300 hover:bg-slate-50">
-                                Kelola Budget
-                            </a>
-                        </div>
-                    </section>
+                        <p
+                            class="font-bold {{ $account->balance < 0 ? 'text-rose-600' : 'text-slate-900' }}">
+                            Rp{{ number_format(abs($account->balance), 0, ',', '.') }}
+                        </p>
+                    </div>
 
-                    <section class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Akun Teratas</p>
-                        <div class="mt-4 space-y-3">
-                            @forelse ($accountItems->sortByDesc('balance')->take(3) as $account)
-                                <div class="flex items-center justify-between gap-3">
-                                    <div class="min-w-0">
-                                        <p class="truncate text-sm font-semibold text-slate-950">{{ $account->name }}</p>
-                                        <p class="mt-1 text-xs text-slate-500">{{ ucfirst($account->type ?? '-') }}</p>
-                                    </div>
-                                    <p class="whitespace-nowrap text-sm font-bold {{ $account->balance < 0 ? 'text-rose-700' : 'text-slate-950' }}">
-                                        {{ $account->balance < 0 ? '-Rp' : 'Rp' }}{{ number_format(abs($account->balance), 0, ',', '.') }}
-                                    </p>
-                                </div>
-                            @empty
-                                <p class="text-sm text-slate-500">Belum ada akun.</p>
-                                <a href="{{ $accountsCreateUrl }}" class="mt-3 inline-flex text-sm font-semibold text-sky-700 hover:text-sky-800">
-                                    Tambah akun
-                                </a>
-                            @endforelse
-                        </div>
-                    </section>
-                </aside>
+                @empty
+                    <p class="text-sm text-slate-500">
+                        Belum ada akun.
+                    </p>
+                @endforelse
+
+            </div>
+
+        </section>
+
+    </aside>
+
+</div>
             </div>
         </div>
     </div>

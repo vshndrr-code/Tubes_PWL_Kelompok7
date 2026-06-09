@@ -166,7 +166,9 @@
                                                 <div>
                                                     <p class="text-sm font-semibold text-slate-900">
                                                         {{ $account->name }}</p>
-                                                    <p class="text-xs text-slate-500">{{ ucfirst($account->type) }}</p>
+                                                    <p class="text-xs text-slate-500">
+                                                        {{ ucfirst($account->type) }} · Rp {{ number_format($account->balance, 0, ',', '.') }}
+                                                    </p>
                                                 </div>
                                                 @if (optional($selectedAccount)->id === $account->id)
                                                     <span
