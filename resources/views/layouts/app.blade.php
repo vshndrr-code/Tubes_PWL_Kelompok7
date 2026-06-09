@@ -17,7 +17,7 @@
 </head>
 
 <body class="font-sans antialiased">
-    <div class="min-h-screen flex {{ request()->routeIs('accounts.*') ? '-mt-6' : '' }}">
+    <div class="min-h-screen flex">
         <!-- Sidebar -->
         <aside class="fixed inset-y-0 left-0 z-40 w-64 bg-white shadow-lg">
             <div class="p-6">
@@ -131,7 +131,7 @@
                                 </button>
 
                                 <div
-                                    class="absolute right-0 z-20 mt-3 w-72 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl opacity-0 invisible transition-all duration-200 group-hover:opacity-100 group-hover:visible">
+                                    class="absolute right-0 top-full z-50 mt-2 w-72 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl opacity-0 invisible transition-all duration-200 group-hover:opacity-100 group-hover:visible">
                                     <div class="border-b border-slate-200 px-4 py-4 bg-slate-50">
                                         <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Pilih akun</p>
                                         <p class="mt-2 text-sm font-semibold text-slate-900">Switch wallet</p>
