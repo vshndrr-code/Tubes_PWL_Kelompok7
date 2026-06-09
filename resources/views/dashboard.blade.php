@@ -55,8 +55,8 @@
                 $budgetItems = collect($budgetings ?? $budgets ?? []);
 
                 $totalBalance = $totalBalance ?? $accountBalance ?? $accountItems->sum('balance');
-                $monthlyIncome = $monthlyIncome ?? $currentMonthIncome ?? $transactionItems->where('type', 'income')->sum('amount');
-                $monthlyExpense = $monthlyExpense ?? $currentMonthExpense ?? $transactionItems->where('type', 'expense')->sum('amount');
+                $monthlyIncome = $monthlyIncome ?? $currentMonthIncome ?? $transactionItems->where('type', 'income')->filter(fn($t) => $t->transaction_date && $t->transaction_date->isCurrentMonth())->sum('amount');
+                $monthlyExpense = $monthlyExpense ?? $currentMonthExpense ?? $transactionItems->where('type', 'expense')->filter(fn($t) => $t->transaction_date && $t->transaction_date->isCurrentMonth())->sum('amount');
                 $netCashflow = $monthlyIncome - $monthlyExpense;
                 $accountCount = $accountCount ?? $accountItems->count();
                 $transactionCount = $transactionCount ?? $transactionItems->count();
