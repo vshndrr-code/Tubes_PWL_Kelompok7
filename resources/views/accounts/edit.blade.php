@@ -34,16 +34,15 @@
     }
 
     .account-type-radio:checked + .account-type-card .selected-dot {
-        background-color: rgb(16 185 129);
+        background-color: white;
         opacity: 1;
         transform: scale(1);
     }
 
     .account-type-radio:checked + .account-type-card .selected-ring {
-        border-color: rgb(16 185 129);
+        background-color: rgb(16 185 129);
         --tw-ring-color: rgb(16 185 129);
         box-shadow: 0 0 0 1px rgb(16 185 129);
-        background-color: rgb(236 253 245);
     }
 
     .account-type-radio:focus-visible + .account-type-card {

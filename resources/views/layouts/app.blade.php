@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'Laravel') }} - MOMA</title>
@@ -16,16 +16,39 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="font-sans antialiased">
-    <div class="min-h-screen flex">
+<body class="font-sans antialiased" x-data="{ sidebarOpen: false }" @keydown.escape.window="sidebarOpen = false">
+    <div class="min-h-screen flex bg-slate-50">
+        <!-- Mobile Sidebar Overlay -->
+        <div x-show="sidebarOpen"
+             x-transition:enter="transition-opacity ease-linear duration-200"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition-opacity ease-linear duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             @click="sidebarOpen = false"
+             class="fixed inset-0 bg-slate-900/50 z-30 lg:hidden"
+             x-cloak></div>
+
         <!-- Sidebar -->
-        <aside class="fixed inset-y-0 left-0 z-40 w-64 bg-white shadow-lg">
-            <div class="p-6">
-                <h1 class="text-2xl font-bold text-gray-800">MOMA</h1>
-                <p class="text-sm text-gray-500">Management System</p>
+        <aside
+            :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
+            class="fixed inset-y-0 left-0 z-40 w-64 bg-white shadow-lg transform transition-transform duration-200 ease-in-out lg:translate-x-0 flex flex-col">
+            <div class="p-6 flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">MOMA</h1>
+                    <p class="text-sm text-gray-500">Management System</p>
+                </div>
+                <button @click="sidebarOpen = false"
+                        class="lg:hidden inline-flex items-center justify-center rounded-md p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-500"
+                        aria-label="Close sidebar">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
             </div>
 
-            <nav class="mt-6 space-y-2 px-4">
+            <nav class="mt-2 space-y-1 px-4 flex-1 overflow-y-auto">
                 <a href="{{ route('dashboard') }}"
                     class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('dashboard') ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100' }}">
                     <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
@@ -73,7 +96,7 @@
                 </a>
             </nav>
 
-            <div class="absolute bottom-0 w-64 border-t px-4 py-4 space-y-2 bg-white">
+            <div class="border-t px-4 py-4 space-y-2 bg-white">
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit"
