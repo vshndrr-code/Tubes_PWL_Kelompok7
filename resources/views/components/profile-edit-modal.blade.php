@@ -1,7 +1,8 @@
-@props(['user'])
+@props(['user', 'trigger' => true])
 
-<div x-data="profileEditModal()" class="w-full">
+<div x-data="profileEditModal()" @open-profile-edit.window="open = true" class="w-full">
     <!-- Modal Trigger Button -->
+    @if($trigger)
     <button type="button" @click="open = true" class="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none cursor-pointer w-full">
         <div class="max-w-40 truncate">{{ $user->name }}</div>
         <div class="ms-1">
@@ -10,6 +11,7 @@
             </svg>
         </div>
     </button>
+    @endif
 
     <!-- Modal -->
     <div x-show="open" class="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center" @click.self="open = false">
