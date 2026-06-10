@@ -173,43 +173,18 @@
 
                         <div>
                             <div class="flex items-center justify-between">
-                                <label class="text-sm font-semibold text-slate-700">Tag <span class="text-xs font-normal text-slate-400">(Opsional)</span></label>
-                                <a href="{{ route('tags.create') }}" target="_blank"
+                                <label for="tags" class="text-sm font-semibold text-slate-700">Tag <span class="text-xs font-normal text-slate-400">(Opsional)</span></label>
+                                <a href="{{ route('tags.index') }}" target="_blank"
                                     class="inline-flex items-center gap-1 text-xs font-semibold text-violet-600 hover:text-violet-800 transition">
                                     <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                                     </svg>
-                                    Buat tag baru
+                                    Kelola label / tag
                                 </a>
                             </div>
-                            @if ($tags->isNotEmpty())
-                                <div class="mt-3 flex flex-wrap gap-2">
-                                    @foreach ($tags as $tag)
-                                        <label class="inline-flex cursor-pointer items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold text-white ring-2 ring-transparent transition hover:ring-offset-1 has-[:checked]:ring-2"
-                                            style="background-color: {{ $tag->color ?? '#6B7280' }}; --tw-ring-color: {{ $tag->color ?? '#6B7280' }}">
-                                            <input type="checkbox" name="tags[]" value="{{ $tag->id }}"
-                                                class="h-3.5 w-3.5 rounded border-white/40 bg-white/20 text-white focus:ring-white/30"
-                                                @checked(
-                                                    in_array($tag->id, old('tags', $transaction->tags->pluck('id')->toArray()))
-                                                )>
-                                            {{ $tag->name }}
-                                        </label>
-                                    @endforeach
-                                </div>
-                                <p class="mt-2 text-xs text-slate-400">Centang tag yang sesuai untuk transaksi ini. Opsional.</p>
-                            @else
-                                <div class="mt-3 flex items-center gap-3 rounded-lg border border-dashed border-slate-300 bg-slate-50 px-4 py-3">
-                                    <svg class="h-5 w-5 shrink-0 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
-                                            d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                                    </svg>
-                                    <p class="text-sm text-slate-500">
-                                        Belum ada tag.
-                                        <a href="{{ route('tags.create') }}" target="_blank" class="font-semibold text-violet-600 hover:underline">Buat tag pertamamu</a>
-                                        untuk mengorganisir transaksi.
-                                    </p>
-                                </div>
-                            @endif
+                            <input type="text" name="tags" id="tags" value="{{ old('tags', $transaction->tags->pluck('name')->implode(', ')) }}"
+                                class="mt-2 h-11 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm text-slate-700 shadow-sm outline-none transition focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-100 @error('tags') border-red-400 ring-red-100 @enderror"
+                                placeholder="Contoh: makanan, jajan, transportasi (pisahkan dengan koma)">
                             @error('tags')
                                 <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                             @enderror
