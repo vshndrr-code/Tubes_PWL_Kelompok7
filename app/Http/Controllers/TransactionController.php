@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Account;
 use App\Models\Category;
 use App\Models\RecurringTransaction;
+use App\Models\Tag;
 use App\Models\Transaction;
 use App\Http\Requests\StoreRecurringTransactionRequest;
 use App\Http\Requests\StoreTransactionRequest;
@@ -219,7 +220,7 @@ class TransactionController extends Controller
             $transaction = Transaction::create($validated);
             $this->applyTransactionBalance($transaction);
 
-            $this->syncTagsFromString($transaction, $request->input('tags'));
+            $this->syncTags($transaction, $request->input('tags'));
         });
 
         return redirect()->route('transactions.index')
@@ -283,7 +284,7 @@ class TransactionController extends Controller
             $transaction->update($validated);
             $this->applyTransactionBalance($transaction);
 
-            $this->syncTagsFromString($transaction, $request->input('tags'));
+            $this->syncTags($transaction, $request->input('tags'));
         });
 
         return redirect()->route('transactions.show', $transaction)
@@ -368,37 +369,36 @@ class TransactionController extends Controller
         }
     }
 
-    private function syncTagsFromString(Transaction $transaction, ?string $tagsString): void
+    /**
+     * Sync tags from an array of tag IDs (submitted via checkboxes).
+     * Only tags owned by the current user can be attached, to prevent
+     * a malicious client from linking the transaction to another user's tag.
+     */
+    private function syncTags(Transaction $transaction, ?array $tagIds): void
     {
-        if (empty($tagsString)) {
+        if (empty($tagIds)) {
             $transaction->tags()->sync([]);
             return;
         }
 
-        // Split by commas, trim names, remove empty values
-        $names = array_filter(array_map('trim', explode(',', $tagsString)));
+        // Normalize: keep only integer IDs, drop empty / duplicate values
+        $tagIds = array_values(array_unique(array_filter(
+            array_map(function ($id) {
+                return is_numeric($id) ? (int) $id : null;
+            }, $tagIds)
+        )));
 
-        // Predefined nice pastel/vibrant colors
-        $colors = ['#EF4444', '#F59E0B', '#10B981', '#3B82F6', '#6366F1', '#8B5CF6', '#EC4899', '#14B8A6', '#06B6D4', '#F43F5E', '#84CC16'];
-
-        $tagIds = [];
-        foreach ($names as $name) {
-            if ($name === '') continue;
-
-            // Compute a consistent color based on tag name
-            $hash = crc32($name);
-            $color = $colors[abs($hash) % count($colors)];
-
-            $tag = Tag::firstOrCreate([
-                'user_id' => auth()->id(),
-                'name' => $name,
-            ], [
-                'color' => $color,
-            ]);
-
-            $tagIds[] = $tag->id;
+        if (empty($tagIds)) {
+            $transaction->tags()->sync([]);
+            return;
         }
 
-        $transaction->tags()->sync($tagIds);
+        // Restrict to tags owned by the current user (security check)
+        $validTagIds = Tag::where('user_id', auth()->id())
+            ->whereIn('id', $tagIds)
+            ->pluck('id')
+            ->all();
+
+        $transaction->tags()->sync($validTagIds);
     }
 }
