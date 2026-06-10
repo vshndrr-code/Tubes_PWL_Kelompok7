@@ -88,6 +88,14 @@
                                 <p class="mt-1 text-sm text-slate-500">{{ ucfirst(optional($transaction->category)->type ?? '-') }}</p>
                             </div>
 
+                            @if ($transaction->budgeting_id)
+                                <div class="rounded-lg bg-emerald-50 p-4 ring-1 ring-emerald-100">
+                                    <p class="text-xs font-semibold uppercase tracking-[0.14em] text-emerald-700">Budget</p>
+                                    <p class="mt-2 text-lg font-semibold text-emerald-800">{{ optional($transaction->budgeting)->name }}</p>
+                                    <p class="mt-1 text-xs text-emerald-600">Limit: Rp{{ number_format(optional($transaction->budgeting)->limit_amount, 0, ',', '.') }}</p>
+                                </div>
+                            @endif
+
                             <div class="rounded-lg bg-slate-50 p-4 ring-1 ring-slate-200">
                                 <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">Hari</p>
                                 <p class="mt-2 text-lg font-semibold text-slate-950">{{ $transaction->transaction_date->format('l') }}</p>

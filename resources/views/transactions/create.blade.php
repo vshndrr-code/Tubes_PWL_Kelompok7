@@ -98,6 +98,22 @@
                             @enderror
                         </div>
 
+                        <div>
+                            <label for="budgeting_id" class="text-sm font-semibold text-slate-700">Hubungkan ke Budget (Opsional)</label>
+                            <select name="budgeting_id" id="budgeting_id"
+                                class="mt-2 h-11 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm text-slate-700 shadow-sm outline-none transition focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-100 @error('budgeting_id') border-red-400 ring-red-100 @enderror">
+                                <option value="">Tanpa Budget</option>
+                                @foreach ($budgets as $budget)
+                                    <option value="{{ $budget->id }}" @selected(old('budgeting_id') == $budget->id)>
+                                        {{ $budget->name }} (Limit: Rp{{ number_format($budget->limit_amount, 0, ',', '.') }}, Periode: {{ ['', 'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'][$budget->month] ?? '-' }} {{ $budget->year }})
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('budgeting_id')
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
                         <input type="hidden" name="type" id="type" value="{{ old('type', '') }}">
 
                         <div>

@@ -190,7 +190,7 @@
 
                                 <div class="flex flex-col gap-2 sm:flex-row">
                                     <select x-model="month"
-                                        class="h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm font-medium text-slate-700 outline-none transition focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-100">
+                                        class="h-10 rounded-lg border border-slate-200 bg-slate-50 pl-3 pr-10 text-sm font-medium text-slate-700 outline-none transition focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-100">
                                         <option value="all">Semua bulan</option>
                                         @foreach ($monthLabels as $monthNumber => $monthName)
                                             <option value="{{ $monthNumber }}">{{ $monthName }}</option>
