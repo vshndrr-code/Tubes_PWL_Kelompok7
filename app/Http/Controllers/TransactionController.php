@@ -20,7 +20,7 @@ class TransactionController extends Controller
         $this->processDueRecurringTransactions();
 
         $transactions = Transaction::where('user_id', auth()->id())
-            ->with(['account', 'category', 'tags'])
+            ->with(['account', 'category', 'tags', 'savingsGoal'])
             ->orderBy('transaction_date', 'desc')
             ->paginate(15);
 
@@ -64,7 +64,11 @@ class TransactionController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('transactions.create', compact('accounts', 'categories', 'tags', 'budgets'));
+        $savingsGoals = \App\Models\SavingsGoals::where('user_id', $userId)
+            ->orderBy('name')
+            ->get();
+
+        return view('transactions.create', compact('accounts', 'categories', 'tags', 'budgets', 'savingsGoals'));
     }
 
     public function createRecurring()
@@ -203,13 +207,20 @@ class TransactionController extends Controller
         $validated = $request->validated();
         $validated['user_id'] = auth()->id();
 
+        // Enforce: budget hanya untuk expense, saving goals hanya untuk income
+        if ($validated['type'] === 'income') {
+            $validated['budgeting_id'] = null;
+        }
+        if ($validated['type'] === 'expense') {
+            $validated['savings_goal_id'] = null;
+        }
+
         DB::transaction(function () use ($validated, $request, &$transaction) {
             $transaction = Transaction::create($validated);
             $this->applyTransactionBalance($transaction);
 
-            if ($request->has('tags') && is_array($request->tags)) {
-                $transaction->tags()->sync($request->tags);
-            }
+            // Sync tags (empty array clears all tags if none selected)
+            $transaction->tags()->sync($request->input('tags', []));
         });
 
         return redirect()->route('transactions.index')
@@ -246,7 +257,11 @@ class TransactionController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('transactions.edit', compact('transaction', 'accounts', 'categories', 'tags', 'budgets'));
+        $savingsGoals = \App\Models\SavingsGoals::where('user_id', auth()->id())
+            ->orderBy('name')
+            ->get();
+
+        return view('transactions.edit', compact('transaction', 'accounts', 'categories', 'tags', 'budgets', 'savingsGoals'));
     }
 
     public function update(UpdateTransactionRequest $request, Transaction $transaction)
@@ -255,15 +270,22 @@ class TransactionController extends Controller
 
         $validated = $request->validated();
 
+        // Enforce: budget hanya untuk expense, saving goals hanya untuk income
+        if ($validated['type'] === 'income') {
+            $validated['budgeting_id'] = null;
+        }
+        if ($validated['type'] === 'expense') {
+            $validated['savings_goal_id'] = null;
+        }
+
         DB::transaction(function () use ($validated, $request, $transaction) {
             $this->reverseTransactionBalance($transaction);
 
             $transaction->update($validated);
             $this->applyTransactionBalance($transaction);
 
-            if ($request->has('tags') && is_array($request->tags)) {
-                $transaction->tags()->sync($request->tags);
-            }
+            // Sync tags (empty array clears all tags if none selected)
+            $transaction->tags()->sync($request->input('tags', []));
         });
 
         return redirect()->route('transactions.show', $transaction)

@@ -159,6 +159,63 @@
                             <p class="mt-4 text-sm text-slate-500">Goal baru dibuat - periksa kembali nanti untuk statistik</p>
                         @endif
                     </section>
+
+                    <!-- Linked Transactions -->
+                    <section class="rounded-lg border border-slate-200 bg-white shadow-sm">
+                        <div class="flex items-center justify-between border-b border-slate-100 px-5 py-4">
+                            <div>
+                                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Riwayat</p>
+                                <h2 class="mt-1 text-base font-semibold text-slate-950">Transaksi Terhubung</h2>
+                            </div>
+                            <span class="inline-flex rounded-md bg-sky-50 px-2.5 py-1 text-xs font-semibold text-sky-700 ring-1 ring-sky-100">
+                                {{ $savingsGoal->transactions->count() }} transaksi
+                            </span>
+                        </div>
+
+                        @if ($savingsGoal->transactions->isEmpty())
+                            <div class="p-10 text-center">
+                                <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-slate-100 text-slate-400">
+                                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                    </svg>
+                                </div>
+                                <p class="text-sm font-medium text-slate-600">Belum ada transaksi terhubung</p>
+                                <p class="mt-1 text-xs text-slate-400">Hubungkan transaksi ke goal ini saat mencatat di halaman Transaksi.</p>
+                                <a href="{{ route('transactions.create') }}" class="mt-4 inline-flex h-9 items-center gap-2 rounded-lg bg-sky-600 px-3 text-sm font-semibold text-white hover:bg-sky-700">
+                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                                    </svg>
+                                    Tambah Transaksi
+                                </a>
+                            </div>
+                        @else
+                            <ul class="divide-y divide-slate-100">
+                                @foreach ($savingsGoal->transactions as $tx)
+                                    @php
+                                        $isIncome = $tx->type === 'income';
+                                    @endphp
+                                    <li class="flex items-center justify-between gap-4 px-5 py-3.5 hover:bg-slate-50">
+                                        <div class="flex items-center gap-3 min-w-0">
+                                            <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg {{ $isIncome ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-600' }}">
+                                                @if ($isIncome)
+                                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 11l5-5m0 0l5 5m-5-5v12" /></svg>
+                                                @else
+                                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 13l-5 5m0 0l-5-5m5 5V6" /></svg>
+                                                @endif
+                                            </div>
+                                            <div class="min-w-0">
+                                                <p class="truncate text-sm font-semibold text-slate-900">{{ $tx->title }}</p>
+                                                <p class="text-xs text-slate-500">{{ $tx->transaction_date->format('d M Y') }}{{ $tx->category ? ' · ' . $tx->category->name : '' }}</p>
+                                            </div>
+                                        </div>
+                                        <p class="shrink-0 text-sm font-bold {{ $isIncome ? 'text-emerald-700' : 'text-rose-600' }}">
+                                            {{ $isIncome ? '+' : '-' }}Rp{{ number_format($tx->amount, 0, ',', '.') }}
+                                        </p>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @endif
+                    </section>
                 </main>
 
                 <aside class="space-y-5">

@@ -38,6 +38,9 @@ class Budgeting extends Model
 
     public function getSpentAmountAttribute()
     {
+        if ($this->relationLoaded('transactions')) {
+            return $this->transactions->sum('amount');
+        }
         return $this->transactions()->sum('amount');
     }
 }

@@ -103,7 +103,7 @@
                             @enderror
                         </div>
 
-                        <div>
+                        <div id="budget-wrapper">
                             <label for="budgeting_id" class="text-sm font-semibold text-slate-700">Hubungkan ke Budget (Opsional)</label>
                             <select name="budgeting_id" id="budgeting_id"
                                 class="mt-2 h-11 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm text-slate-700 shadow-sm outline-none transition focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-100 @error('budgeting_id') border-red-400 ring-red-100 @enderror">
@@ -118,6 +118,23 @@
                                 <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
+
+                        <div id="savings-goal-wrapper">
+                            <label for="savings_goal_id" class="text-sm font-semibold text-slate-700">Hubungkan ke Saving Goals (Opsional)</label>
+                            <select name="savings_goal_id" id="savings_goal_id"
+                                class="mt-2 h-11 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm text-slate-700 shadow-sm outline-none transition focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-100 @error('savings_goal_id') border-red-400 ring-red-100 @enderror">
+                                <option value="">Tanpa Saving Goals</option>
+                                @foreach ($savingsGoals as $goal)
+                                    <option value="{{ $goal->id }}" @selected(old('savings_goal_id', $transaction->savings_goal_id) == $goal->id)>
+                                        {{ $goal->name }} (Target: Rp{{ number_format($goal->target_amount, 0, ',', '.') }}{{ $goal->deadline ? ', Deadline: ' . $goal->deadline->format('d M Y') : '' }})
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('savings_goal_id')
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
 
                         <input type="hidden" name="type" id="type" value="{{ old('type', optional($transaction->category)->type ?? $transaction->type) }}">
 
@@ -154,24 +171,49 @@
                             @enderror
                         </div>
 
-                        @if ($tags->count() > 0)
-                            <div>
-                                <label class="text-sm font-semibold text-slate-700">Tag</label>
+                        <div>
+                            <div class="flex items-center justify-between">
+                                <label class="text-sm font-semibold text-slate-700">Tag <span class="text-xs font-normal text-slate-400">(Opsional)</span></label>
+                                <a href="{{ route('tags.create') }}" target="_blank"
+                                    class="inline-flex items-center gap-1 text-xs font-semibold text-violet-600 hover:text-violet-800 transition">
+                                    <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                                    </svg>
+                                    Buat tag baru
+                                </a>
+                            </div>
+                            @if ($tags->isNotEmpty())
                                 <div class="mt-3 flex flex-wrap gap-2">
                                     @foreach ($tags as $tag)
-                                        <label class="inline-flex cursor-pointer items-center rounded-md bg-slate-50 px-3 py-2 text-sm font-medium text-slate-700 ring-1 ring-slate-200 hover:bg-white">
+                                        <label class="inline-flex cursor-pointer items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold text-white ring-2 ring-transparent transition hover:ring-offset-1 has-[:checked]:ring-2"
+                                            style="background-color: {{ $tag->color ?? '#6B7280' }}; --tw-ring-color: {{ $tag->color ?? '#6B7280' }}">
                                             <input type="checkbox" name="tags[]" value="{{ $tag->id }}"
-                                                class="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
-                                                @checked($transaction->tags->contains($tag->id))>
-                                            <span class="ml-2">{{ $tag->name }}</span>
+                                                class="h-3.5 w-3.5 rounded border-white/40 bg-white/20 text-white focus:ring-white/30"
+                                                @checked(
+                                                    in_array($tag->id, old('tags', $transaction->tags->pluck('id')->toArray()))
+                                                )>
+                                            {{ $tag->name }}
                                         </label>
                                     @endforeach
                                 </div>
-                                @error('tags')
-                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
-                            </div>
-                        @endif
+                                <p class="mt-2 text-xs text-slate-400">Centang tag yang sesuai untuk transaksi ini. Opsional.</p>
+                            @else
+                                <div class="mt-3 flex items-center gap-3 rounded-lg border border-dashed border-slate-300 bg-slate-50 px-4 py-3">
+                                    <svg class="h-5 w-5 shrink-0 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                                            d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                                    </svg>
+                                    <p class="text-sm text-slate-500">
+                                        Belum ada tag.
+                                        <a href="{{ route('tags.create') }}" target="_blank" class="font-semibold text-violet-600 hover:underline">Buat tag pertamamu</a>
+                                        untuk mengorganisir transaksi.
+                                    </p>
+                                </div>
+                            @endif
+                            @error('tags')
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
                     </div>
 
                     <div class="flex flex-col gap-3 border-t border-slate-200 px-5 py-4 sm:flex-row sm:justify-end sm:px-6">
@@ -209,36 +251,77 @@
                 </aside>
             </div>
         </div>
-    </div>
-@endsection
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const categories = @json($categories);
+        const typeInput = document.getElementById('type');
+        const form = document.getElementById('transaction-form');
+        const budgetWrapper = document.getElementById('budget-wrapper');
+        const savingsWrapper = document.getElementById('savings-goal-wrapper');
+        const budgetSelect = document.getElementById('budgeting_id');
+        const savingsSelect = document.getElementById('savings_goal_id');
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const categories = @json($categories);
-    const typeInput = document.getElementById('type');
-    const form = document.getElementById('transaction-form');
+        if (!form || !typeInput) return;
 
-    if (!form || !typeInput) {
-        return;
-    }
+        function getSelectedCategoryType() {
+            const categoryInputs = form.querySelectorAll('input[name="category_id"]');
+            for (let input of categoryInputs) {
+                if (input.value) {
+                    const cat = categories.find(c => c.id == parseInt(input.value));
+                    return cat ? cat.type : null;
+                }
+            }
+            return null;
+        }
 
-    form.addEventListener('submit', function() {
-        const categoryInputs = form.querySelectorAll('input[name="category_id"]');
-        let categoryIdValue = null;
+        // Add mutation observer to watch for inline/Alpine attribute updates
+        const categoryHiddenInput = form.querySelector('input[name="category_id"]');
+        if (categoryHiddenInput) {
+            const observer = new MutationObserver(() => {
+                const type = getSelectedCategoryType();
+                updateVisibility(type);
+            });
+            observer.observe(categoryHiddenInput, { attributes: true, attributeFilter: ['value'] });
+        }
 
-        for (let input of categoryInputs) {
-            if (input.value) {
-                categoryIdValue = input.value;
-                break;
+        function updateVisibility(type) {
+            if (type === 'expense') {
+                budgetWrapper.style.display = '';
+                savingsWrapper.style.display = 'none';
+                savingsSelect.value = '';
+            } else if (type === 'income') {
+                budgetWrapper.style.display = 'none';
+                savingsWrapper.style.display = '';
+                budgetSelect.value = '';
+            } else {
+                budgetWrapper.style.display = 'none';
+                savingsWrapper.style.display = 'none';
             }
         }
 
-        if (categoryIdValue) {
-            const selectedCategory = categories.find(c => c.id == parseInt(categoryIdValue));
-            if (selectedCategory) {
-                typeInput.value = selectedCategory.type;
+        // Poll for category changes (Alpine.js updates value directly)
+        let lastCategoryId = null;
+        setInterval(() => {
+            const inputs = form.querySelectorAll('input[name="category_id"]');
+            let currentId = null;
+            for (let input of inputs) { if (input.value) { currentId = input.value; break; } }
+            if (currentId !== lastCategoryId) {
+                lastCategoryId = currentId;
+                updateVisibility(getSelectedCategoryType());
             }
-        }
+        }, 200);
+
+        // On submit: set type and clear irrelevant fields
+        form.addEventListener('submit', function() {
+            const type = getSelectedCategoryType();
+            if (type) typeInput.value = type;
+            if (type === 'income') budgetSelect.value = '';
+            if (type === 'expense') savingsSelect.value = '';
+        });
+
+        // Initial state based on current transaction type
+        const initialType = typeInput.value || null;
+        updateVisibility(initialType);
     });
-});
-</script>
+    </script>
+@endsection

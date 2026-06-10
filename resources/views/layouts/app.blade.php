@@ -94,6 +94,14 @@
                     </svg>
                     <span>Savings Goals</span>
                 </a>
+
+                <a href="{{ route('tags.index') }}"
+                    class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('tags.*') ? 'bg-violet-100 text-violet-700' : 'text-gray-700 hover:bg-gray-100' }}">
+                    <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M17.707 9.293l-7-7A1 1 0 0010 2H4a2 2 0 00-2 2v6a1 1 0 00.293.707l7 7a1 1 0 001.414 0l7-7a1 1 0 000-1.414zM9 7a2 2 0 11-4 0 2 2 0 014 0z" clip-rule="evenodd" />
+                    </svg>
+                    <span>Tags</span>
+                </a>
             </nav>
 
             <div class="border-t px-4 py-4 space-y-2 bg-white">

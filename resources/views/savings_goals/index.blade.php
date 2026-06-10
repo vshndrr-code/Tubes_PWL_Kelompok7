@@ -280,10 +280,10 @@
                                                     </p>
                                                 </div>
 
-                                                <div class="rounded-lg bg-slate-50 p-3 ring-1 ring-slate-200">
-                                                    <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">Sisa</p>
-                                                    <p class="mt-2 text-sm font-bold {{ $goal->target_amount - $goal->current_amount <= 0 ? 'text-emerald-700' : 'text-slate-950' }}">
-                                                        Rp{{ number_format(max(0, $goal->target_amount - $goal->current_amount), 0, ',', '.') }}
+                                                <div class="rounded-lg bg-sky-50 p-3 ring-1 ring-sky-100">
+                                                    <p class="text-xs font-semibold uppercase tracking-[0.14em] text-sky-600">Transaksi</p>
+                                                    <p class="mt-2 text-sm font-bold text-sky-700">
+                                                        {{ $goal->transactions->count() }}
                                                     </p>
                                                 </div>
                                             </div>

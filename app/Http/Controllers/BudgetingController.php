@@ -62,13 +62,19 @@ class BudgetingController extends Controller
     public function show(Budgeting $budgeting)
     {
         $this->authorize('view', $budgeting);
+        $budgeting->load(['transactions' => function ($q) {
+            $q->with('category')->orderBy('transaction_date', 'desc');
+        }, 'category']);
         return view('budgetings.show', compact('budgeting'));
     }
 
     public function edit(Budgeting $budgeting)
     {
         $this->authorize('update', $budgeting);
-        $categories = Category::where('user_id', Auth::id()) // 👈 Menggunakan Auth::id()
+        $categories = Category::where(function($query) {
+                $query->where('user_id', Auth::id())
+                      ->orWhereNull('user_id');
+            })
             ->orderBy('name')
             ->get();
         return view('budgetings.edit', compact('budgeting', 'categories'));

@@ -7,6 +7,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\BudgetingController;
 use App\Http\Controllers\SavingsGoalsController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\TagController;
 use App\Models\Account;
 use App\Models\Transaction;
 use App\Models\Budgeting;
@@ -86,6 +87,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('budgetings', BudgetingController::class);
     Route::resource('savings-goals', SavingsGoalsController::class);
     Route::resource('notifications', NotificationController::class);
+    Route::resource('tags', TagController::class)->except(['show']);
 });
 
 require __DIR__ . '/auth.php';

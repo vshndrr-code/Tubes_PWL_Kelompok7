@@ -16,6 +16,7 @@ class Transaction extends Model
         'account_id',
         'category_id',
         'budgeting_id',
+        'savings_goal_id',
         'type',
         'amount',
         'title',
@@ -46,6 +47,11 @@ class Transaction extends Model
     public function budgeting(): BelongsTo
     {
         return $this->belongsTo(Budgeting::class);
+    }
+
+    public function savingsGoal(): BelongsTo
+    {
+        return $this->belongsTo(SavingsGoals::class, 'savings_goal_id');
     }
 
     public function tags(): BelongsToMany

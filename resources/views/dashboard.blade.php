@@ -141,7 +141,7 @@
                 </div>
             </div>
 
-            <div class="mb-5 grid gap-4 md:grid-cols-3">
+            <div class="mb-5 grid gap-4 md:grid-cols-2">
                 <a href="{{ route('transactions.index') }}" class="ui-card block rounded-lg border border-emerald-100 bg-emerald-50 p-5 shadow-sm hover:bg-emerald-100/50 transition">
                     <p class="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">Pemasukan</p>
                     <p class="mt-3 text-2xl font-bold text-emerald-800">Rp{{ number_format($monthlyIncome, 0, ',', '.') }}</p>
@@ -151,28 +151,6 @@
                     <p class="text-xs font-semibold uppercase tracking-[0.18em] text-rose-700">Pengeluaran</p>
                     <p class="mt-3 text-2xl font-bold text-rose-800">Rp{{ number_format($monthlyExpense, 0, ',', '.') }}</p>
                 </a>
-
-                <div class="ui-card rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-                    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Budget Terpakai</p>
-                    @if ($budgetLimit > 0)
-                        <div class="mt-4 flex items-center justify-between gap-4 text-sm">
-                            <span class="font-medium text-slate-500">Rp{{ number_format($budgetSpent, 0, ',', '.') }} dari Rp{{ number_format($budgetLimit, 0, ',', '.') }}</span>
-                            <span class="font-semibold text-slate-700">{{ number_format($budgetProgress, 0) }}%</span>
-                        </div>
-                        <div class="mt-3 h-2.5 overflow-hidden rounded-full bg-slate-100">
-                            <div class="h-full rounded-full {{ $budgetProgress >= 100 ? 'bg-rose-500' : ($budgetProgress >= 80 ? 'bg-amber-500' : 'bg-emerald-500') }}"
-                                style="width: {{ $budgetProgress }}%"></div>
-                        </div>
-                    @else
-                        <div class="mt-4 flex items-center justify-between gap-4 text-sm">
-                            <span class="font-medium text-slate-400 text-xs">Belum ada budget bulan ini</span>
-                            <a href="{{ $budgetUrl }}" class="text-xs font-semibold text-emerald-600 hover:text-emerald-700">Atur Budget</a>
-                        </div>
-                        <div class="mt-3 h-2.5 overflow-hidden rounded-full bg-slate-100">
-                            <div class="h-full rounded-full bg-slate-200" style="width: 0%"></div>
-                        </div>
-                    @endif
-                </div>
             </div>
 
                 <div class="grid gap-5 lg:grid-cols-[1.7fr_0.7fr]">

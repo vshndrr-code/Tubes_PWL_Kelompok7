@@ -12,7 +12,7 @@ class SavingsGoalsController extends Controller
     public function index()
     {
         $savingsGoals = SavingsGoals::where('user_id', Auth::id())
-                                    ->with('account')
+                                    ->with(['account', 'transactions'])
                                     ->get();
 
         return view('savings_goals.index', compact('savingsGoals'));
@@ -54,7 +54,9 @@ class SavingsGoalsController extends Controller
     public function show(string $id)
     {
         $savingsGoal = SavingsGoals::where('user_id', Auth::id())
-                                   ->with('account')
+                                   ->with(['account', 'transactions' => function ($q) {
+                                       $q->with(['account', 'category'])->orderBy('transaction_date', 'desc');
+                                   }])
                                    ->findOrFail($id);
 
         return view('savings_goals.show', compact('savingsGoal'));
