@@ -1,7 +1,9 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @push('head')
 <style>
+    [x-cloak] { display: none !important; }
+
     @media (prefers-reduced-motion: no-preference) {
         .form-input {
             transition: border-color .18s ease, background-color .18s ease, box-shadow .18s ease;
@@ -46,19 +48,14 @@
                 <div class="space-y-6 px-6 py-8 sm:px-8 sm:py-10">
                     <!-- Kategori -->
                     <div>
-                        <label for="category_id" class="block text-sm font-semibold text-slate-700">
+                        <label class="block text-sm font-semibold text-slate-700">
                             Pilih Kategori
                             <span class="text-red-600">*</span>
                         </label>
                         <p class="mt-1 text-xs text-slate-500">Kategori pengeluaran yang ingin Anda atur limitnya</p>
-                        <select id="category_id" name="category_id" required
-                            class="form-input mt-3 block w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 shadow-sm outline-none focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-500/20">
-                            @foreach($categories as $category)
-                            <option value="{{ $category->id }}" {{ old('category_id', $budgeting->category_id) == $category->id ? 'selected' : '' }}>
-                                {{ $category->name }}
-                            </option>
-                            @endforeach
-                        </select>
+                        <div class="mt-3">
+                            <x-category-selector :categories="$categories" :selected-category-id="old('category_id', $budgeting->category_id)" />
+                        </div>
                         @error('category_id')
                         <p class="mt-2 text-xs text-red-600 flex items-center gap-1">
                             <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
