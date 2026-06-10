@@ -168,7 +168,7 @@
 
                         <div>
                             <div class="flex items-center justify-between">
-                                <label for="tags" class="text-sm font-semibold text-slate-700">Tag <span class="text-xs font-normal text-slate-400">(Opsional)</span></label>
+                                <label class="text-sm font-semibold text-slate-700">Tag <span class="text-xs font-normal text-slate-400">(Opsional)</span></label>
                                 <a href="{{ route('tags.index') }}" target="_blank"
                                     class="inline-flex items-center gap-1 text-xs font-semibold text-violet-600 hover:text-violet-800 transition">
                                     <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -177,10 +177,30 @@
                                     Kelola label / tag
                                 </a>
                             </div>
-                            <input type="text" name="tags" id="tags" value="{{ old('tags') }}"
-                                class="mt-2 h-11 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm text-slate-700 shadow-sm outline-none transition focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-100 @error('tags') border-red-400 ring-red-100 @enderror"
-                                placeholder="Contoh: makanan, jajan, transportasi (pisahkan dengan koma)">
+                            <div class="mt-2 rounded-lg border border-slate-200 bg-slate-50 p-3 @error('tags') border-red-400 ring-red-100 @enderror">
+                                @if ($tags->isEmpty())
+                                    <p class="text-sm text-slate-500">Belum ada tag. <a href="{{ route('tags.index') }}" target="_blank" class="font-semibold text-violet-600 hover:text-violet-800">Buat tag terlebih dahulu</a>.</p>
+                                @else
+                                    <div class="grid gap-2 sm:grid-cols-2 md:grid-cols-3">
+                                        @foreach ($tags as $tag)
+                                            @php
+                                                $oldTags = old('tags', []);
+                                            @endphp
+                                            <label class="flex cursor-pointer items-center gap-2 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 has-[:checked]:border-violet-300 has-[:checked]:bg-violet-50">
+                                                <input type="checkbox" name="tags[]" value="{{ $tag->id }}"
+                                                    class="h-4 w-4 rounded border-slate-300 text-violet-600 focus:ring-violet-500"
+                                                    @checked(is_array($oldTags) && in_array($tag->id, $oldTags))>
+                                                <span class="inline-block h-2.5 w-2.5 rounded-full" style="background-color: {{ $tag->color ?? '#94a3b8' }}"></span>
+                                                <span class="font-medium">{{ $tag->name }}</span>
+                                            </label>
+                                        @endforeach
+                                    </div>
+                                @endif
+                            </div>
                             @error('tags')
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                            @error('tags.*')
                                 <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
