@@ -168,9 +168,9 @@
                                     />
                                 </div>
 
-                                <div class="flex flex-col gap-2 sm:flex-row">
+                                <div class="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap">
                                     <select x-model="status"
-                                        class="h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm font-medium text-slate-700 outline-none transition focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-100">
+                                        class="h-10 w-full min-w-[150px] shrink-0 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm font-medium text-slate-700 outline-none transition focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-100">
                                         <option value="all">Semua status</option>
                                         <option value="active">Aktif</option>
                                         <option value="completed">Selesai</option>
@@ -178,7 +178,7 @@
                                     </select>
 
                                     <select x-model="accountId"
-                                        class="h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm font-medium text-slate-700 outline-none transition focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-100">
+                                        class="h-10 w-full min-w-[150px] shrink-0 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm font-medium text-slate-700 outline-none transition focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-100">
                                         <option value="all">Semua akun</option>
                                         @foreach ($accountsForFilter as $acc)
                                             <option value="{{ $acc->id }}">{{ $acc->name }}</option>
@@ -282,69 +282,4 @@
 
                                                 <div class="rounded-lg bg-slate-50 p-3 ring-1 ring-slate-200">
                                                     <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">Sisa</p>
-                                                    <p class="mt-2 text-sm font-bold {{ $goal->target_amount - $goal->current_amount <= 0 ? 'text-emerald-700' : 'text-slate-950' }}">
-                                                        Rp{{ number_format(max(0, $goal->target_amount - $goal->current_amount), 0, ',', '.') }}
-                                                    </p>
-                                                </div>
-                                            </div>
-
-                                            <div class="mt-5">
-                                                <div class="flex items-center justify-between gap-4 text-sm">
-                                                    <span class="font-medium text-slate-500">Progress</span>
-                                                    <span class="font-semibold text-slate-700">{{ number_format(min(100, $progressPercent), 1) }}%</span>
-                                                </div>
-                                                <div class="mt-2 h-2.5 overflow-hidden rounded-full bg-slate-100">
-                                                    <div class="h-full rounded-full transition-all {{ $barColor }}" style="width: {{ min(100, $progressPercent) }}%"></div>
-                                                </div>
-                                            </div>
-
-                                            <div class="mt-5 flex justify-end gap-2 border-t border-slate-100 pt-4">
-                                                <a href="{{ route('savings-goals.show', $goal->id) }}"
-                                                    class="ui-button inline-flex h-9 items-center justify-center gap-2 rounded-md bg-white px-3 text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-slate-200 hover:bg-slate-50">
-                                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                                    </svg>
-                                                    Detail
-                                                </a>
-
-                                                <a href="{{ route('savings-goals.edit', $goal->id) }}"
-                                                    class="ui-button inline-flex h-9 items-center justify-center gap-2 rounded-md bg-white px-3 text-sm font-semibold text-amber-700 shadow-sm ring-1 ring-slate-200 hover:bg-amber-50 hover:ring-amber-100">
-                                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                                    </svg>
-                                                    Edit
-                                                </a>
-
-                                                <form action="{{ route('savings-goals.destroy', $goal->id) }}" method="POST"
-                                                    onsubmit="return confirm('Yakin ingin menghapus goal ini?');">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit"
-                                                        class="ui-button inline-flex h-9 items-center justify-center gap-2 rounded-md bg-white px-3 text-sm font-semibold text-red-600 shadow-sm ring-1 ring-red-100 hover:bg-red-50 hover:ring-red-200">
-                                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                        </svg>
-                                                        Hapus
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </article>
-                                    @endforeach
-                                </div>
-
-                                <div x-cloak x-show="!hasMatches()"
-                                    class="mt-4 rounded-lg border border-dashed border-slate-300 bg-white p-10 text-center shadow-sm">
-                                    <h3 class="text-lg font-semibold text-slate-950">Tidak ada savings goal di filter ini</h3>
-                                    <p class="mt-2 text-sm text-slate-500">Pilih status/akun lain atau ubah kata pencarian.</p>
-                                </div>
-                            @endif
-                        </section>
-                    </main>
-                </div>
-            </div>
-        </div>
-    </div>
-@endsection
+                                                    <p class
