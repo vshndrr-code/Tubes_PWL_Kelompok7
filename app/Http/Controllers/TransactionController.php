@@ -219,8 +219,7 @@ class TransactionController extends Controller
             $transaction = Transaction::create($validated);
             $this->applyTransactionBalance($transaction);
 
-            // Sync tags (empty array clears all tags if none selected)
-            $transaction->tags()->sync($request->input('tags', []));
+            $this->syncTagsFromString($transaction, $request->input('tags'));
         });
 
         return redirect()->route('transactions.index')
@@ -284,8 +283,7 @@ class TransactionController extends Controller
             $transaction->update($validated);
             $this->applyTransactionBalance($transaction);
 
-            // Sync tags (empty array clears all tags if none selected)
-            $transaction->tags()->sync($request->input('tags', []));
+            $this->syncTagsFromString($transaction, $request->input('tags'));
         });
 
         return redirect()->route('transactions.show', $transaction)
@@ -368,5 +366,39 @@ class TransactionController extends Controller
                 });
             }
         }
+    }
+
+    private function syncTagsFromString(Transaction $transaction, ?string $tagsString): void
+    {
+        if (empty($tagsString)) {
+            $transaction->tags()->sync([]);
+            return;
+        }
+
+        // Split by commas, trim names, remove empty values
+        $names = array_filter(array_map('trim', explode(',', $tagsString)));
+
+        // Predefined nice pastel/vibrant colors
+        $colors = ['#EF4444', '#F59E0B', '#10B981', '#3B82F6', '#6366F1', '#8B5CF6', '#EC4899', '#14B8A6', '#06B6D4', '#F43F5E', '#84CC16'];
+
+        $tagIds = [];
+        foreach ($names as $name) {
+            if ($name === '') continue;
+
+            // Compute a consistent color based on tag name
+            $hash = crc32($name);
+            $color = $colors[abs($hash) % count($colors)];
+
+            $tag = Tag::firstOrCreate([
+                'user_id' => auth()->id(),
+                'name' => $name,
+            ], [
+                'color' => $color,
+            ]);
+
+            $tagIds[] = $tag->id;
+        }
+
+        $transaction->tags()->sync($tagIds);
     }
 }
