@@ -13,9 +13,23 @@ class AuthenticatedSessionController extends Controller
 {
     /**
      * Display the login view.
+     * Jika sudah login sebagai user biasa → redirect ke dashboard.
+     * Jika sudah login sebagai auditor → logout paksa dan tampilkan form login user.
      */
-    public function create(): View
+    public function create(): View|RedirectResponse
     {
+        if (Auth::check()) {
+            if (!Auth::user()->isAuditor()) {
+                // Sudah login sebagai user biasa, langsung ke dashboard
+                return redirect()->route('dashboard');
+            }
+            // Sudah login sebagai auditor, tapi minta halaman login user biasa
+            // → logout paksa agar bisa login sebagai user biasa
+            Auth::logout();
+            request()->session()->invalidate();
+            request()->session()->regenerateToken();
+        }
+
         return view('auth.login');
     }
 
@@ -24,6 +38,16 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
+        // Cek secara proaktif sebelum otentikasi dijalankan
+        $email = $request->input('email');
+        $preCheckUser = \App\Models\User::where('email', $email)->first();
+
+        if ($preCheckUser && $preCheckUser->isAuditor()) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'email' => 'Akun ini terdaftar sebagai Auditor. Silakan login melalui portal Auditor.',
+            ]);
+        }
+
         $request->authenticate();
 
         $request->session()->regenerate();

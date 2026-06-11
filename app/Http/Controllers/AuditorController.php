@@ -7,6 +7,7 @@ use App\Models\Transaction;
 use App\Models\SavingsGoals;
 use App\Models\Category;
 use App\Models\Tag;
+use App\Models\Budgeting;
 use Illuminate\Http\Request;
 
 class AuditorController extends Controller
@@ -41,16 +42,58 @@ class AuditorController extends Controller
         $totalAchievedSavings = $savingsAchieved;
         $totalSavingsGoals = $savingsAchieved + $savingsEmpty + $savingsInProgress;
 
-        return view('auditor.dashboard', compact(
-            'totalUsers',
-            'totalTransactions',
-            'totalAchievedSavings',
-            'globalCategoriesCount',
-            'savingsAchieved',
-            'savingsInProgress',
-            'savingsEmpty',
-            'totalSavingsGoals'
-        ));
+        // Budgeting breakdown for donut chart
+        // Hijau: belum habis (spent > 0 && spent < limit)
+        // Merah: sudah habis (spent >= limit)
+        // Abu-abu: belum dipake sama sekali (spent == 0)
+        $budgets = Budgeting::with('transactions')->get();
+        $budgetsGreen = 0;
+        $budgetsRed = 0;
+        $budgetsGray = 0;
+
+        foreach ($budgets as $budget) {
+            $spent = (float) $budget->spent_amount;
+            $limit = (float) $budget->limit_amount;
+            if ($spent == 0.0) {
+                $budgetsGray++;
+            } elseif ($spent >= $limit) {
+                $budgetsRed++;
+            } else {
+                $budgetsGreen++;
+            }
+        }
+        $totalBudgets = $budgets->count();
+
+        return response()
+            ->view('auditor.dashboard', compact(
+                'totalUsers',
+                'totalTransactions',
+                'totalAchievedSavings',
+                'globalCategoriesCount',
+                'savingsAchieved',
+                'savingsInProgress',
+                'savingsEmpty',
+                'totalSavingsGoals',
+                'budgetsGreen',
+                'budgetsRed',
+                'budgetsGray',
+                'totalBudgets'
+            ))
+            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', '0');
+    }
+
+    /**
+     * Logout khusus auditor via GET (dipanggil oleh JS saat back navigation).
+     */
+    public function logout(\Illuminate\Http\Request $request)
+    {
+        \Illuminate\Support\Facades\Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('auditor.login');
     }
 
     /**

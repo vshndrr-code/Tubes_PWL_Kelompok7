@@ -14,6 +14,14 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'auditor' => \App\Http\Middleware\EnsureUserIsAuditor::class,
         ]);
+        $middleware->redirectTo(
+            guests: function (\Illuminate\Http\Request $request) {
+                if ($request->is('auditor') || $request->is('auditor/*')) {
+                    return route('auditor.login');
+                }
+                return route('login');
+            }
+        );
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
