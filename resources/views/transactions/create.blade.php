@@ -182,13 +182,13 @@
                                     <p class="text-sm text-slate-500">Belum ada tag. <a href="{{ route('tags.index') }}" target="_blank" class="font-semibold text-violet-600 hover:text-violet-800">Buat tag terlebih dahulu</a>.</p>
                                 @else
                                     <div class="grid gap-2 sm:grid-cols-2 md:grid-cols-3">
-                                        @foreach ($tags as $tag)
-                                            @php
-                                                $oldTags = old('tags', []);
-                                            @endphp
-                                            <label class="flex cursor-pointer items-center gap-2 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 has-[:checked]:border-violet-300 has-[:checked]:bg-violet-50">
+                                            @foreach ($tags as $tag)
+                                                @php
+                                                    $oldTags = old('tags', []);
+                                                @endphp
+                                            <label class="flex cursor-pointer items-center gap-2 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 has-[:checked]:border-emerald-300 has-[:checked]:bg-emerald-50">
                                                 <input type="checkbox" name="tags[]" value="{{ $tag->id }}"
-                                                    class="h-4 w-4 rounded border-slate-300 text-violet-600 focus:ring-violet-500"
+                                                    class="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
                                                     @checked(is_array($oldTags) && in_array($tag->id, $oldTags))>
                                                 <span class="inline-block h-2.5 w-2.5 rounded-full" style="background-color: {{ $tag->color ?? '#94a3b8' }}"></span>
                                                 <span class="font-medium">{{ $tag->name }}</span>

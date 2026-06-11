@@ -133,9 +133,9 @@
                     </section>
 
                     <div class="grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
-                        <div class="ui-card rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+                        <div class="ui-card rounded-lg border border-slate-200 bg-white p-5 shadow-sm min-w-0">
                             <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Sisa Target</p>
-                            <p class="mt-3 text-2xl font-bold {{ $totalRemaining <= 0 ? 'text-emerald-700' : 'text-sky-700' }}">
+                            <p class="mt-3 text-2xl font-bold {{ $totalRemaining <= 0 ? 'text-emerald-700' : 'text-sky-700' }} break-all">
                                 Rp{{ number_format($totalRemaining, 0, ',', '.') }}
                             </p>
                         </div>
@@ -266,37 +266,29 @@
                                             </div>
 
                                             <div class="mt-5 grid grid-cols-3 gap-3">
-                                                <div class="rounded-lg bg-slate-50 p-3 ring-1 ring-slate-200">
+                                                <div class="rounded-lg bg-slate-50 p-3 ring-1 ring-slate-200 min-w-0">
                                                     <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">Saat Ini</p>
-                                                    <p class="mt-2 text-sm font-bold text-slate-950">
+                                                    <p class="mt-2 text-xs sm:text-sm font-bold text-slate-950 break-all">
                                                         Rp{{ number_format($goal->current_amount, 0, ',', '.') }}
                                                     </p>
                                                 </div>
 
-                                                <div class="rounded-lg bg-slate-50 p-3 ring-1 ring-slate-200">
+                                                <div class="rounded-lg bg-slate-50 p-3 ring-1 ring-slate-200 min-w-0">
                                                     <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">Target</p>
-                                                    <p class="mt-2 text-sm font-bold text-slate-950">
+                                                    <p class="mt-2 text-xs sm:text-sm font-bold text-slate-950 break-all">
                                                         Rp{{ number_format($goal->target_amount, 0, ',', '.') }}
                                                     </p>
                                                 </div>
 
-                                                <div class="rounded-lg bg-sky-50 p-3 ring-1 ring-sky-100">
+                                                <div class="rounded-lg bg-sky-50 p-3 ring-1 ring-sky-100 min-w-0">
                                                     <p class="text-xs font-semibold uppercase tracking-[0.14em] text-sky-600">Transaksi</p>
-                                                    <p class="mt-2 text-sm font-bold text-sky-700">
+                                                    <p class="mt-2 text-xs sm:text-sm font-bold text-sky-700 break-all">
                                                         {{ $goal->transactions->count() }}
                                                     </p>
                                                 </div>
                                             </div>
 
-                                            <div class="mt-5">
-                                                <div class="flex items-center justify-between gap-4 text-sm">
-                                                    <span class="font-medium text-slate-500">Progress</span>
-                                                    <span class="font-semibold text-slate-700">{{ number_format(min(100, $progressPercent), 1) }}%</span>
-                                                </div>
-                                                <div class="mt-2 h-2.5 overflow-hidden rounded-full bg-slate-100">
-                                                    <div class="h-full rounded-full transition-all {{ $barColor }}" style="width: {{ min(100, $progressPercent) }}%"></div>
-                                                </div>
-                                            </div>
+
 
                                             <div class="mt-5 flex justify-end gap-2 border-t border-slate-100 pt-4">
                                                 <a href="{{ route('savings-goals.show', $goal->id) }}"
