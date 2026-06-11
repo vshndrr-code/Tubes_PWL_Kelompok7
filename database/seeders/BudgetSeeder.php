@@ -14,17 +14,18 @@ class BudgetSeeder extends Seeder
 
     public function run(): void
     {
-        $users = User::all();
+        // Only seed budgets for non-auditor users
+        $users = User::where('role', '!=', 'auditor')->get();
 
         if ($users->isEmpty()) {
             return;
         }
 
         $budgetTemplates = [
-            ['name' => 'Makan', 'limit_amount' => 500000.00],
-            ['name' => 'Transport', 'limit_amount' => 400000.00],
-            ['name' => 'Belanja', 'limit_amount' => 600000.00],
-            ['name' => 'Internet', 'limit_amount' => 250000.00],
+            ['name' => 'Budget Makan', 'category_name' => 'Makan & Minuman', 'limit_amount' => 500000.00],
+            ['name' => 'Budget Transport', 'category_name' => 'Transportasi', 'limit_amount' => 400000.00],
+            ['name' => 'Budget Belanja', 'category_name' => 'Belanja Barang', 'limit_amount' => 600000.00],
+            ['name' => 'Budget Internet', 'category_name' => 'Internet & Telepon', 'limit_amount' => 250000.00],
         ];
 
         $month = now()->month;
@@ -32,22 +33,23 @@ class BudgetSeeder extends Seeder
 
         foreach ($users as $user) {
             foreach ($budgetTemplates as $budgetData) {
-                $category = Category::where('user_id', $user->id)
-                    ->where('name', $budgetData['name'])
+                // Look for global categories (user_id = null) or user-owned categories
+                $category = Category::where(function ($query) use ($user, $budgetData) {
+                        $query->whereNull('user_id')
+                              ->orWhere('user_id', $user->id);
+                    })
+                    ->where('name', $budgetData['category_name'])
                     ->first();
-
-                if (! $category) {
-                    continue;
-                }
 
                 Budgeting::updateOrCreate(
                     [
                         'user_id' => $user->id,
-                        'category_id' => $category->id,
+                        'name' => $budgetData['name'],
                         'month' => $month,
                         'year' => $year,
                     ],
                     [
+                        'category_id' => $category?->id,
                         'limit_amount' => $budgetData['limit_amount'],
                     ]
                 );

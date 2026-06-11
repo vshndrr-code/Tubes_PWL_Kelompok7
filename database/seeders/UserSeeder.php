@@ -50,6 +50,9 @@ class UserSeeder extends Seeder
                     'email_verified_at' => now(),
                     'password' => $password,
                     'remember_token' => \Illuminate\Support\Str::random(10),
+                    'onboarding_completed' => true,
+                    'currency' => 'IDR',
+                    'role' => 'user',
                 ]
             );
         }

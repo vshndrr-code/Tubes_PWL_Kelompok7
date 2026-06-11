@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\SavingsGoal;
+use App\Models\SavingsGoals;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -13,7 +13,8 @@ class GoalSeeder extends Seeder
 
     public function run(): void
     {
-        $users = User::all();
+        // Only seed goals for non-auditor users
+        $users = User::where('role', '!=', 'auditor')->get();
 
         if ($users->isEmpty()) {
             return;
@@ -38,7 +39,7 @@ class GoalSeeder extends Seeder
 
         foreach ($users as $user) {
             foreach ($goalTemplates as $goalData) {
-                SavingsGoal::updateOrCreate(
+                SavingsGoals::updateOrCreate(
                     [
                         'user_id' => $user->id,
                         'name' => $goalData['name'],
