@@ -18,12 +18,16 @@ class AuditorController extends Controller
     {
         $totalUsers = User::where('role', 'user')->count();
         $totalTransactions = Transaction::count();
-        $globalSavings = SavingsGoals::sum('current_amount');
+        $totalAchievedSavings = SavingsGoals::where('status', 'completed')
+            ->orWhereColumn('current_amount', '>=', 'target_amount')
+            ->count();
+        $globalCategoriesCount = Category::whereNull('user_id')->count();
 
         return view('auditor.dashboard', compact(
             'totalUsers',
             'totalTransactions',
-            'globalSavings'
+            'totalAchievedSavings',
+            'globalCategoriesCount'
         ));
     }
 
