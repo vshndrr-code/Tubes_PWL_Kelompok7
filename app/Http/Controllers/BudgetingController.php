@@ -47,7 +47,7 @@ class BudgetingController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:150'],
             'category_id' => ['nullable', 'exists:categories,id', 'integer'],
-            'limit_amount' => ['required', 'numeric', 'min:0.01'],
+            'limit_amount' => ['required', 'numeric', 'min:0.01', 'max:9999999999999'],
             'month' => ['required', 'integer', 'min:1', 'max:12'],
             'year' => ['required', 'integer', 'min:2020', 'max:2100'],
         ], [
@@ -55,6 +55,7 @@ class BudgetingController extends Controller
             'category_id.exists' => 'Kategori yang dipilih tidak ditemukan.',
             'limit_amount.required' => 'Masukkan jumlah limit budget.',
             'limit_amount.min' => 'Limit budget minimal Rp 0.01.',
+            'limit_amount.max' => 'Angka yang dimasukkan terlalu besar.',
             'month.required' => 'Pilih bulan terlebih dahulu.',
             'year.required' => 'Masukkan tahun.',
         ]);
@@ -90,19 +91,8 @@ class BudgetingController extends Controller
     {
         $this->authorize('update', $budgeting);
 
-        // DEBUG: Log incoming values
-        $originalLimit = $request->input('limit_amount');
-        \Log::info('Budgeting.update - Raw input values', [
-            'limit_amount_raw' => $originalLimit,
-            'limit_type' => gettype($originalLimit),
-        ]);
-
         if ($request->has('limit_amount')) {
             $normalized = $this->normalizeCurrencyInput($request->input('limit_amount'));
-            \Log::info('Budgeting.update - Normalized limit_amount', [
-                'raw' => $originalLimit,
-                'normalized' => $normalized,
-            ]);
             $request->merge([
                 'limit_amount' => $normalized,
             ]);
@@ -111,7 +101,7 @@ class BudgetingController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:150'],
             'category_id' => ['nullable', 'exists:categories,id', 'integer'],
-            'limit_amount' => ['required', 'numeric', 'min:0.01'],
+            'limit_amount' => ['required', 'numeric', 'min:0.01', 'max:9999999999999'],
             'month' => ['required', 'integer', 'min:1', 'max:12'],
             'year' => ['required', 'integer', 'min:2020', 'max:2100'],
         ], [
@@ -119,6 +109,7 @@ class BudgetingController extends Controller
             'category_id.exists' => 'Kategori yang dipilih tidak ditemukan.',
             'limit_amount.required' => 'Masukkan jumlah limit budget.',
             'limit_amount.min' => 'Limit budget minimal Rp 0.01.',
+            'limit_amount.max' => 'Angka yang dimasukkan terlalu besar.',
             'month.required' => 'Pilih bulan terlebih dahulu.',
             'year.required' => 'Masukkan tahun.',
         ]);

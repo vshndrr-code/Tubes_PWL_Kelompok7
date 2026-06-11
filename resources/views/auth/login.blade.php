@@ -86,16 +86,21 @@
                 </form>
             </div>
 
-            @if (Route::has('register'))
-            <div class="mt-8 text-center flex items-center justify-center gap-2">
-                <p class="text-sm font-medium text-gray-500">
-                    Don't have an account?
-                </p>
-                <a href="{{ route('register') }}" class="text-sm font-semibold text-emerald-500 hover:text-emerald-600 transition-colors px-4 py-2 bg-white rounded-xl shadow-sm border border-gray-200">
-                    Create Account
+            <div class="mt-8 text-center flex flex-col sm:flex-row items-center justify-center gap-4">
+                @if (Route::has('register'))
+                <div class="flex items-center gap-2">
+                    <p class="text-sm font-medium text-gray-500">
+                        Don't have an account?
+                    </p>
+                    <a href="{{ route('register') }}" class="text-sm font-semibold text-emerald-500 hover:text-emerald-600 transition-colors px-4 py-2 bg-white rounded-xl shadow-sm border border-gray-200">
+                        Create Account
+                    </a>
+                </div>
+                @endif
+                <a href="{{ route('auditor.login') }}" class="text-sm font-semibold text-gray-600 hover:text-gray-900 transition-colors px-4 py-2 bg-gray-100 hover:bg-gray-200/60 rounded-xl border border-gray-200 shadow-sm">
+                    Login Portal Auditor
                 </a>
             </div>
-            @endif
         </div>
     </div>
 </body>

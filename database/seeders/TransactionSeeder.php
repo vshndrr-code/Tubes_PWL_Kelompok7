@@ -24,7 +24,8 @@ class TransactionSeeder extends Seeder
 
     public function run(): void
     {
-        $users = User::all();
+        // Only seed transactions for non-auditor users
+        $users = User::where('role', '!=', 'auditor')->get();
 
         if ($users->isEmpty()) {
             return;
@@ -98,7 +99,13 @@ class TransactionSeeder extends Seeder
         // Create transactions for each user
         foreach ($users as $user) {
             $userAccounts = $user->accounts;
-            $userCategories = $user->categories;
+
+            // Get categories accessible by this user (global + user-owned)
+            $userCategories = Category::where(function ($query) use ($user) {
+                $query->whereNull('user_id')
+                      ->orWhere('user_id', $user->id);
+            })->get();
+
             $userTags = $user->tags;
 
             if ($userAccounts->isEmpty() || $userCategories->isEmpty()) {

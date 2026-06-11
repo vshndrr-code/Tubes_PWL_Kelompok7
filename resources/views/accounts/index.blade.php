@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @push('head')
 <style>
@@ -172,7 +172,7 @@
                             <div>
                                 <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Total Saldo</p>
                                 <p class="mt-3 text-3xl font-bold tracking-tight sm:text-5xl">
-                                    Rp{{ number_format($totalBalance, 0, ',', '.') }}
+                                    {{ $currencySymbol }}{{ number_format($totalBalance, 0, ',', '.') }}
                                 </p>
                             </div>
 
@@ -200,7 +200,7 @@
                             <div class="rounded-lg border border-white/10 bg-white/[0.06] p-4">
                                 <p class="text-xs text-slate-400">Rata-rata saldo</p>
                                 <p class="mt-2 truncate text-base font-semibold">
-                                    Rp{{ number_format($activeCount > 0 ? $totalBalance / $activeCount : 0, 0, ',', '.') }}
+                                    {{ $currencySymbol }}{{ number_format($activeCount > 0 ? $totalBalance / $activeCount : 0, 0, ',', '.') }}
                                 </p>
                             </div>
                         </div>
@@ -216,7 +216,7 @@
                         <div class="ui-card rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
                             <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Rata-rata</p>
                             <p class="mt-3 text-3xl font-bold text-slate-950">
-                                Rp{{ number_format($activeCount > 0 ? $totalBalance / $activeCount : 0, 0, ',', '.') }}
+                                {{ $currencySymbol }}{{ number_format($activeCount > 0 ? $totalBalance / $activeCount : 0, 0, ',', '.') }}
                             </p>
                             <p class="mt-1 text-sm text-slate-500">{{ $showArchived ? 'Per akun arsip.' : 'Per akun aktif.' }}</p>
                         </div>
@@ -276,7 +276,7 @@
                             </div>
                             <p class="mt-4 text-sm font-semibold text-slate-950">{{ $label }}</p>
                             <p class="mt-1 truncate text-sm font-medium {{ $typeTotal < 0 ? 'text-red-600' : 'text-slate-500' }}">
-                                {{ $typeTotal < 0 ? '-Rp' : 'Rp' }}{{ number_format(abs($typeTotal), 0, ',', '.') }}
+                                {{ $typeTotal < 0 ? '-' . $currencySymbol : $currencySymbol }}{{ number_format(abs($typeTotal), 0, ',', '.') }}
                             </p>
                         </button>
                     @endforeach
@@ -368,7 +368,7 @@
                                         <div>
                                             <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">Saldo</p>
                                             <p class="mt-1 whitespace-nowrap text-xl font-bold {{ $account->balance < 0 ? 'text-red-600' : $style['amount'] }} sm:text-2xl">
-                                                {{ $account->balance < 0 ? '-Rp' : 'Rp' }}{{ number_format(abs($account->balance), 0, ',', '.') }}
+                                                {{ $account->balance < 0 ? '-' . $currencySymbol : $currencySymbol }}{{ number_format(abs($account->balance), 0, ',', '.') }}
                                             </p>
                                         </div>
 

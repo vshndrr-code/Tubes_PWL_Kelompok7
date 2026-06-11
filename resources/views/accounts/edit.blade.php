@@ -181,7 +181,7 @@
                         <div>
                             <label for="balance" class="mb-2 block text-sm font-semibold text-slate-700">Saldo Akun</label>
                             <div class="flex h-11 overflow-hidden rounded-lg border border-slate-200 bg-slate-50 transition focus-within:border-slate-400 focus-within:bg-white focus-within:ring-2 focus-within:ring-slate-100">
-                                <span class="flex items-center border-r border-slate-200 px-3.5 text-sm font-semibold text-slate-500">Rp</span>
+                                <span class="flex items-center border-r border-slate-200 px-3.5 text-sm font-semibold text-slate-500">{{ $currencySymbol }}</span>
                                 <input id="balance" name="balance" type="number" step="0.01" min="0"
                                     value="{{ old('balance', $account->balance) }}" required
                                     class="w-full border-0 bg-transparent px-3.5 text-sm font-medium text-slate-900 outline-none focus:ring-0" />
@@ -227,7 +227,7 @@
                         <div class="mt-8 rounded-lg border border-white/10 bg-white/[0.06] p-4">
                             <p class="text-sm text-slate-400">Saldo saat ini</p>
                             <p class="mt-1 text-3xl font-bold">
-                                Rp{{ number_format($account->balance, 0, ',', '.') }}
+                                {{ $currencySymbol }}{{ number_format($account->balance, 0, ',', '.') }}
                             </p>
                         </div>
                     </div>

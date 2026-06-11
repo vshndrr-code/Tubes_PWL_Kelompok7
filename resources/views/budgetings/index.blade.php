@@ -129,7 +129,7 @@
                             <div>
                                 <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Budget Periode Ini</p>
                                 <p class="mt-3 text-3xl font-bold tracking-tight sm:text-5xl">
-                                    Rp{{ number_format($totalBudget, 0, ',', '.') }}
+                                    {{ $currencySymbol }}{{ number_format($totalBudget, 0, ',', '.') }}
                                 </p>
                             </div>
 
@@ -143,7 +143,7 @@
 
                         <div class="mt-6">
                             <div class="flex items-center justify-between gap-4 text-sm">
-                                <span class="font-medium text-slate-300">Terpakai Rp{{ number_format($totalUsed, 0, ',', '.') }}</span>
+                                <span class="font-medium text-slate-300">Terpakai {{ $currencySymbol }}{{ number_format($totalUsed, 0, ',', '.') }}</span>
                                 <span class="font-semibold text-white">{{ number_format($overallProgress, 0) }}%</span>
                             </div>
                             <div class="mt-3 h-3 overflow-hidden rounded-full bg-white/10">
@@ -156,7 +156,7 @@
                         <div class="ui-card rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
                             <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Sisa Alokasi</p>
                             <p class="mt-3 text-2xl font-bold {{ $totalRemaining < 0 ? 'text-rose-700' : 'text-emerald-700' }}">
-                                {{ $totalRemaining < 0 ? '-Rp' : 'Rp' }}{{ number_format(abs($totalRemaining), 0, ',', '.') }}
+                                {{ $totalRemaining < 0 ? '-' . $currencySymbol : $currencySymbol }}{{ number_format(abs($totalRemaining), 0, ',', '.') }}
                             </p>
                         </div>
 
@@ -285,21 +285,21 @@
                                                 <div class="rounded-lg bg-slate-50 p-3 ring-1 ring-slate-200">
                                                     <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">Limit</p>
                                                     <p class="mt-2 text-lg font-bold text-slate-950">
-                                                        Rp{{ number_format($limitAmount, 0, ',', '.') }}
+                                                        {{ $currencySymbol }}{{ number_format($limitAmount, 0, ',', '.') }}
                                                     </p>
                                                 </div>
 
                                                 <div class="rounded-lg bg-slate-50 p-3 ring-1 ring-slate-200">
                                                     <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">Sisa</p>
                                                     <p class="mt-2 text-lg font-bold {{ $remainingAmount < 0 ? 'text-rose-700' : 'text-emerald-700' }}">
-                                                        {{ $remainingAmount < 0 ? '-Rp' : 'Rp' }}{{ number_format(abs($remainingAmount), 0, ',', '.') }}
+                                                        {{ $remainingAmount < 0 ? '-' . $currencySymbol : $currencySymbol }}{{ number_format(abs($remainingAmount), 0, ',', '.') }}
                                                     </p>
                                                 </div>
                                             </div>
 
                                             <div class="mt-5">
                                                 <div class="flex items-center justify-between gap-4 text-sm">
-                                                    <span class="font-medium text-slate-500">Terpakai Rp{{ number_format($usedAmount, 0, ',', '.') }}</span>
+                                                    <span class="font-medium text-slate-500">Terpakai {{ $currencySymbol }}{{ number_format($usedAmount, 0, ',', '.') }}</span>
                                                     <span class="font-semibold text-slate-700">{{ number_format($progress, 0) }}%</span>
                                                 </div>
                                                 <div class="mt-2 h-2.5 overflow-hidden rounded-full bg-slate-100">

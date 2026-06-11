@@ -41,9 +41,10 @@ class AccountController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:100|unique:accounts,name,NULL,id,user_id,' . Auth::id(),
             'type' => 'required|in:cash,bank,credit,other',
-            'balance' => 'required|numeric|min:0',
+            'balance' => 'required|numeric|min:0|max:9999999999999',
         ], [
             'name.unique' => 'Nama akun ini sudah ada. Silakan gunakan nama yang berbeda.',
+            'balance.max' => 'Angka yang dimasukkan terlalu besar.',
         ]);
 
         Account::create(array_merge($data, ['user_id' => Auth::id()]));
@@ -76,9 +77,10 @@ class AccountController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:100|unique:accounts,name,' . $account->id . ',id,user_id,' . Auth::id(),
             'type' => 'required|in:cash,bank,credit,other',
-            'balance' => 'required|numeric|min:0',
+            'balance' => 'required|numeric|min:0|max:9999999999999',
         ], [
             'name.unique' => 'Nama akun ini sudah ada. Silakan gunakan nama yang berbeda.',
+            'balance.max' => 'Angka yang dimasukkan terlalu besar.',
         ]);
 
         $account->update($data);
@@ -169,7 +171,7 @@ class AccountController extends Controller
         $data = $request->validate([
             'from_account_id' => ['required', 'integer', 'exists:accounts,id', 'different:to_account_id'],
             'to_account_id' => ['required', 'integer', 'exists:accounts,id', 'different:from_account_id'],
-            'amount' => ['required', 'numeric', 'min:0.01'],
+            'amount' => ['required', 'numeric', 'min:0.01', 'max:9999999999999'],
         ], [
             'from_account_id.required' => 'Pilih akun sumber terlebih dahulu.',
             'from_account_id.exists' => 'Akun sumber tidak ditemukan.',
@@ -180,6 +182,7 @@ class AccountController extends Controller
             'amount.required' => 'Masukkan jumlah transfer.',
             'amount.numeric' => 'Jumlah transfer harus berupa angka.',
             'amount.min' => 'Jumlah transfer minimal Rp1.',
+            'amount.max' => 'Angka yang dimasukkan terlalu besar.',
         ]);
 
         $accounts = Account::where('user_id', Auth::id())

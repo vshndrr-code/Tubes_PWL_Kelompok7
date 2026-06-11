@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -11,12 +11,33 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'onboarding_completed'])]
+#[Fillable(['name', 'email', 'password', 'onboarding_completed', 'role', 'currency'])]
 #[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
+
+    /**
+     * Get the currency symbol for the user's chosen currency.
+     */
+    public function currencySymbol(): string
+    {
+        return match ($this->currency) {
+            'USD' => '$',
+            'EUR' => '€',
+            'SGD' => 'S$',
+            default => 'Rp',
+        };
+    }
+
+    /**
+     * Check if the user is an auditor.
+     */
+    public function isAuditor(): bool
+    {
+        return $this->role === 'auditor';
+    }
 
     /**
      * Get the attributes that should be cast.

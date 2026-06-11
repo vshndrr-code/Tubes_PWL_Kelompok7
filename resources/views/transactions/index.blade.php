@@ -125,7 +125,7 @@
                             <div>
                                 <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Saldo Saat Ini</p>
                                 <p class="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
-                                    {{ $balance < 0 ? '-Rp' : 'Rp' }}{{ number_format(abs($balance), 0, ',', '.') }}
+                                    {{ $balance < 0 ? '-' . $currencySymbol : $currencySymbol }}{{ number_format(abs($balance), 0, ',', '.') }}
                                 </p>
                             </div>
 
@@ -141,7 +141,7 @@
                     <div class="ui-card rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
                         <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Pemasukan</p>
                         <p class="mt-3 text-2xl font-bold text-emerald-700">
-                            Rp{{ number_format($totalIncome, 0, ',', '.') }}
+                            {{ $currencySymbol }}{{ number_format($totalIncome, 0, ',', '.') }}
                         </p>
                         <p class="mt-1 text-sm text-slate-500">{{ $transactionItems->where('type', 'income')->count() }} transaksi</p>
                     </div>
@@ -149,7 +149,7 @@
                     <div class="ui-card rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
                         <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Pengeluaran</p>
                         <p class="mt-3 text-2xl font-bold text-rose-700">
-                            Rp{{ number_format($totalExpense, 0, ',', '.') }}
+                            {{ $currencySymbol }}{{ number_format($totalExpense, 0, ',', '.') }}
                         </p>
                         <p class="mt-1 text-sm text-slate-500">{{ $transactionItems->where('type', 'expense')->count() }} transaksi</p>
                     </div>
@@ -268,7 +268,7 @@
                                             <td class="px-4 py-4 text-slate-600">{{ optional($recurring->account)->name ?? '-' }}</td>
                                             <td class="px-4 py-4 text-slate-600">{{ optional($recurring->start_date)->format('d M Y') ?? '-' }}</td>
                                             <td class="px-4 py-4 text-right font-bold text-rose-700">
-                                                -Rp{{ number_format($recurring->amount, 0, ',', '.') }}
+                                                -{{ $currencySymbol }}{{ number_format($recurring->amount, 0, ',', '.') }}
                                             </td>
                                             <td class="px-4 py-4">
                                                 <div class="flex justify-end gap-2">
@@ -421,7 +421,7 @@
                                                 </span>
                                             </td>
                                             <td class="whitespace-nowrap px-4 py-4 text-right font-bold {{ $isIncome ? 'text-emerald-700' : 'text-rose-700' }}">
-                                                {{ $isIncome ? '+Rp' : '-Rp' }}{{ number_format($transaction->amount, 0, ',', '.') }}
+                                                {{ $isIncome ? '+' . $currencySymbol : '-' . $currencySymbol }}{{ number_format($transaction->amount, 0, ',', '.') }}
                                             </td>
                                             <td class="px-4 py-4">
                                                 <div class="flex justify-end gap-2">

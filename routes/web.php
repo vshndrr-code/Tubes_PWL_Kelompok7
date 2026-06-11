@@ -8,6 +8,8 @@ use App\Http\Controllers\BudgetingController;
 use App\Http\Controllers\SavingsGoalsController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\AuditorController;
+use App\Http\Controllers\Auth\AuditorLoginController;
 use App\Models\Account;
 use App\Models\Transaction;
 use App\Models\Budgeting;
@@ -20,6 +22,10 @@ Route::get('/', function () {
 
 Route::get('/dashboard', function () {
     $user = Auth::user();
+    
+    if ($user->isAuditor()) {
+        return redirect()->route('auditor.dashboard');
+    }
     
     // Get user's accounts
     $accountItems = Account::where('user_id', $user->id)->get();
@@ -90,4 +96,18 @@ Route::middleware('auth')->group(function () {
     Route::resource('tags', TagController::class)->except(['show']);
 });
 
+Route::middleware(['auth', 'verified', 'auditor'])->prefix('auditor')->name('auditor.')->group(function () {
+    Route::get('/dashboard', [AuditorController::class, 'dashboard'])->name('dashboard');
+    Route::get('/logout', [AuditorController::class, 'logout'])->name('logout');
+    Route::get('/categories', [AuditorController::class, 'categories'])->name('categories.index');
+    Route::get('/categories/create', [AuditorController::class, 'createCategory'])->name('categories.create');
+    Route::post('/categories', [AuditorController::class, 'storeCategory'])->name('categories.store');
+    Route::delete('/categories/{category}', [AuditorController::class, 'destroyCategory'])->name('categories.destroy');
+    Route::get('/tags', [AuditorController::class, 'tags'])->name('tags.index');
+    Route::delete('/tags/{tag}', [AuditorController::class, 'destroyTag'])->name('tags.destroy');
+});
+Route::prefix('auditor')->name('auditor.')->group(function () {
+    Route::get('/login', [AuditorLoginController::class, 'create'])->name('login');
+    Route::post('/login', [AuditorLoginController::class, 'store']);
+});
 require __DIR__ . '/auth.php';

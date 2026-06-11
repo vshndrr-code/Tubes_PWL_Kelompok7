@@ -119,7 +119,7 @@
                             <div>
                                 <label for="amount" class="text-sm font-semibold text-slate-700">Nominal</label>
                                 <div class="mt-2 flex h-11 overflow-hidden rounded-lg border border-slate-200 bg-slate-50 shadow-sm transition focus-within:border-slate-400 focus-within:bg-white focus-within:ring-2 focus-within:ring-slate-100 @error('amount') border-red-400 ring-red-100 @enderror">
-                                    <span class="flex items-center border-r border-slate-200 px-3 text-sm font-semibold text-slate-500">Rp</span>
+                                    <span class="flex items-center border-r border-slate-200 px-3 text-sm font-semibold text-slate-500">{{ $currencySymbol }}</span>
                                     <input type="text" name="amount" id="amount" value="{{ old('amount', $recurringTransaction->amount) }}"
                                         class="h-full w-full border-0 bg-transparent px-3 text-sm text-slate-700 outline-none focus:ring-0"
                                         required inputmode="numeric" pattern="[0-9]*" placeholder="120000">
@@ -170,7 +170,7 @@
                             <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Jadwal Saat Ini</p>
                             <h3 class="mt-2 text-xl font-semibold">{{ $recurringTransaction->title }}</h3>
                             <p class="mt-3 text-3xl font-bold text-rose-300">
-                                -Rp{{ number_format($recurringTransaction->amount, 0, ',', '.') }}
+                                -{{ $currencySymbol }}{{ number_format($recurringTransaction->amount, 0, ',', '.') }}
                             </p>
                         </div>
                         <div class="space-y-3 p-5">

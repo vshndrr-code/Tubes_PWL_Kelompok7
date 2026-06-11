@@ -185,7 +185,7 @@
                             <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Saldo Saat Ini</p>
                             <p
                                 class="mt-3 text-4xl font-bold tracking-tight {{ $balance < 0 ? 'text-red-600' : $style['amount'] }} sm:text-5xl">
-                                {{ $balance < 0 ? '-Rp' : 'Rp' }}{{ number_format(abs($balance), 0, ',', '.') }}
+                                {{ $balance < 0 ? '-' . $currencySymbol : $currencySymbol }}{{ number_format(abs($balance), 0, ',', '.') }}
                             </p>
                         </div>
 
@@ -198,14 +198,14 @@
                             <div class="ui-card rounded-lg border border-emerald-100 bg-emerald-50 p-4 shadow-sm">
                                 <p class="text-xs font-semibold text-emerald-600">Pemasukan</p>
                                 <p class="mt-2 text-lg font-bold text-emerald-700">
-                                    Rp{{ number_format($incomeTotal, 0, ',', '.') }}
+                                    {{ $currencySymbol }}{{ number_format($incomeTotal, 0, ',', '.') }}
                                 </p>
                             </div>
 
                             <div class="ui-card rounded-lg border border-rose-100 bg-rose-50 p-4 shadow-sm">
                                 <p class="text-xs font-semibold text-rose-600">Pengeluaran</p>
                                 <p class="mt-2 text-lg font-bold text-rose-700">
-                                    Rp{{ number_format($expenseTotal, 0, ',', '.') }}
+                                    {{ $currencySymbol }}{{ number_format($expenseTotal, 0, ',', '.') }}
                                 </p>
                             </div>
                         </div>
@@ -242,7 +242,7 @@
 
                                     <p
                                         class="shrink-0 text-sm font-bold {{ $transaction->type === 'income' ? 'text-emerald-600' : 'text-red-600' }}">
-                                        {{ $transaction->type === 'income' ? '+Rp' : '-Rp' }}{{ number_format($transaction->amount, 0, ',', '.') }}
+                                        {{ $transaction->type === 'income' ? '+' . $currencySymbol : '-' . $currencySymbol }}{{ number_format($transaction->amount, 0, ',', '.') }}
                                     </p>
                                 </div>
                             </div>

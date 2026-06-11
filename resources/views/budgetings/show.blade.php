@@ -73,8 +73,8 @@
 
                     <div class="mt-6">
                         <div class="flex items-center justify-between gap-4 text-sm mb-3">
-                            <span class="font-medium text-slate-300">Terpakai Rp{{ number_format($usedAmount, 0, ',', '.') }}</span>
-                            <span class="font-semibold text-white">Limit Rp{{ number_format($limitAmount, 0, ',', '.') }}</span>
+                            <span class="font-medium text-slate-300">Terpakai {{ $currencySymbol }}{{ number_format($usedAmount, 0, ',', '.') }}</span>
+                            <span class="font-semibold text-white">Limit {{ $currencySymbol }}{{ number_format($limitAmount, 0, ',', '.') }}</span>
                         </div>
                         <div class="h-3 overflow-hidden rounded-full bg-white/10">
                             <div class="h-full rounded-full {{ $barColor }} transition-all" style="width: {{ min(100, $progressPercent) }}%"></div>
@@ -86,18 +86,18 @@
                 <div class="grid gap-4 md:grid-cols-3">
                     <div class="ui-card rounded-lg border border-slate-200 bg-white p-5 shadow-sm hover:border-slate-300">
                         <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Limit Budget</p>
-                        <p class="mt-3 text-xl font-bold text-slate-950">Rp{{ number_format($limitAmount, 0, ',', '.') }}</p>
+                        <p class="mt-3 text-xl font-bold text-slate-950">{{ $currencySymbol }}{{ number_format($limitAmount, 0, ',', '.') }}</p>
                     </div>
 
                     <div class="ui-card rounded-lg border border-slate-200 bg-slate-50 p-5 shadow-sm hover:border-slate-300">
                         <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Terpakai</p>
-                        <p class="mt-3 text-xl font-bold text-slate-950">Rp{{ number_format($usedAmount, 0, ',', '.') }}</p>
+                        <p class="mt-3 text-xl font-bold text-slate-950">{{ $currencySymbol }}{{ number_format($usedAmount, 0, ',', '.') }}</p>
                     </div>
 
                     <div class="ui-card rounded-lg {{ $remainingAmount < 0 ? 'border-rose-100 bg-rose-50' : 'border-emerald-100 bg-emerald-50' }} p-5 shadow-sm">
                         <p class="text-xs font-semibold uppercase tracking-[0.18em] {{ $remainingAmount < 0 ? 'text-rose-600' : 'text-emerald-600' }}">Sisa</p>
                         <p class="mt-3 text-xl font-bold {{ $remainingAmount < 0 ? 'text-rose-700' : 'text-emerald-700' }}">
-                            {{ $remainingAmount < 0 ? '-Rp' : 'Rp' }}{{ number_format(abs($remainingAmount), 0, ',', '.') }}
+                            {{ $remainingAmount < 0 ? '-' . $currencySymbol : $currencySymbol }}{{ number_format(abs($remainingAmount), 0, ',', '.') }}
                         </p>
                     </div>
                 </div>
@@ -164,7 +164,7 @@
                                         </div>
                                     </div>
                                     <p class="shrink-0 text-sm font-bold text-rose-600">
-                                        -Rp{{ number_format($tx->amount, 0, ',', '.') }}
+                                        -{{ $currencySymbol }}{{ number_format($tx->amount, 0, ',', '.') }}
                                     </p>
                                 </li>
                             @endforeach

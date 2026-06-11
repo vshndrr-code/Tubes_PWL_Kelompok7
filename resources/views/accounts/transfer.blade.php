@@ -80,7 +80,7 @@
                 }
 
                 if (Number(this.amount) <= 0) {
-                    this.formError = 'Jumlah transfer harus lebih dari Rp0.';
+                    this.formError = 'Jumlah transfer harus lebih dari {{ $currencySymbol }}0.';
                     return false;
                 }
 
@@ -193,7 +193,7 @@
                         <div>
                             <label for="amount" class="mb-2 block text-sm font-semibold text-slate-700">Jumlah Transfer</label>
                             <div class="flex h-11 overflow-hidden rounded-lg border border-slate-200 bg-slate-50 transition focus-within:border-slate-400 focus-within:bg-white focus-within:ring-2 focus-within:ring-slate-100">
-                                <span class="flex items-center border-r border-slate-200 px-3.5 text-sm font-semibold text-slate-500">Rp</span>
+                                <span class="flex items-center border-r border-slate-200 px-3.5 text-sm font-semibold text-slate-500">{{ $currencySymbol }}</span>
                                 <input id="amount" name="amount" type="number" step="0.01" min="0.01"
                                     value="{{ old('amount') }}" placeholder="1000000" required x-model="amount"
                                     class="w-full border-0 bg-transparent px-3.5 text-sm font-medium text-slate-900 outline-none focus:ring-0" />
@@ -294,7 +294,7 @@
 
                         <div class="rounded-lg bg-slate-950 p-4 text-white">
                             <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">Nominal</p>
-                            <p class="mt-1 text-2xl font-bold">Rp<span x-text="rupiah(amount)"></span></p>
+                            <p class="mt-1 text-2xl font-bold">{{ $currencySymbol }}<span x-text="rupiah(amount)"></span></p>
                         </div>
                     </div>
 

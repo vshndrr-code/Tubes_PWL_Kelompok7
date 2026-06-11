@@ -13,7 +13,8 @@ class AccountSeeder extends Seeder
 
     public function run(): void
     {
-        $users = User::all();
+        // Only seed accounts for non-auditor users
+        $users = User::where('role', '!=', 'auditor')->get();
 
         if ($users->isEmpty()) {
             return;

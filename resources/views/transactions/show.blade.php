@@ -62,7 +62,7 @@
                                     {{ $typeLabel }}
                                 </span>
                                 <p class="mt-4 text-4xl font-bold tracking-tight {{ $amountColor }} sm:text-5xl">
-                                    {{ $isIncome ? '+Rp' : '-Rp' }}{{ number_format($transaction->amount, 0, ',', '.') }}
+                                    {{ $isIncome ? '+' . $currencySymbol : '-' . $currencySymbol }}{{ number_format($transaction->amount, 0, ',', '.') }}
                                 </p>
                             </div>
 
@@ -92,7 +92,7 @@
                                 <div class="rounded-lg bg-emerald-50 p-4 ring-1 ring-emerald-100">
                                     <p class="text-xs font-semibold uppercase tracking-[0.14em] text-emerald-700">Budget</p>
                                     <p class="mt-2 text-lg font-semibold text-emerald-800">{{ optional($transaction->budgeting)->name }}</p>
-                                    <p class="mt-1 text-xs text-emerald-600">Limit: Rp{{ number_format(optional($transaction->budgeting)->limit_amount, 0, ',', '.') }}</p>
+                                    <p class="mt-1 text-xs text-emerald-600">Limit: {{ $currencySymbol }}{{ number_format(optional($transaction->budgeting)->limit_amount, 0, ',', '.') }}</p>
                                 </div>
                             @endif
 

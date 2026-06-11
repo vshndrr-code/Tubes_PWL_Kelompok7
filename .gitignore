@@ -3,7 +3,7 @@
 .env
 .env.backup
 .env.production
-.phpactor.json
+.phpactor.jsonP
 .phpunit.result.cache
 /.codex
 /.cursor/
@@ -25,5 +25,5 @@ _ide_helper.php
 Homestead.json
 Homestead.yaml
 Thumbs.db
-test_casting.php
+
 

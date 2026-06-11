@@ -55,7 +55,7 @@
 
                     <!-- Target Amount -->
                     <div>
-                        <label for="target_amount" class="block text-sm font-semibold text-slate-700 mb-2">Target Amount (Rp)</label>
+                        <label for="target_amount" class="block text-sm font-semibold text-slate-700 mb-2">Target Amount ({{ $currencySymbol }})</label>
                             <input 
                             type="number" 
                             id="target_amount" 
@@ -74,7 +74,7 @@
 
                     <!-- Current Amount -->
                     <div>
-                        <label for="current_amount" class="block text-sm font-semibold text-slate-700 mb-2">Current Amount (Rp)</label>
+                        <label for="current_amount" class="block text-sm font-semibold text-slate-700 mb-2">Current Amount ({{ $currencySymbol }})</label>
                             <input 
                             type="number" 
                             id="current_amount" 
@@ -101,7 +101,7 @@
                             <option value="">-- Pilih Akun (Opsional) --</option>
                             @forelse ($accounts as $account)
                                 <option value="{{ $account->id }}" {{ old('account_id') == $account->id ? 'selected' : '' }}>
-                                    {{ $account->name }} - Rp{{ number_format($account->balance, 0, ',', '.') }}
+                                    {{ $account->name }} - {{ $currencySymbol }}{{ number_format($account->balance, 0, ',', '.') }}
                                 </option>
                             @empty
                                 <option value="" disabled>Tidak ada akun tersedia</option>

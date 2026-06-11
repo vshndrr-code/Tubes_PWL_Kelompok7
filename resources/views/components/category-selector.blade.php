@@ -66,8 +66,13 @@
                 <template x-for="category in filteredCategories" :key="category.id">
                     <button type="button" @click="selectCategory(category)" :class="selectedId == category.id ? 'bg-green-50 border-l-4 border-green-600' : 'hover:bg-gray-50'" class="w-full flex items-center gap-3 px-4 sm:px-6 py-3.5 border-b border-gray-100 transition text-left">
                         <!-- Icon -->
-                        <div :style="{ backgroundColor: category.color }" class="w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center flex-shrink-0">
-                            <span class="text-lg sm:text-2xl" x-text="getCategoryEmoji(category.name)"></span>
+                        <div :style="{ backgroundColor: category.color || (category.type === 'income' ? '#10b981' : '#ef4444') }" class="w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center flex-shrink-0">
+                            <template x-if="category.icon">
+                                <i :class="'fa-solid fa-' + category.icon + ' text-white text-lg sm:text-xl'"></i>
+                            </template>
+                            <template x-if="!category.icon">
+                                <span class="text-lg sm:text-2xl" x-text="getCategoryEmoji(category.name)"></span>
+                            </template>
                         </div>
                         <!-- Category Name -->
                         <div class="flex-1">

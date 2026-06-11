@@ -16,7 +16,7 @@ class StoreRecurringTransactionRequest extends FormRequest
         return [
             'account_id' => 'required|exists:accounts,id,user_id,' . auth()->id(),
             'title' => 'required|string|max:150',
-            'amount' => 'required|numeric|min:0.01',
+            'amount' => 'required|numeric|min:0.01|max:9999999999999',
             'recurring_frequency' => 'required|in:daily,weekly,monthly,yearly',
             'start_date' => 'required|date|after_or_equal:today',
             'description' => 'nullable|string|max:1000',
@@ -31,6 +31,7 @@ class StoreRecurringTransactionRequest extends FormRequest
             'amount.required' => 'Jumlah yang harus dibayar harus diisi.',
             'amount.numeric' => 'Jumlah harus berupa angka.',
             'amount.min' => 'Jumlah harus lebih dari 0.',
+            'amount.max' => 'Angka yang dimasukkan terlalu besar.',
             'title.required' => 'Judul transaksi harus diisi.',
             'title.max' => 'Judul transaksi maksimal 150 karakter.',
             'recurring_frequency.required' => 'Pilih jenis recurring.',

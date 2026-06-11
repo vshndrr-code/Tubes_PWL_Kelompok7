@@ -105,7 +105,7 @@
                                 <option value="">Tanpa Budget</option>
                                 @foreach ($budgets as $budget)
                                     <option value="{{ $budget->id }}" @selected(old('budgeting_id') == $budget->id)>
-                                        {{ $budget->name }} (Limit: Rp{{ number_format($budget->limit_amount, 0, ',', '.') }}, Periode: {{ ['', 'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'][$budget->month] ?? '-' }} {{ $budget->year }})
+                                        {{ $budget->name }} (Limit: {{ $currencySymbol }}{{ number_format($budget->limit_amount, 0, ',', '.') }}, Periode: {{ ['', 'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'][$budget->month] ?? '-' }} {{ $budget->year }})
                                     </option>
                                 @endforeach
                             </select>
@@ -121,7 +121,7 @@
                                 <option value="">Tanpa Saving Goals</option>
                                 @foreach ($savingsGoals as $goal)
                                     <option value="{{ $goal->id }}" @selected(old('savings_goal_id') == $goal->id)>
-                                        {{ $goal->name }} (Target: Rp{{ number_format($goal->target_amount, 0, ',', '.') }}{{ $goal->deadline ? ', Deadline: ' . $goal->deadline->format('d M Y') : '' }})
+                                        {{ $goal->name }} (Target: {{ $currencySymbol }}{{ number_format($goal->target_amount, 0, ',', '.') }}{{ $goal->deadline ? ', Deadline: ' . $goal->deadline->format('d M Y') : '' }})
                                     </option>
                                 @endforeach
                             </select>
@@ -146,7 +146,7 @@
                         <div>
                             <label for="amount" class="text-sm font-semibold text-slate-700">Jumlah</label>
                             <div class="mt-2 flex h-11 overflow-hidden rounded-lg border border-slate-200 bg-slate-50 shadow-sm transition focus-within:border-slate-400 focus-within:bg-white focus-within:ring-2 focus-within:ring-slate-100 @error('amount') border-red-400 ring-red-100 @enderror">
-                                <span class="flex items-center border-r border-slate-200 px-3 text-sm font-semibold text-slate-500">Rp</span>
+                                <span class="flex items-center border-r border-slate-200 px-3 text-sm font-semibold text-slate-500">{{ $currencySymbol }}</span>
                                 <input type="text" name="amount" id="amount" value="{{ old('amount') ?? '' }}"
                                     class="h-full w-full border-0 bg-transparent px-3 text-sm text-slate-700 outline-none focus:ring-0"
                                     required inputmode="numeric" pattern="[0-9]*" placeholder="120000">
@@ -182,13 +182,13 @@
                                     <p class="text-sm text-slate-500">Belum ada tag. <a href="{{ route('tags.index') }}" target="_blank" class="font-semibold text-violet-600 hover:text-violet-800">Buat tag terlebih dahulu</a>.</p>
                                 @else
                                     <div class="grid gap-2 sm:grid-cols-2 md:grid-cols-3">
-                                        @foreach ($tags as $tag)
-                                            @php
-                                                $oldTags = old('tags', []);
-                                            @endphp
-                                            <label class="flex cursor-pointer items-center gap-2 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 has-[:checked]:border-violet-300 has-[:checked]:bg-violet-50">
+                                            @foreach ($tags as $tag)
+                                                @php
+                                                    $oldTags = old('tags', []);
+                                                @endphp
+                                            <label class="flex cursor-pointer items-center gap-2 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 has-[:checked]:border-emerald-300 has-[:checked]:bg-emerald-50">
                                                 <input type="checkbox" name="tags[]" value="{{ $tag->id }}"
-                                                    class="h-4 w-4 rounded border-slate-300 text-violet-600 focus:ring-violet-500"
+                                                    class="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
                                                     @checked(is_array($oldTags) && in_array($tag->id, $oldTags))>
                                                 <span class="inline-block h-2.5 w-2.5 rounded-full" style="background-color: {{ $tag->color ?? '#94a3b8' }}"></span>
                                                 <span class="font-medium">{{ $tag->name }}</span>

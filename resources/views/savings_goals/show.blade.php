@@ -81,8 +81,8 @@
 
                         <div class="mt-6">
                             <div class="flex items-center justify-between gap-4 text-sm mb-3">
-                                <span class="font-medium text-slate-300">Rp{{ number_format($savingsGoal->current_amount, 0, ',', '.') }}</span>
-                                <span class="font-semibold text-white">Rp{{ number_format($savingsGoal->target_amount, 0, ',', '.') }}</span>
+                                <span class="font-medium text-slate-300">{{ $currencySymbol }}{{ number_format($savingsGoal->current_amount, 0, ',', '.') }}</span>
+                                <span class="font-semibold text-white">{{ $currencySymbol }}{{ number_format($savingsGoal->target_amount, 0, ',', '.') }}</span>
                             </div>
                             <div class="h-3 overflow-hidden rounded-full bg-white/10">
                                 <div class="h-full rounded-full {{ $barColor }} transition-all" style="width: {{ min(100, $progressPercent) }}%"></div>
@@ -92,19 +92,19 @@
 
                     <!-- Amount Cards -->
                     <div class="grid gap-4 md:grid-cols-3">
-                        <div class="ui-card rounded-lg border border-sky-100 bg-sky-50 p-5 shadow-sm hover:border-sky-200">
+                        <div class="ui-card rounded-lg border border-sky-100 bg-sky-50 p-5 shadow-sm hover:border-sky-200 min-w-0">
                             <p class="text-xs font-semibold uppercase tracking-[0.18em] text-sky-600">Saat Ini</p>
-                            <p class="mt-3 text-2xl font-bold text-sky-700">Rp{{ number_format($savingsGoal->current_amount, 0, ',', '.') }}</p>
+                            <p class="mt-3 text-xl font-bold text-sky-700 break-all sm:text-2xl lg:text-lg xl:text-2xl">{{ $currencySymbol }}{{ number_format($savingsGoal->current_amount, 0, ',', '.') }}</p>
                         </div>
 
-                        <div class="ui-card rounded-lg border border-slate-200 bg-white p-5 shadow-sm hover:border-slate-300">
+                        <div class="ui-card rounded-lg border border-slate-200 bg-white p-5 shadow-sm hover:border-slate-300 min-w-0">
                             <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Target</p>
-                            <p class="mt-3 text-2xl font-bold text-slate-950">Rp{{ number_format($savingsGoal->target_amount, 0, ',', '.') }}</p>
+                            <p class="mt-3 text-xl font-bold text-slate-950 break-all sm:text-2xl lg:text-lg xl:text-2xl">{{ $currencySymbol }}{{ number_format($savingsGoal->target_amount, 0, ',', '.') }}</p>
                         </div>
 
-                        <div class="ui-card rounded-lg {{ max(0, $savingsGoal->target_amount - $savingsGoal->current_amount) <= 0 ? 'border-emerald-100 bg-emerald-50' : 'border-amber-100 bg-amber-50' }} p-5 shadow-sm">
+                        <div class="ui-card rounded-lg {{ max(0, $savingsGoal->target_amount - $savingsGoal->current_amount) <= 0 ? 'border-emerald-100 bg-emerald-50' : 'border-amber-100 bg-amber-50' }} p-5 shadow-sm min-w-0">
                             <p class="text-xs font-semibold uppercase tracking-[0.18em] {{ max(0, $savingsGoal->target_amount - $savingsGoal->current_amount) <= 0 ? 'text-emerald-600' : 'text-amber-600' }}">Sisa</p>
-                            <p class="mt-3 text-2xl font-bold {{ max(0, $savingsGoal->target_amount - $savingsGoal->current_amount) <= 0 ? 'text-emerald-700' : 'text-amber-700' }}">Rp{{ number_format(max(0, $savingsGoal->target_amount - $savingsGoal->current_amount), 0, ',', '.') }}</p>
+                            <p class="mt-3 text-xl font-bold {{ max(0, $savingsGoal->target_amount - $savingsGoal->current_amount) <= 0 ? 'text-emerald-700' : 'text-amber-700' }} break-all sm:text-2xl lg:text-lg xl:text-2xl">{{ $currencySymbol }}{{ number_format(max(0, $savingsGoal->target_amount - $savingsGoal->current_amount), 0, ',', '.') }}</p>
                         </div>
                     </div>
 
@@ -148,11 +148,11 @@
                             <div class="mt-4 grid gap-4 sm:grid-cols-2">
                                 <div class="rounded-lg bg-slate-50 p-4 ring-1 ring-slate-200">
                                     <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">Per Hari</p>
-                                    <p class="mt-2 text-lg font-semibold text-slate-950">Rp{{ number_format($savingsGoal->current_amount / max(1, $savingsGoal->created_at->diffInDays(now())), 0, ',', '.') }}</p>
+                                    <p class="mt-2 text-lg font-semibold text-slate-950">{{ $currencySymbol }}{{ number_format($savingsGoal->current_amount / max(1, $savingsGoal->created_at->diffInDays(now())), 0, ',', '.') }}</p>
                                 </div>
                                 <div class="rounded-lg bg-slate-50 p-4 ring-1 ring-slate-200">
                                     <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">Per Bulan</p>
-                                    <p class="mt-2 text-lg font-semibold text-slate-950">Rp{{ number_format(($savingsGoal->current_amount / max(1, $savingsGoal->created_at->diffInDays(now()))) * 30, 0, ',', '.') }}</p>
+                                    <p class="mt-2 text-lg font-semibold text-slate-950">{{ $currencySymbol }}{{ number_format(($savingsGoal->current_amount / max(1, $savingsGoal->created_at->diffInDays(now()))) * 30, 0, ',', '.') }}</p>
                                 </div>
                             </div>
                         @else
@@ -209,7 +209,7 @@
                                             </div>
                                         </div>
                                         <p class="shrink-0 text-sm font-bold {{ $isIncome ? 'text-emerald-700' : 'text-rose-600' }}">
-                                            {{ $isIncome ? '+' : '-' }}Rp{{ number_format($tx->amount, 0, ',', '.') }}
+                                            {{ $isIncome ? '+' : '-' }}{{ $currencySymbol }}{{ number_format($tx->amount, 0, ',', '.') }}
                                         </p>
                                     </li>
                                 @endforeach

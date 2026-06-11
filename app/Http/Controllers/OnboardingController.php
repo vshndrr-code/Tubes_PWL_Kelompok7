@@ -17,7 +17,9 @@ class OnboardingController extends Controller
     {
         $request->validate([
             'currency'        => ['required', 'string', 'in:IDR,USD,EUR,SGD'],
-            'initial_balance' => ['required', 'numeric', 'min:0'],
+            'initial_balance' => ['required', 'numeric', 'min:0', 'max:9999999999999'],
+        ], [
+            'initial_balance.max' => 'Angka yang dimasukkan terlalu besar.',
         ]);
 
         $user = Auth::user();
@@ -30,6 +32,7 @@ class OnboardingController extends Controller
             'balance' => $request->initial_balance,
         ]);
 
+        $user->currency = $request->currency;
         $user->onboarding_completed = true;
         $user->save();
 

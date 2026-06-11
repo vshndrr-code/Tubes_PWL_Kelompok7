@@ -158,7 +158,7 @@
                             <div>
                                 <label for="amount" class="text-sm font-semibold text-slate-700">Nominal</label>
                                 <div class="mt-2 flex h-11 overflow-hidden rounded-lg border border-slate-200 bg-slate-50 shadow-sm transition focus-within:border-slate-400 focus-within:bg-white focus-within:ring-2 focus-within:ring-slate-100 @error('amount') border-red-400 ring-red-100 @enderror">
-                                    <span class="flex items-center border-r border-slate-200 px-3 text-sm font-semibold text-slate-500">Rp</span>
+                                    <span class="flex items-center border-r border-slate-200 px-3 text-sm font-semibold text-slate-500">{{ $currencySymbol }}</span>
                                     <input type="text" name="amount" id="amount" value="{{ old('amount') ?? '' }}"
                                         class="h-full w-full border-0 bg-transparent px-3 text-sm text-slate-700 outline-none focus:ring-0"
                                         required inputmode="numeric" pattern="[0-9]*" placeholder="120000">

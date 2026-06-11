@@ -12,8 +12,12 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @stack('head')
 </head>
 
 <body class="font-sans antialiased" x-data="{ sidebarOpen: false }" @keydown.escape.window="sidebarOpen = false">
@@ -49,59 +53,91 @@
             </div>
 
             <nav class="mt-2 space-y-1 px-4 flex-1 overflow-y-auto">
-                <a href="{{ route('dashboard') }}"
-                    class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('dashboard') ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100' }}">
-                    <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                        <path
-                            d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z">
-                        </path>
-                    </svg>
-                    <span>Dashboard</span>
-                </a>
+                @if(auth()->check() && !auth()->user()->isAuditor())
+                    <a href="{{ route('dashboard') }}"
+                        class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('dashboard') ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100' }}">
+                        <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z">
+                            </path>
+                        </svg>
+                        <span>Dashboard</span>
+                    </a>
 
-                <a href="{{ route('accounts.index') }}"
-                    class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('accounts.*') ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100' }}">
-                    <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                        <path
-                            d="M4 4a2 2 0 00-2 2v2a1 1 0 001 1h14a1 1 0 001-1V6a2 2 0 00-2-2H4zm0 6a2 2 0 00-2 2v2a2 2 0 002 2h12a2 2 0 002-2v-2a2 2 0 00-2-2H4z">
-                        </path>
-                    </svg>
-                    <span>Accounts</span>
-                </a>
+                    <a href="{{ route('accounts.index') }}"
+                        class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('accounts.*') ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100' }}">
+                        <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M4 4a2 2 0 00-2 2v2a1 1 0 001 1h14a1 1 0 001-1V6a2 2 0 00-2-2H4zm0 6a2 2 0 00-2 2v2a2 2 0 002 2h12a2 2 0 002-2v-2a2 2 0 00-2-2H4z">
+                            </path>
+                        </svg>
+                        <span>Accounts</span>
+                    </a>
 
-                <a href="{{ route('transactions.index') }}"
-                    class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('transactions.*') ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100' }}">
-                    <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                        <path
-                            d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z">
-                        </path>
-                    </svg>
-                    <span>Transactions</span>
-                </a>
+                    <a href="{{ route('transactions.index') }}"
+                        class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('transactions.*') ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100' }}">
+                        <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z">
+                            </path>
+                        </svg>
+                        <span>Transactions</span>
+                    </a>
 
-                <a href="{{ route('budgetings.index') }}"
-                    class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('budgetings.*') ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100' }}">
-                    <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M3 3h14v2H3V3zm0 5h10v2H3V8zm0 5h6v2H3v-2z" />
-                    </svg>
-                    <span>Budgetings</span>
-                </a>
+                    <a href="{{ route('budgetings.index') }}"
+                        class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('budgetings.*') ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100' }}">
+                        <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M3 3h14v2H3V3zm0 5h10v2H3V8zm0 5h6v2H3v-2z" />
+                        </svg>
+                        <span>Budgetings</span>
+                    </a>
 
-                <a href="{{ route('savings-goals.index') }}"
-                    class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('savings-goals.*') ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100' }}">
-                    <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 14a6 6 0 110-12 6 6 0 010 12zm1-9H9v4h2V7z" />
-                    </svg>
-                    <span>Savings Goals</span>
-                </a>
+                    <a href="{{ route('savings-goals.index') }}"
+                        class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('savings-goals.*') ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100' }}">
+                        <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 14a6 6 0 110-12 6 6 0 010 12zm1-9H9v4h2V7z" />
+                        </svg>
+                        <span>Savings Goals</span>
+                    </a>
 
-                <a href="{{ route('tags.index') }}"
-                    class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('tags.*') ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100' }}">
-                    <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M17.707 9.293l-7-7A1 1 0 0010 2H4a2 2 0 00-2 2v6a1 1 0 00.293.707l7 7a1 1 0 001.414 0l7-7a1 1 0 000-1.414zM9 7a2 2 0 11-4 0 2 2 0 014 0z" clip-rule="evenodd" />
-                    </svg>
-                    <span>Tags</span>
-                </a>
+                    <a href="{{ route('tags.index') }}"
+                        class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('tags.*') ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100' }}">
+                        <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M17.707 9.293l-7-7A1 1 0 0010 2H4a2 2 0 00-2 2v6a1 1 0 00.293.707l7 7a1 1 0 001.414 0l7-7a1 1 0 000-1.414zM9 7a2 2 0 11-4 0 2 2 0 014 0z" clip-rule="evenodd" />
+                        </svg>
+                        <span>Tags</span>
+                    </a>
+                @endif
+
+                @if(auth()->check() && auth()->user()->isAuditor())
+                    <div class="pt-4 mt-4 border-t border-gray-100">
+                        <p class="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Auditor Panel</p>
+                        
+                        <a href="{{ route('auditor.dashboard') }}"
+                            class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('auditor.dashboard') ? 'bg-emerald-100 text-emerald-700 font-medium' : 'text-gray-700 hover:bg-gray-100' }}">
+                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                            </svg>
+                            <span>Dashboard Auditor</span>
+                        </a>
+
+                        <a href="{{ route('auditor.categories.index') }}"
+                            class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('auditor.categories.*') ? 'bg-emerald-100 text-emerald-700 font-medium' : 'text-gray-700 hover:bg-gray-100' }}">
+                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z" />
+                            </svg>
+                            <span>Moderasi Kategori</span>
+                        </a>
+
+                        <a href="{{ route('auditor.tags.index') }}"
+                            class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('auditor.tags.*') ? 'bg-emerald-100 text-emerald-700 font-medium' : 'text-gray-700 hover:bg-gray-100' }}">
+                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                            </svg>
+                            <span>Moderasi Tag</span>
+                        </a>
+                    </div>
+                @endif
             </nav>
 
             <div class="border-t px-4 py-4 space-y-2 bg-white">
@@ -176,7 +212,7 @@
                                                 {{ $selectedAccount ? ucfirst($selectedAccount->type) : $accounts->count() . ' akun' }}
                                             </span>
                                         </div>
-                                        <p class="text-xs text-slate-500 mt-1">Saldo: Rp {{ $balanceLabel }}</p>
+                                        <p class="text-xs text-slate-500 mt-1">Saldo: {{ $currencySymbol }} {{ $balanceLabel }}</p>
                                     </div>
                                     <svg class="h-4 w-4 text-slate-500" fill="none" viewBox="0 0 24 24"
                                         stroke="currentColor">
@@ -222,7 +258,7 @@
                                                     <p class="text-sm font-semibold text-slate-900">
                                                         {{ $account->name }}</p>
                                                     <p class="text-xs text-slate-500">
-                                                        {{ ucfirst($account->type) }} · Rp {{ number_format($account->balance, 0, ',', '.') }}
+                                                        {{ ucfirst($account->type) }} · {{ $currencySymbol }} {{ number_format($account->balance, 0, ',', '.') }}
                                                     </p>
                                                 </div>
                                                 @if (optional($selectedAccount)->id === $account->id)
@@ -364,6 +400,7 @@
     });
     </script>
 
+    @stack('scripts')
 </body>
 
 </html>

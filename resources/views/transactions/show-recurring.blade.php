@@ -62,7 +62,7 @@
                             <div>
                                 <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Nominal Per Periode</p>
                                 <p class="mt-3 text-4xl font-bold tracking-tight text-rose-300 sm:text-5xl">
-                                    -Rp{{ number_format($recurringTransaction->amount, 0, ',', '.') }}
+                                    -{{ $currencySymbol }}{{ number_format($recurringTransaction->amount, 0, ',', '.') }}
                                 </p>
                             </div>
 

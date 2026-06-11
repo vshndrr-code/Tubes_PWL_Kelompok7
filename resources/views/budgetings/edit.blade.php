@@ -89,7 +89,7 @@
                         </label>
                         <p class="mt-1 text-xs text-slate-500">Maksimal pengeluaran untuk kategori ini dalam periode yang ditentukan</p>
                         <div class="relative mt-3">
-                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-slate-500">Rp</span>
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-slate-500">{{ $currencySymbol }}</span>
                             <input id="limit_amount" name="limit_amount" type="number" inputmode="numeric" step="1" min="0" value="{{ old('limit_amount', round($budgeting->limit_amount, 0)) }}" required
                                 class="form-input block w-full rounded-lg border border-slate-200 bg-slate-50 py-3 pl-11 pr-4 text-sm text-slate-700 shadow-sm outline-none focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-500/20"
                                 placeholder="0" />
@@ -180,7 +180,7 @@
             <div class="mt-4 grid gap-4 sm:grid-cols-2">
                 <div class="rounded-lg bg-slate-50 p-4">
                     <p class="text-xs font-semibold text-slate-500 uppercase tracking-[0.12em]">Limit Saat Ini</p>
-                    <p class="mt-2 text-lg font-bold text-slate-900">Rp {{ number_format($budgeting->limit_amount, 0, ',', '.') }}</p>
+                    <p class="mt-2 text-lg font-bold text-slate-900">{{ $currencySymbol }} {{ number_format($budgeting->limit_amount, 0, ',', '.') }}</p>
                 </div>
                 <div class="rounded-lg bg-slate-50 p-4">
                     <p class="text-xs font-semibold text-slate-500 uppercase tracking-[0.12em]">Terakhir Diperbarui</p>

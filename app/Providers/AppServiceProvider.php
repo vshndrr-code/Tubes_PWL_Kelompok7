@@ -39,6 +39,14 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
+        View::composer('*', function ($view) {
+            $currencySymbol = 'Rp';
+            if (Auth::check() && Auth::user()->currency) {
+                $currencySymbol = Auth::user()->currencySymbol();
+            }
+            $view->with('currencySymbol', $currencySymbol);
+        });
+
         View::composer('layouts.app', function ($view) {
             if (Auth::check()) {
                 $accounts = Account::where('user_id', Auth::id())

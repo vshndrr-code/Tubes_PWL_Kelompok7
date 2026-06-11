@@ -90,7 +90,7 @@
                         <div>
                             <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Total Saldo</p>
                             <p class="mt-3 text-3xl font-bold tracking-tight sm:text-5xl">
-                                {{ $totalBalance < 0 ? '-Rp' : 'Rp' }}{{ number_format(abs($totalBalance), 0, ',', '.') }}
+                                {{ $totalBalance < 0 ? '-' . $currencySymbol : $currencySymbol }}{{ number_format(abs($totalBalance), 0, ',', '.') }}
                             </p>
                         </div>
 
@@ -106,21 +106,21 @@
                         <div class="rounded-lg border border-white/10 bg-white/[0.06] p-4">
                             <p class="text-xs text-slate-400">Pemasukan bulan ini</p>
                             <p class="mt-2 text-lg font-bold text-emerald-300">
-                                Rp{{ number_format($monthlyIncome, 0, ',', '.') }}
+                                {{ $currencySymbol }}{{ number_format($monthlyIncome, 0, ',', '.') }}
                             </p>
                         </div>
 
                         <div class="rounded-lg border border-white/10 bg-white/[0.06] p-4">
                             <p class="text-xs text-slate-400">Pengeluaran bulan ini</p>
                             <p class="mt-2 text-lg font-bold text-rose-300">
-                                Rp{{ number_format($monthlyExpense, 0, ',', '.') }}
+                                {{ $currencySymbol }}{{ number_format($monthlyExpense, 0, ',', '.') }}
                             </p>
                         </div>
 
                         <div class="rounded-lg border border-white/10 bg-white/[0.06] p-4">
                             <p class="text-xs text-slate-400">Net cashflow</p>
                             <p class="mt-2 text-lg font-bold {{ $netCashflow < 0 ? 'text-rose-300' : 'text-emerald-300' }}">
-                                {{ $netCashflow < 0 ? '-Rp' : 'Rp' }}{{ number_format(abs($netCashflow), 0, ',', '.') }}
+                                {{ $netCashflow < 0 ? '-' . $currencySymbol : $currencySymbol }}{{ number_format(abs($netCashflow), 0, ',', '.') }}
                             </p>
                         </div>
                     </div>
@@ -144,12 +144,12 @@
             <div class="mb-5 grid gap-4 md:grid-cols-2">
                 <a href="{{ route('transactions.index') }}" class="ui-card block rounded-lg border border-emerald-100 bg-emerald-50 p-5 shadow-sm hover:bg-emerald-100/50 transition">
                     <p class="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">Pemasukan</p>
-                    <p class="mt-3 text-2xl font-bold text-emerald-800">Rp{{ number_format($monthlyIncome, 0, ',', '.') }}</p>
+                    <p class="mt-3 text-2xl font-bold text-emerald-800">{{ $currencySymbol }}{{ number_format($monthlyIncome, 0, ',', '.') }}</p>
                 </a>
 
                 <a href="{{ route('transactions.index') }}" class="ui-card block rounded-lg border border-rose-100 bg-rose-50 p-5 shadow-sm hover:bg-rose-100/50 transition">
                     <p class="text-xs font-semibold uppercase tracking-[0.18em] text-rose-700">Pengeluaran</p>
-                    <p class="mt-3 text-2xl font-bold text-rose-800">Rp{{ number_format($monthlyExpense, 0, ',', '.') }}</p>
+                    <p class="mt-3 text-2xl font-bold text-rose-800">{{ $currencySymbol }}{{ number_format($monthlyExpense, 0, ',', '.') }}</p>
                 </a>
             </div>
 
@@ -241,7 +241,7 @@
 
                         <p
                             class="font-bold {{ $isIncome ? 'text-emerald-700' : 'text-rose-700' }}">
-                            {{ $isIncome ? '+Rp' : '-Rp' }}{{ number_format($transaction->amount, 0, ',', '.') }}
+                            {{ $isIncome ? '+' . $currencySymbol : '-' . $currencySymbol }}{{ number_format($transaction->amount, 0, ',', '.') }}
                         </p>
                     </div>
                 @endforeach
@@ -357,7 +357,7 @@
 
                         <p
                             class="font-bold {{ $account->balance < 0 ? 'text-rose-600' : 'text-slate-900' }}">
-                            Rp{{ number_format(abs($account->balance), 0, ',', '.') }}
+                            {{ $currencySymbol }}{{ number_format(abs($account->balance), 0, ',', '.') }}
                         </p>
                     </div>
 
