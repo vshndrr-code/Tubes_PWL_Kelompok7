@@ -429,6 +429,58 @@
                 }
             }
         });
+
+        // Budgeting Donut Chart
+        const ctxB = document.getElementById('budgetingDonutChart').getContext('2d');
+        
+        const bGreenVal = {{ $budgetsGreen }};
+        const bRedVal = {{ $budgetsRed }};
+        const bGrayVal = {{ $budgetsGray }};
+        const totalBVal = {{ $totalBudgets }};
+
+        // If there are no budgets at all, show a default grey chart
+        const dataValuesB = totalBVal === 0 ? [0, 0, 0, 1] : [bGreenVal, bRedVal, bGrayVal];
+        const bgColorsB = totalBVal === 0 ? ['#f1f5f9'] : ['#10b981', '#ef4444', '#94a3b8'];
+        const hoverBgColorsB = totalBVal === 0 ? ['#f1f5f9'] : ['#059669', '#dc2626', '#64748b'];
+        const labelsB = totalBVal === 0 ? ['Tidak Ada Anggaran'] : ['Belum Habis', 'Sudah Habis', 'Belum Dipakai'];
+
+        new Chart(ctxB, {
+            type: 'doughnut',
+            data: {
+                labels: labelsB,
+                datasets: [{
+                    data: dataValuesB,
+                    backgroundColor: bgColorsB,
+                    hoverBackgroundColor: hoverBgColorsB,
+                    borderWidth: 2,
+                    borderColor: '#ffffff',
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '75%',
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        enabled: totalBVal > 0,
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                const val = context.raw;
+                                const pct = ((val / totalBVal) * 100).toFixed(1);
+                                return label + val + ' anggaran (' + pct + '%)';
+                            }
+                        }
+                    }
+                }
+            }
+        });
     });
 </script>
 @endpush

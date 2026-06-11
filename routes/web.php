@@ -9,6 +9,7 @@ use App\Http\Controllers\SavingsGoalsController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\AuditorController;
+use App\Http\Controllers\Auth\AuditorLoginController;
 use App\Models\Account;
 use App\Models\Transaction;
 use App\Models\Budgeting;
@@ -104,5 +105,8 @@ Route::middleware(['auth', 'verified', 'auditor'])->prefix('auditor')->name('aud
     Route::get('/tags', [AuditorController::class, 'tags'])->name('tags.index');
     Route::delete('/tags/{tag}', [AuditorController::class, 'destroyTag'])->name('tags.destroy');
 });
-
+Route::middleware('guest')->prefix('auditor')->name('auditor.')->group(function () {
+    Route::get('/login', [AuditorLoginController::class, 'create'])->name('login');
+    Route::post('/login', [AuditorLoginController::class, 'store']);
+});
 require __DIR__ . '/auth.php';
