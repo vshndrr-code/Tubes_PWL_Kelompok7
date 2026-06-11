@@ -31,6 +31,24 @@
             transform: translateY(-2px);
         }
     }
+
+    .chart-layout-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2.5rem;
+    }
+    
+    @media (min-width: 1024px) {
+        .chart-layout-wrapper {
+            flex-direction: row;
+            gap: 2.5rem;
+        }
+        .chart-legend-stack {
+            padding-left: 2rem !important;
+        }
+    }
 </style>
 @endpush
 
@@ -134,7 +152,7 @@
                 <p class="text-sm text-slate-500 leading-relaxed">Distribusi status tabungan seluruh masyarakat berdasarkan pencapaian target.</p>
             </div>
 
-            <div class="flex flex-col lg:flex-row items-center gap-10">
+            <div class="chart-layout-wrapper">
                 <!-- Donut Canvas -->
                 <div class="relative flex-shrink-0 flex items-center justify-center" style="width:220px;height:220px;">
                     <canvas id="savingsDonutChart" width="220" height="220"></canvas>
@@ -145,36 +163,54 @@
                     </div>
                 </div>
 
-                <!-- Legend & Stats -->
-                <div class="flex-1 w-full grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <!-- Legend & Stats (Vertical Stack for clean, balanced alignment) -->
+                <div class="flex-1 w-full flex flex-col gap-3 max-w-xl chart-legend-stack">
                     <!-- Achieved -->
-                    <div class="flex flex-col justify-between rounded-2xl border border-emerald-100 bg-emerald-50/60 p-5">
-                        <div class="flex items-center gap-2 mb-3">
-                            <span class="inline-block h-3 w-3 rounded-full bg-emerald-500 flex-shrink-0"></span>
-                            <span class="text-xs font-semibold text-emerald-700 uppercase tracking-wider">Tercapai</span>
+                    <div class="flex items-center justify-between rounded-2xl border border-emerald-100 bg-emerald-50/60 p-4 shadow-sm transition hover:shadow-md">
+                        <div class="flex items-center gap-4">
+                            <div class="h-8 w-8 rounded-xl flex-shrink-0" style="background-color: #10b981;"></div>
+                            <div>
+                                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Tercapai</p>
+                                <p class="text-sm font-bold text-slate-800 mt-0.5">{{ $savingsAchieved }} Goal Terpenuhi</p>
+                            </div>
                         </div>
-                        <p class="text-3xl font-bold text-emerald-700">{{ $pctAchieved }}<span class="text-lg font-semibold">%</span></p>
-                        <p class="text-xs text-emerald-600 mt-1 font-medium">{{ $savingsAchieved }} goal terpenuhi</p>
+                        <div class="text-right">
+                            <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-800">
+                                {{ $pctAchieved }}%
+                            </span>
+                        </div>
                     </div>
 
                     <!-- In Progress -->
-                    <div class="flex flex-col justify-between rounded-2xl border border-slate-200 bg-slate-50/60 p-5">
-                        <div class="flex items-center gap-2 mb-3">
-                            <span class="inline-block h-3 w-3 rounded-full bg-slate-400 flex-shrink-0"></span>
-                            <span class="text-xs font-semibold text-slate-600 uppercase tracking-wider">Berjalan</span>
+                    <div class="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50/60 p-4 shadow-sm transition hover:shadow-md">
+                        <div class="flex items-center gap-4">
+                            <div class="h-8 w-8 rounded-xl flex-shrink-0" style="background-color: #94a3b8;"></div>
+                            <div>
+                                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Berjalan</p>
+                                <p class="text-sm font-bold text-slate-800 mt-0.5">{{ $savingsInProgress }} Goal Aktif</p>
+                            </div>
                         </div>
-                        <p class="text-3xl font-bold text-slate-700">{{ $pctInProgress }}<span class="text-lg font-semibold">%</span></p>
-                        <p class="text-xs text-slate-600 mt-1 font-medium">{{ $savingsInProgress }} goal aktif</p>
+                        <div class="text-right">
+                            <span class="inline-flex items-center gap-1 rounded-full bg-slate-200 px-3 py-1 text-xs font-bold text-slate-700">
+                                {{ $pctInProgress }}%
+                            </span>
+                        </div>
                     </div>
 
                     <!-- Empty -->
-                    <div class="flex flex-col justify-between rounded-2xl border border-red-100 bg-red-50/60 p-5">
-                        <div class="flex items-center gap-2 mb-3">
-                            <span class="inline-block h-3 w-3 rounded-full bg-red-400 flex-shrink-0"></span>
-                            <span class="text-xs font-semibold text-red-600 uppercase tracking-wider">Belum Mulai</span>
+                    <div class="flex items-center justify-between rounded-2xl border border-red-100 bg-red-50/60 p-4 shadow-sm transition hover:shadow-md">
+                        <div class="flex items-center gap-4">
+                            <div class="h-8 w-8 rounded-xl flex-shrink-0" style="background-color: #ef4444;"></div>
+                            <div>
+                                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Belum Mulai</p>
+                                <p class="text-sm font-bold text-slate-800 mt-0.5">{{ $savingsEmpty }} Goal Kosong</p>
+                            </div>
                         </div>
-                        <p class="text-3xl font-bold text-red-600">{{ $pctEmpty }}<span class="text-lg font-semibold">%</span></p>
-                        <p class="text-xs text-red-500 mt-1 font-medium">{{ $savingsEmpty }} goal kosong</p>
+                        <div class="text-right">
+                            <span class="inline-flex items-center gap-1 rounded-full bg-red-100 px-3 py-1 text-xs font-bold text-red-800">
+                                {{ $pctEmpty }}%
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
