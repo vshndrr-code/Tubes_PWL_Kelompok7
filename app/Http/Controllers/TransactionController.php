@@ -201,6 +201,8 @@ class TransactionController extends Controller
         } else {
             $account->decrement('balance', $transaction->amount);
         }
+        // Apply to savings goal when creating recurring occurrence
+        $this->applyTransactionToSavingsGoal($transaction);
     }
 
     public function store(StoreTransactionRequest $request)
@@ -313,6 +315,8 @@ class TransactionController extends Controller
         } else {
             $account->decrement('balance', $transaction->amount);
         }
+        // Apply to savings goal if linked
+        $this->applyTransactionToSavingsGoal($transaction);
     }
 
     private function reverseTransactionBalance(Transaction $transaction): void
@@ -323,6 +327,54 @@ class TransactionController extends Controller
             $account->decrement('balance', $transaction->amount);
         } else {
             $account->increment('balance', $transaction->amount);
+        }
+        // Reverse from savings goal if linked
+        $this->reverseTransactionFromSavingsGoal($transaction);
+    }
+
+    /**
+     * Apply transaction amount to linked savings goal (only for income).
+     */
+    private function applyTransactionToSavingsGoal(Transaction $transaction): void
+    {
+        if (! $transaction->savings_goal_id || $transaction->type !== 'income') {
+            return;
+        }
+
+        $goal = $transaction->savingsGoal;
+        if (! $goal || $goal->user_id !== auth()->id()) {
+            return;
+        }
+
+        $goal->increment('current_amount', $transaction->amount);
+        $goal->refresh();
+
+        if ($goal->current_amount >= $goal->target_amount && $goal->status !== 'completed') {
+            $goal->status = 'completed';
+            $goal->save();
+        }
+    }
+
+    /**
+     * Reverse transaction amount from linked savings goal (only for income).
+     */
+    private function reverseTransactionFromSavingsGoal(Transaction $transaction): void
+    {
+        if (! $transaction->savings_goal_id || $transaction->type !== 'income') {
+            return;
+        }
+
+        $goal = $transaction->savingsGoal;
+        if (! $goal || $goal->user_id !== auth()->id()) {
+            return;
+        }
+
+        $goal->decrement('current_amount', $transaction->amount);
+        $goal->refresh();
+
+        if ($goal->current_amount < $goal->target_amount && $goal->status === 'completed') {
+            $goal->status = 'active';
+            $goal->save();
         }
     }
 
