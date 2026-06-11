@@ -11,12 +11,20 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'onboarding_completed'])]
+#[Fillable(['name', 'email', 'password', 'onboarding_completed', 'role'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
+
+    /**
+     * Check if the user is an auditor.
+     */
+    public function isAuditor(): bool
+    {
+        return $this->role === 'auditor';
+    }
 
     /**
      * Get the attributes that should be cast.
