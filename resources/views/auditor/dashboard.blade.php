@@ -155,7 +155,6 @@
                         </div>
                         <p class="text-3xl font-bold text-emerald-700">{{ $pctAchieved }}<span class="text-lg font-semibold">%</span></p>
                         <p class="text-xs text-emerald-600 mt-1 font-medium">{{ $savingsAchieved }} goal terpenuhi</p>
-                        <p class="text-[10px] text-slate-400 mt-0.5">current_amount ≥ target</p>
                     </div>
 
                     <!-- In Progress -->
@@ -166,7 +165,6 @@
                         </div>
                         <p class="text-3xl font-bold text-slate-700">{{ $pctInProgress }}<span class="text-lg font-semibold">%</span></p>
                         <p class="text-xs text-slate-600 mt-1 font-medium">{{ $savingsInProgress }} goal aktif</p>
-                        <p class="text-[10px] text-slate-400 mt-0.5">Sebagian sudah terkumpul</p>
                     </div>
 
                     <!-- Empty -->
@@ -177,7 +175,6 @@
                         </div>
                         <p class="text-3xl font-bold text-red-600">{{ $pctEmpty }}<span class="text-lg font-semibold">%</span></p>
                         <p class="text-xs text-red-500 mt-1 font-medium">{{ $savingsEmpty }} goal kosong</p>
-                        <p class="text-[10px] text-slate-400 mt-0.5">Tabungan masih Rp 0</p>
                     </div>
                 </div>
             </div>
