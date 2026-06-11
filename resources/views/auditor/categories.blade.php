@@ -36,8 +36,8 @@
             </div>
             <div class="flex items-center gap-3 self-start lg:self-auto">
                 <a href="{{ route('auditor.categories.create') }}" 
-                    class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-5 rounded-2xl shadow-sm hover:shadow transition duration-150 flex items-center gap-2 text-sm">
-                    <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    class="inline-flex items-center gap-2 rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/10 hover:bg-emerald-700 transition duration-150">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
                     <span>Tambah Kategori Global</span>
