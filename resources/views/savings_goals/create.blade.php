@@ -56,13 +56,13 @@
                     <!-- Target Amount -->
                     <div>
                         <label for="target_amount" class="block text-sm font-semibold text-slate-700 mb-2">Target Amount (Rp)</label>
-                        <input 
+                            <input 
                             type="number" 
                             id="target_amount" 
                             name="target_amount" 
                             value="{{ old('target_amount') }}"
                             placeholder="0"
-                            step="1000"
+                            step="1"
                             min="0"
                             class="h-10 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm text-slate-700 outline-none transition focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-100"
                             required
@@ -75,13 +75,13 @@
                     <!-- Current Amount -->
                     <div>
                         <label for="current_amount" class="block text-sm font-semibold text-slate-700 mb-2">Current Amount (Rp)</label>
-                        <input 
+                            <input 
                             type="number" 
                             id="current_amount" 
                             name="current_amount" 
                             value="{{ old('current_amount', 0) }}"
                             placeholder="0"
-                            step="1000"
+                            step="1"
                             min="0"
                             class="h-10 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm text-slate-700 outline-none transition focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-100"
                         >

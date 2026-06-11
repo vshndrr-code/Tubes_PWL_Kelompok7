@@ -19,6 +19,7 @@ class Account extends Model
     ];
 
 protected $casts = [
+    'balance' => 'decimal:2',
     'is_pinned' => 'boolean',
     'archived_at' => 'datetime',
 ];

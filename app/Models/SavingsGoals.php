@@ -26,6 +26,8 @@ class SavingsGoals extends Model
 
     protected $casts = [
         'deadline' => 'date',
+        'target_amount' => 'decimal:2',
+        'current_amount' => 'decimal:2',
     ];
 
     public function user(): BelongsTo

@@ -29,6 +29,17 @@ class SavingsGoalsController extends Controller
 
     public function store(Request $request)
     {
+        if ($request->has('target_amount')) {
+            $request->merge([
+                'target_amount' => $this->normalizeCurrencyInput($request->input('target_amount')),
+            ]);
+        }
+        if ($request->has('current_amount')) {
+            $request->merge([
+                'current_amount' => $this->normalizeCurrencyInput($request->input('current_amount')),
+            ]);
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'target_amount' => 'required|numeric|min:0',
@@ -77,6 +88,37 @@ class SavingsGoalsController extends Controller
     {
         $savingsGoal = SavingsGoals::where('user_id', Auth::id())->findOrFail($id);
 
+        // DEBUG: Log incoming values
+        $originalTarget = $request->input('target_amount');
+        $originalCurrent = $request->input('current_amount');
+        \Log::info('SavingsGoals.update - Raw input values', [
+            'target_amount_raw' => $originalTarget,
+            'current_amount_raw' => $originalCurrent,
+            'target_type' => gettype($originalTarget),
+            'current_type' => gettype($originalCurrent),
+        ]);
+
+        if ($request->has('target_amount')) {
+            $normalized = $this->normalizeCurrencyInput($request->input('target_amount'));
+            \Log::info('SavingsGoals.update - Normalized target_amount', [
+                'raw' => $originalTarget,
+                'normalized' => $normalized,
+            ]);
+            $request->merge([
+                'target_amount' => $normalized,
+            ]);
+        }
+        if ($request->has('current_amount')) {
+            $normalized = $this->normalizeCurrencyInput($request->input('current_amount'));
+            \Log::info('SavingsGoals.update - Normalized current_amount', [
+                'raw' => $originalCurrent,
+                'normalized' => $normalized,
+            ]);
+            $request->merge([
+                'current_amount' => $normalized,
+            ]);
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'target_amount' => 'required|numeric|min:0',
@@ -94,6 +136,34 @@ class SavingsGoalsController extends Controller
         $savingsGoal->update($validated);
 
         return redirect()->route('savings-goals.index')->with('status', 'Savings goal updated successfully!');
+    }
+
+    private function normalizeCurrencyInput(?string $value): ?string
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        $value = trim($value);
+        if ($value === '') {
+            return $value;
+        }
+
+        $hasDot = str_contains($value, '.');
+        $hasComma = str_contains($value, ',');
+
+        if ($hasDot && $hasComma) {
+            $value = str_replace('.', '', $value);
+            $value = str_replace(',', '.', $value);
+        } elseif ($hasDot && ! $hasComma) {
+            if (preg_match('/\.\d{3}(?:\.\d{3})*$/', $value)) {
+                $value = str_replace('.', '', $value);
+            }
+        } elseif (! $hasDot && $hasComma) {
+            $value = str_replace(',', '.', $value);
+        }
+
+        return preg_replace('/[^0-9.\-]/', '', $value);
     }
 
     public function destroy(string $id)

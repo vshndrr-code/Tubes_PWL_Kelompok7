@@ -38,6 +38,12 @@ class BudgetingController extends Controller
 
     public function store(Request $request)
     {
+        if ($request->has('limit_amount')) {
+            $request->merge([
+                'limit_amount' => $this->normalizeCurrencyInput($request->input('limit_amount')),
+            ]);
+        }
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:150'],
             'category_id' => ['nullable', 'exists:categories,id', 'integer'],
@@ -84,6 +90,24 @@ class BudgetingController extends Controller
     {
         $this->authorize('update', $budgeting);
 
+        // DEBUG: Log incoming values
+        $originalLimit = $request->input('limit_amount');
+        \Log::info('Budgeting.update - Raw input values', [
+            'limit_amount_raw' => $originalLimit,
+            'limit_type' => gettype($originalLimit),
+        ]);
+
+        if ($request->has('limit_amount')) {
+            $normalized = $this->normalizeCurrencyInput($request->input('limit_amount'));
+            \Log::info('Budgeting.update - Normalized limit_amount', [
+                'raw' => $originalLimit,
+                'normalized' => $normalized,
+            ]);
+            $request->merge([
+                'limit_amount' => $normalized,
+            ]);
+        }
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:150'],
             'category_id' => ['nullable', 'exists:categories,id', 'integer'],
@@ -103,6 +127,34 @@ class BudgetingController extends Controller
         return redirect()
             ->route('budgetings.index')
             ->with('success', 'Budget berhasil diperbarui.');
+    }
+
+    private function normalizeCurrencyInput(?string $value): ?string
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        $value = trim($value);
+        if ($value === '') {
+            return $value;
+        }
+
+        $hasDot = str_contains($value, '.');
+        $hasComma = str_contains($value, ',');
+
+        if ($hasDot && $hasComma) {
+            $value = str_replace('.', '', $value);
+            $value = str_replace(',', '.', $value);
+        } elseif ($hasDot && ! $hasComma) {
+            if (preg_match('/\.\d{3}(?:\.\d{3})*$/', $value)) {
+                $value = str_replace('.', '', $value);
+            }
+        } elseif (! $hasDot && $hasComma) {
+            $value = str_replace(',', '.', $value);
+        }
+
+        return preg_replace('/[^0-9.\-]/', '', $value);
     }
 
     public function destroy(Budgeting $budgeting)
