@@ -21,6 +21,10 @@ class Budgeting extends Model
         'year',
     ];
 
+    protected $casts = [
+        'limit_amount' => 'decimal:2',
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

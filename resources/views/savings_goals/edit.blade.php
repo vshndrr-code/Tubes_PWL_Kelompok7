@@ -61,9 +61,9 @@
                             type="number" 
                             id="target_amount" 
                             name="target_amount" 
-                            value="{{ old('target_amount', $savingsGoal->target_amount) }}"
+                            value="{{ old('target_amount', round($savingsGoal->target_amount, 0)) }}"
                             placeholder="0"
-                            step="1000"
+                            step="1"
                             min="0"
                             class="h-10 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm text-slate-700 outline-none transition focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-100"
                             required
@@ -80,9 +80,9 @@
                             type="number" 
                             id="current_amount" 
                             name="current_amount" 
-                            value="{{ old('current_amount', $savingsGoal->current_amount) }}"
+                            value="{{ old('current_amount', round($savingsGoal->current_amount, 0)) }}"
                             placeholder="0"
-                            step="1000"
+                            step="1"
                             min="0"
                             class="h-10 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm text-slate-700 outline-none transition focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-100"
                         >
@@ -150,6 +150,54 @@
                         </button>
                     </div>
                 </form>
+
+                <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const targetInput = document.getElementById('target_amount');
+                    const currentInput = document.getElementById('current_amount');
+
+                    if (targetInput && currentInput) {
+                        console.log('🎯 Monitoring savings goal inputs...');
+                        console.log('Initial target:', targetInput.value);
+                        console.log('Initial current:', currentInput.value);
+
+                        // Monitor target_amount changes
+                        targetInput.addEventListener('input', function() {
+                            console.log('⚡ target_amount input event:', this.value, '| current_amount:', currentInput.value);
+                        });
+
+                        targetInput.addEventListener('change', function() {
+                            console.log('✏️ target_amount change event:', this.value, '| current_amount:', currentInput.value);
+                        });
+
+                        // Monitor current_amount changes
+                        currentInput.addEventListener('input', function() {
+                            console.log('⚡ current_amount input event:', this.value, '| target_amount:', targetInput.value);
+                        });
+
+                        currentInput.addEventListener('change', function() {
+                            console.log('✏️ current_amount change event:', this.value, '| target_amount:', targetInput.value);
+                        });
+
+                        // Observe DOM mutations
+                        const observer = new MutationObserver(function(mutations) {
+                            mutations.forEach(function(mutation) {
+                                if (mutation.type === 'attributes') {
+                                    if (mutation.target === targetInput && mutation.attributeName === 'value') {
+                                        console.log('🔄 target_amount value attribute changed to:', targetInput.value);
+                                    }
+                                    if (mutation.target === currentInput && mutation.attributeName === 'value') {
+                                        console.log('🔄 current_amount value attribute changed to:', currentInput.value);
+                                    }
+                                }
+                            });
+                        });
+
+                        observer.observe(targetInput, { attributes: true });
+                        observer.observe(currentInput, { attributes: true });
+                    }
+                });
+                </script>
             </div>
         </div>
     </div>

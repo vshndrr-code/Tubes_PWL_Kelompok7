@@ -294,6 +294,75 @@
         </form>
     </x-modal>
 
+    <script>
+    document.addEventListener('DOMContentLoaded', function(){
+        const currencyNames = ['amount','target_amount','current_amount','limit_amount'];
+
+        function sanitizeVal(v){
+            if (v === null || v === undefined) return v;
+            v = String(v).trim();
+            if (v === '') return v;
+            v = v.replace(/\s+/g,'');
+            const hasDot = v.indexOf('.') !== -1;
+            const hasComma = v.indexOf(',') !== -1;
+            if (hasDot && hasComma) {
+                // assume dot = thousands, comma = decimal
+                v = v.replace(/\./g,'').replace(',','.');
+            } else if (hasDot && !hasComma) {
+                // if dots look like thousands separators (groups of 3), remove them
+                if (/\.\d{3}(?:\.\d{3})*$/.test(v)) {
+                    v = v.replace(/\./g,'');
+                }
+                // otherwise keep dot as decimal separator
+            } else if (!hasDot && hasComma) {
+                // comma used as decimal separator -> convert to dot
+                v = v.replace(/,/g,'.');
+            }
+            // strip any non-digit/decimal/minus chars
+            v = v.replace(/[^0-9.\-]/g,'');
+            return v;
+        }
+
+        function attach(){
+            currencyNames.forEach(name => {
+                document.querySelectorAll('input[name="'+name+'"]').forEach(input => {
+                    // skip number-type inputs; they have native formatting
+                    if (input.type === 'number') {
+                        console.log('Skipping number input:', name, '- type:', input.type);
+                        return;
+                    }
+
+                    console.log('Attaching blur handler to:', name, '- type:', input.type);
+                    // on blur sanitize
+                    input.addEventListener('blur', function(){
+                        console.log('Blur event on', name, '- before:', this.value);
+                        const s = sanitizeVal(this.value);
+                        console.log('Blur event on', name, '- after sanitize:', s);
+                        this.value = s;
+                    });
+
+                    // ensure form submit sanitizes too
+                    const form = input.closest('form');
+                    if (form && !form._currencyAttached) {
+                        form.addEventListener('submit', function(){
+                            currencyNames.forEach(n => {
+                                const inp = this.querySelector('input[name="'+n+'"]');
+                                if (inp && inp.type !== 'number') {
+                                    inp.value = sanitizeVal(inp.value);
+                                }
+                            });
+                        });
+                        form._currencyAttached = true;
+                    }
+                });
+            });
+        }
+
+        attach();
+        const mo = new MutationObserver(attach);
+        mo.observe(document.body, { childList: true, subtree: true });
+    });
+    </script>
 
 </body>
 
