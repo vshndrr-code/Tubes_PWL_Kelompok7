@@ -65,13 +65,14 @@
             </div>
         @endif
 
-        <!-- Premium Dark Overview Card (Styled exactly like user's Total Balance card) -->
+        <!-- Premium Dark Overview Card -->
         <div class="ui-reveal mb-8 block overflow-hidden rounded-3xl bg-slate-950 p-6 text-white shadow-lg shadow-slate-900/10 transition duration-150">
             <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
                 <div>
-                    <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Total SDGs Savings Pool</p>
+                    <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Kategori Global SDGs</p>
                     <p class="mt-3 text-3xl font-bold tracking-tight sm:text-5xl">
-                        Rp {{ number_format($globalSavings, 0, ',', '.') }}
+                        {{ number_format($globalCategoriesCount, 0, ',', '.') }}
+                        <span class="text-lg font-medium text-slate-400 ml-1">kategori aktif</span>
                     </p>
                 </div>
 
@@ -84,7 +85,7 @@
             </div>
 
             <!-- Stats Sub-metrics in dark card -->
-            <div class="mt-7 grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+            <div class="mt-7 grid gap-4 sm:grid-cols-2 md:grid-cols-4">
                 <div class="rounded-2xl border border-white/10 bg-white/[0.06] p-5">
                     <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Total Masyarakat</p>
                     <p class="mt-2 text-2xl font-bold text-blue-300">
@@ -101,12 +102,20 @@
                     <p class="text-[10px] text-slate-400 mt-1">Tercatat di sistem</p>
                 </div>
 
-                <div class="rounded-2xl border border-white/10 bg-white/[0.06] p-5 sm:col-span-2 md:col-span-1">
-                    <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Kategori Global SDGs</p>
+                <div class="rounded-2xl border border-white/10 bg-white/[0.06] p-5">
+                    <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Tabungan Tercapai</p>
                     <p class="mt-2 text-2xl font-bold text-emerald-300">
-                        Active
+                        {{ number_format($totalAchievedSavings, 0, ',', '.') }}
                     </p>
-                    <p class="text-[10px] text-slate-400 mt-1">Skema SGD Terintegrasi</p>
+                    <p class="text-[10px] text-slate-400 mt-1">Goal terpenuhi</p>
+                </div>
+
+                <div class="rounded-2xl border border-white/10 bg-white/[0.06] p-5">
+                    <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Kategori SDGs</p>
+                    <p class="mt-2 text-2xl font-bold text-violet-300">
+                        {{ number_format($globalCategoriesCount, 0, ',', '.') }}
+                    </p>
+                    <p class="text-[10px] text-slate-400 mt-1">Kategori global aktif</p>
                 </div>
             </div>
         </div>
