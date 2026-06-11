@@ -216,6 +216,84 @@
             </div>
         </div>
 
+        <!-- Donut Chart: Budgetings Ratio -->
+        @php
+            $totalB = $totalBudgets > 0 ? $totalBudgets : 1;
+            $pctBGreen  = round($budgetsGreen / $totalB * 100, 1);
+            $pctBRed    = round($budgetsRed   / $totalB * 100, 1);
+            $pctBGray   = round(100 - $pctBGreen - $pctBRed, 1);
+        @endphp
+        <div class="ui-reveal mb-8 bg-white rounded-3xl border border-slate-200/80 shadow-sm p-6">
+            <div class="mb-6 flex flex-col gap-1">
+                <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">Analitik Anggaran</p>
+                <h2 class="text-xl font-bold text-slate-900">Rasio Pemakaian Anggaran (Budgetings)</h2>
+                <p class="text-sm text-slate-500 leading-relaxed">Distribusi status pemakaian anggaran bulanan seluruh pengguna berdasarkan batas limit.</p>
+            </div>
+
+            <div class="chart-layout-wrapper">
+                <!-- Donut Canvas -->
+                <div class="relative flex-shrink-0 flex items-center justify-center" style="width:220px;height:220px;">
+                    <canvas id="budgetingDonutChart" width="220" height="220"></canvas>
+                    <!-- Centre label -->
+                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                        <p class="text-3xl font-bold text-slate-900">{{ $totalBudgets }}</p>
+                        <p class="text-xs text-slate-500 font-semibold mt-0.5">Total Budgets</p>
+                    </div>
+                </div>
+
+                <!-- Legend & Stats (Vertical Stack for clean, balanced alignment) -->
+                <div class="flex-1 w-full flex flex-col gap-3 max-w-xl chart-legend-stack">
+                    <!-- Belum Habis -->
+                    <div class="flex items-center justify-between rounded-2xl border border-emerald-100 bg-emerald-50/60 p-4 shadow-sm transition hover:shadow-md">
+                        <div class="flex items-center gap-4">
+                            <div class="h-8 w-8 rounded-xl flex-shrink-0" style="background-color: #10b981;"></div>
+                            <div>
+                                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Belum Habis</p>
+                                <p class="text-sm font-bold text-slate-800 mt-0.5">{{ $budgetsGreen }} Anggaran Aktif</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-bold" style="background-color: #d1fae5; color: #065f46;">
+                                {{ $pctBGreen }}%
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Sudah Habis -->
+                    <div class="flex items-center justify-between rounded-2xl border border-red-100 bg-red-50/60 p-4 shadow-sm transition hover:shadow-md">
+                        <div class="flex items-center gap-4">
+                            <div class="h-8 w-8 rounded-xl flex-shrink-0" style="background-color: #ef4444;"></div>
+                            <div>
+                                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Sudah Habis</p>
+                                <p class="text-sm font-bold text-slate-800 mt-0.5">{{ $budgetsRed }} Anggaran Terlampaui</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-bold" style="background-color: #fee2e2; color: #991b1b;">
+                                {{ $pctBRed }}%
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Belum Dipakai -->
+                    <div class="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50/60 p-4 shadow-sm transition hover:shadow-md">
+                        <div class="flex items-center gap-4">
+                            <div class="h-8 w-8 rounded-xl flex-shrink-0" style="background-color: #94a3b8;"></div>
+                            <div>
+                                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Belum Dipakai</p>
+                                <p class="text-sm font-bold text-slate-800 mt-0.5">{{ $budgetsGray }} Belum Dipakai</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-bold" style="background-color: #e2e8f0; color: #334155;">
+                                {{ $pctBGray }}%
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Moderation Modules Grid (Clean, professional cards with lift effects) -->
         <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3 ui-reveal">
             

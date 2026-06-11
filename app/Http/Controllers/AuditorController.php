@@ -7,6 +7,7 @@ use App\Models\Transaction;
 use App\Models\SavingsGoals;
 use App\Models\Category;
 use App\Models\Tag;
+use App\Models\Budgeting;
 use Illuminate\Http\Request;
 
 class AuditorController extends Controller
@@ -41,6 +42,28 @@ class AuditorController extends Controller
         $totalAchievedSavings = $savingsAchieved;
         $totalSavingsGoals = $savingsAchieved + $savingsEmpty + $savingsInProgress;
 
+        // Budgeting breakdown for donut chart
+        // Hijau: belum habis (spent > 0 && spent < limit)
+        // Merah: sudah habis (spent >= limit)
+        // Abu-abu: belum dipake sama sekali (spent == 0)
+        $budgets = Budgeting::with('transactions')->get();
+        $budgetsGreen = 0;
+        $budgetsRed = 0;
+        $budgetsGray = 0;
+
+        foreach ($budgets as $budget) {
+            $spent = (float) $budget->spent_amount;
+            $limit = (float) $budget->limit_amount;
+            if ($spent == 0.0) {
+                $budgetsGray++;
+            } elseif ($spent >= $limit) {
+                $budgetsRed++;
+            } else {
+                $budgetsGreen++;
+            }
+        }
+        $totalBudgets = $budgets->count();
+
         return view('auditor.dashboard', compact(
             'totalUsers',
             'totalTransactions',
@@ -49,7 +72,11 @@ class AuditorController extends Controller
             'savingsAchieved',
             'savingsInProgress',
             'savingsEmpty',
-            'totalSavingsGoals'
+            'totalSavingsGoals',
+            'budgetsGreen',
+            'budgetsRed',
+            'budgetsGray',
+            'totalBudgets'
         ));
     }
 
