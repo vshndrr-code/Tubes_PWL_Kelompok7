@@ -20,19 +20,30 @@ class GoalSeeder extends Seeder
             return;
         }
 
+        // 3 goal templates mencakup semua kondisi donut chart
         $goalTemplates = [
+            // ✅ Goal TERCAPAI (current >= target, status completed)
             [
-                'name' => 'Beli Sepatu',
+                'name' => 'Liburan Akhir Tahun',
+                'target_amount' => 2000000.00,
+                'current_amount' => 2000000.00,
+                'deadline' => now()->subDays(5)->format('Y-m-d'),
+                'status' => 'completed',
+            ],
+            // 🟡 Goal BERJALAN (current > 0, progress ~45%)
+            [
+                'name' => 'Beli Sepatu Baru',
                 'target_amount' => 750000.00,
-                'current_amount' => 150000.00,
+                'current_amount' => 340000.00,
                 'deadline' => now()->addWeeks(6)->format('Y-m-d'),
                 'status' => 'active',
             ],
+            // ⚪ Goal KOSONG (current = 0, belum mulai)
             [
-                'name' => 'Beli Laptop',
-                'target_amount' => 5500000.00,
-                'current_amount' => 950000.00,
-                'deadline' => now()->addMonths(3)->format('Y-m-d'),
+                'name' => 'Beli Laptop Gaming',
+                'target_amount' => 15000000.00,
+                'current_amount' => 0.00,
+                'deadline' => now()->addMonths(6)->format('Y-m-d'),
                 'status' => 'active',
             ],
         ];

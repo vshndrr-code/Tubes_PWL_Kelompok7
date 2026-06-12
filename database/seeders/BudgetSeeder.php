@@ -21,11 +21,18 @@ class BudgetSeeder extends Seeder
             return;
         }
 
+        // 5 budget templates — mencakup semua kondisi donut chart:
+        // - Budget Makan: akan diisi transaksi sampai HABIS
+        // - Budget Transport: akan diisi transaksi SETENGAH (belum habis)
+        // - Budget Belanja: akan diisi transaksi MELEBIHI limit
+        // - Budget Internet: akan diisi sedikit (belum habis)
+        // - Budget Hiburan: TIDAK akan dibuatkan transaksi (belum terpakai)
         $budgetTemplates = [
-            ['name' => 'Budget Makan', 'category_name' => 'Makan & Minuman', 'limit_amount' => 500000.00],
-            ['name' => 'Budget Transport', 'category_name' => 'Transportasi', 'limit_amount' => 400000.00],
+            ['name' => 'Budget Makan', 'category_name' => 'Makan & Minuman', 'limit_amount' => 400000.00],
+            ['name' => 'Budget Transport', 'category_name' => 'Transportasi', 'limit_amount' => 500000.00],
             ['name' => 'Budget Belanja', 'category_name' => 'Belanja Barang', 'limit_amount' => 600000.00],
             ['name' => 'Budget Internet', 'category_name' => 'Internet & Telepon', 'limit_amount' => 250000.00],
+            ['name' => 'Budget Hiburan', 'category_name' => 'Hiburan & Film', 'limit_amount' => 300000.00],
         ];
 
         $month = now()->month;
